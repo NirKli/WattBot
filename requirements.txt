@@ -1,13 +1,9 @@
 fastapi
 uvicorn
-paddleocr
-paddlepaddle
-paddleocr
 opencv-python
 opencv-contrib-python
 numpy
 imutils
-paddlex
 starlette
 albucore
 albumentations
