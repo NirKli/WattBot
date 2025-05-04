@@ -4,6 +4,8 @@ import shutil
 from starlette.datastructures import UploadFile
 from ultralytics import YOLO
 
+from services.model.MonthlyConsumption import MonthlyConsumption
+
 
 class ProcessImage:
     model = YOLO("models/best.pt")
@@ -31,5 +33,17 @@ class ProcessImage:
 
         print("Predicted Number:", float(output))
         print("Digits with Confidence:", with_conf)
+        monthly_consumption = MonthlyConsumption(
+            modified_date="2023-10-01",
+            date="2023-10-01",
+            total_kwh_consumed=float(output),
+            price=0.0,
+            original_file=temp_file_path,
+            file_name=file.filename,
+            label_file="runs/detect/predict/" + temp_file_path.replace("JPEG","jpg") ,
+            file_label_name="runs/detect/predict/labels/" + file.filename.replace("JPEG","txt"),
+        )
         os.remove(temp_file_path)
-        return output
+        shutil.rmtree("runs/detect/predict/")
+
+        return monthly_consumption

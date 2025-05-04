@@ -7,3 +7,4 @@ imutils
 starlette
 albucore
 albumentations
+pymongo[srv]
