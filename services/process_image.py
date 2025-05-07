@@ -1,9 +1,11 @@
 import os
 import shutil
+from datetime import datetime
 
 from starlette.datastructures import UploadFile
 from ultralytics import YOLO
 
+from services import db_save
 from services.model.MonthlyConsumption import MonthlyConsumption
 
 
@@ -33,17 +35,23 @@ class ProcessImage:
 
         print("Predicted Number:", float(output))
         print("Digits with Confidence:", with_conf)
+
         monthly_consumption = MonthlyConsumption(
-            modified_date="2023-10-01",
-            date="2023-10-01",
+            modified_date=datetime.now(),
+            date=datetime.now(),
             total_kwh_consumed=float(output),
             price=0.0,
-            original_file=temp_file_path,
+            original_file=db_save.save_file_to_db(temp_file_path, file.filename),
             file_name=file.filename,
-            label_file="runs/detect/predict/" + temp_file_path.replace("JPEG","jpg") ,
-            file_label_name="runs/detect/predict/labels/" + file.filename.replace("JPEG","txt"),
-        )
+            label_file=db_save.save_file_to_db("runs/detect/predict/" + temp_file_path.replace("JPEG", "jpg"),
+                                               temp_file_path.replace("JPEG", "jpg")),
+            file_label_name=db_save.save_file_to_db(
+                "runs/detect/predict/labels/" + temp_file_path.replace("JPEG", "txt"),
+                temp_file_path.replace("JPEG", "txt")))
+
+        db_save.save_monthly_consumption_to_db(monthly_consumption)
+
         os.remove(temp_file_path)
         shutil.rmtree("runs/detect/predict/")
 
-        return monthly_consumption
+        return monthly_consumption.__repr__()
