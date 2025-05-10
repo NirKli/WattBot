@@ -9,9 +9,14 @@ router = APIRouter()
 image_processor = ProcessImage()
 
 
-@router.post("/monthly-consumption")
-async def process_image(file: UploadFile = File(...)):
-    return image_processor.process_image(file)
+@router.post("/monthly-consumption", response_model=MonthlyConsumption)
+async def process_image(file: UploadFile = File(...)) -> MonthlyConsumption:
+    monthly_consumption = image_processor.process_image(file)
+    monthly_consumption.original_file = str(monthly_consumption.original_file)
+    monthly_consumption.label_file = str(monthly_consumption.label_file)
+    monthly_consumption.file_label_name = str(monthly_consumption.file_label_name)
+
+    return monthly_consumption
 
 
 @router.get("/monthly-consumption/{monthly_consumption_id}", response_model=MonthlyConsumption)

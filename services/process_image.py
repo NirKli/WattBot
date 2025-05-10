@@ -18,7 +18,7 @@ class ProcessImage:
             shutil.copyfileobj(file.file, temp_file)
 
         results = self.model(temp_file_path, save=True, save_dir="process_imgs", rect=True, save_txt=True)
-        results[0].show()
+        #results[0].show()
 
         detections = []
         for box in results[0].boxes:
@@ -54,4 +54,4 @@ class ProcessImage:
         os.remove(temp_file_path)
         shutil.rmtree("runs/detect/predict/")
 
-        return monthly_consumption.__repr__()
+        return monthly_consumption
