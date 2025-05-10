@@ -1,10 +1,16 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* Base layout styles */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
+/* Ensure all content fits properly */
+main {
+  min-height: 50vh; /* Minimum height to ensure content has room to breathe */
+}
+
+/* Logo and animation styles */
 .logo {
   height: 6em;
   padding: 1.5em;
