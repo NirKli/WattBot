@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { ArrowUpTrayIcon, PhotoIcon } from '@heroicons/react/24/outline'
+import { ArrowUpTrayIcon } from '@heroicons/react/24/outline'
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline'
 
@@ -168,156 +168,139 @@ export default function ImageUpload() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg w-full border border-gray-200 text-center">
-      <div className="p-5 sm:p-6 text-center">
-        <h2 className="text-xl font-semibold text-gray-800 text-center flex items-center justify-content-center gap-2">
-          <PhotoIcon className="h-6 w-6 text-blue-500" style={{ width: '24px', height: '24px' }} />
-          <span>Upload Meter Reading</span>
-        </h2>
-        
-        <div className="mt-6 flex flex-col items-center justify-content-center w-full">
-          {!preview ? (
-            <div className="border-2 border-dashed border-blue-300 rounded-lg p-8 text-center bg-blue-50 flex flex-col items-center justify-content-center transition-all duration-200 hover:border-blue-400 hover:bg-blue-100 w-full">
-              <div 
-                className="cursor-pointer transition-all duration-300 hover:scale-110 bg-white rounded-full p-4 shadow-md mx-auto" 
-                onClick={triggerFileInput}
-                aria-label="Upload image"
-                style={{ cursor: 'pointer' }}
-              >
-                <ArrowUpTrayIcon 
-                  className="h-10 w-10 text-blue-500 hover:text-blue-600" 
-                  style={{ width: '40px', height: '40px', cursor: 'pointer' }} 
-                />
-              </div>
-              
-              <p className="text-sm font-medium text-gray-700 mt-4 mb-2 text-center">Select an image to upload</p>
-              <p className="text-xs text-gray-500 mb-4 text-center">JPG, PNG or JPEG</p>
-              
-              <input
-                key={inputKey}
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileSelect}
-                className="absolute -left-[9999px] opacity-0 invisible"
-                tabIndex={-1}
-                aria-hidden="true"
+    <div className="w-full">
+      <div className="flex flex-col items-center justify-center w-full">
+        {!preview ? (
+          <div className="border-2 border-dashed border-accent-300 dark:border-accent-700 rounded-lg p-6 text-center bg-gradient-to-br from-accent-50 to-accent-100/50 dark:from-accent-900/30 dark:to-accent-800/20 flex flex-col items-center justify-center transition-all duration-200 hover:border-accent-400 dark:hover:border-accent-600 hover:bg-accent-100/60 dark:hover:bg-accent-900/40 w-full">
+            <div 
+              className="cursor-pointer transition-all duration-300 hover:scale-110 bg-white dark:bg-gray-700 rounded-full p-4 shadow-md hover:shadow-accent-200 dark:hover:shadow-accent-900/50" 
+              onClick={triggerFileInput}
+              aria-label="Upload image"
+            >
+              <ArrowUpTrayIcon 
+                className="h-8 w-8 text-accent-500 hover:text-accent-600 dark:text-accent-400" 
+                style={{ width: '2rem', height: '2rem' }}
               />
             </div>
-          ) : (
-            <div className="rounded-lg overflow-hidden shadow-md w-full flex flex-col">
-              <div className="relative rounded-lg overflow-hidden bg-gradient-to-b from-gray-100 to-gray-200 flex items-center justify-content-center" style={{ minHeight: '200px' }}>
+            
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mt-4 mb-1">Select an image to upload</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">JPG, PNG or JPEG</p>
+            
+            <input
+              key={inputKey}
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileSelect}
+              className="absolute -left-[9999px] opacity-0 invisible"
+              tabIndex={-1}
+              aria-hidden="true"
+            />
+          </div>
+        ) : (
+          <div className="rounded-lg overflow-hidden shadow w-full flex flex-col">
+            <div className="flex flex-col relative">
+              <div className="bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center relative" style={{ height: '200px' }}>
                 {preview && (
-                  <>
-                    <img
-                      src={preview}
-                      alt="Preview"
-                      className="object-contain max-w-full mx-auto"
-                      style={{ maxHeight: '200px', width: 'auto' }}
-                      onError={(e) => {
-                        console.error('Image failed to load');
-                        setError('Failed to load image preview');
-                        const target = e.target as HTMLImageElement;
-                        target.src = 'https://placehold.co/400x300?text=Preview+Error';
-                      }}
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 backdrop-blur-sm text-white px-4 py-3 text-sm font-medium text-center">
-                      {fileName}
-                    </div>
-                  </>
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    className="object-contain h-full p-2 max-w-full"
+                    style={{ zIndex: 1 }}
+                    onError={(e) => {
+                      console.error('Image failed to load');
+                      setError('Failed to load image preview');
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'https://placehold.co/400x300?text=Preview+Error';
+                    }}
+                  />
                 )}
-                {!preview && (
-                  <div className="text-gray-500 text-center">Image preview unavailable</div>
-                )}
-                <button 
-                  onClick={() => {
-                    setPreview(null);
-                    setSelectedFile(null);
-                    setFileName(null);
-                  }}
-                  className="absolute top-3 right-3 bg-white bg-opacity-80 backdrop-blur-sm rounded-full p-1.5 text-gray-700 hover:text-gray-900 hover:bg-white shadow-sm transition-all duration-200"
-                >
-                  <XMarkIcon className="h-5 w-5" style={{ width: '20px', height: '20px' }} />
-                </button>
-              </div>
-
-              <button
-                onClick={handleUpload}
-                disabled={loading}
-                className={`w-full py-3 px-4 font-medium flex items-center justify-content-center transition-all duration-200 ${
-                  loading 
-                    ? 'bg-gray-300 text-gray-700 cursor-not-allowed' 
-                    : 'bg-blue-500 text-white hover:bg-blue-600 shadow-md hover:shadow-lg'
-                }`}
-              >
-                {loading ? (
-                  <>
-                    <svg className="animate-spin h-5 w-5 mr-3" style={{ width: '20px', height: '20px' }} viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
-                    Processing...
-                  </>
-                ) : 'Process Image'}
-              </button>
-            </div>
-          )}
-
-          {error && (
-            <div className="mt-4 bg-red-50 text-red-700 p-4 rounded-md flex items-center justify-content-center border border-red-200 shadow-sm text-center w-full">
-              <ExclamationCircleIcon className="h-5 w-5 text-red-500 flex-shrink-0" style={{ width: '20px', height: '20px' }} />
-              <p className="text-sm ml-3 text-center">{error}</p>
-            </div>
-          )}
-
-          {result && (
-            <div className="mt-6 rounded-lg overflow-hidden shadow-lg text-center w-full">
-              <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-5 py-4">
-                <div className="flex items-center justify-content-center">
-                  <CheckCircleIcon className="h-6 w-6 text-white flex-shrink-0" style={{ width: '24px', height: '24px' }} />
-                  <h3 className="font-medium ml-2 text-lg">Reading Detected</h3>
-                </div>
               </div>
               
-              <div className="bg-white px-5 py-6 border-x border-b border-gray-200 rounded-b-lg text-center">
-                <div className="flex flex-col gap-4 items-center justify-content-center">
-                  <div className="bg-gray-50 rounded-md p-6 border border-gray-200 text-center w-full">
-                    <p className="text-3xl font-bold text-gray-800 mb-2 text-center">{result.total_kwh_consumed?.toFixed(2) || "0.00"} <span className="text-lg font-medium text-gray-600">kWh</span></p>
-                    <p className="text-lg text-gray-600 mb-2 text-center">${result.price?.toFixed(2) || "0.00"}</p>
-                    <p className="text-sm text-gray-500 text-center">
-                      {result.date ? new Date(result.date).toLocaleString() : 'Date unknown'}
-                    </p>
-                  </div>
-                  
-                  {/* Image preview section if available */}
-                  {result.label_file && (
-                    <div className="border rounded-lg overflow-hidden shadow-sm w-full">
-                      <div className="bg-gradient-to-b from-gray-50 to-gray-100 relative flex items-center justify-content-center" style={{ height: '200px' }}>
-                        <div className="p-2 w-full h-full flex items-center justify-content-center">
-                          <img 
-                            src={`http://localhost:8000/monthly-consumption/file/${result.label_file}`}
-                            alt="Processed meter reading"
-                            className="object-contain mx-auto"
-                            style={{ maxHeight: '180px', width: 'auto' }}
-                            onError={(e) => {
-                              console.error('Processed image failed to load');
-                              const target = e.target as HTMLImageElement;
-                              target.onerror = null;
-                              target.src = 'https://placehold.co/600x400?text=Image+Not+Available';
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="p-3 bg-gray-50 border-t text-center">
-                        <p className="text-xs text-gray-500">File: <span className="font-mono">{result.label_file}</span></p>
-                      </div>
-                    </div>
-                  )}
+              <button 
+                onClick={() => {
+                  setPreview(null);
+                  setSelectedFile(null);
+                  setFileName(null);
+                }}
+                className="absolute top-2 right-2 bg-white dark:bg-gray-700 bg-opacity-90 backdrop-blur-sm rounded-full p-1.5 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-white dark:hover:bg-gray-600 shadow-sm transition-all duration-200"
+                style={{ zIndex: 50 }}
+                aria-label="Remove image"
+              >
+                <XMarkIcon className="h-4 w-4" style={{ width: '1rem', height: '1rem' }} />
+              </button>
+              
+              {fileName && (
+                <div className="bg-gray-100 dark:bg-gray-700 px-3 py-2 text-xs font-medium text-gray-800 dark:text-gray-200 border-t border-gray-200 dark:border-gray-600 truncate">
+                  {fileName}
                 </div>
+              )}
+            </div>
+
+            <button
+              onClick={handleUpload}
+              disabled={loading}
+              className={`w-full py-3 px-4 font-medium flex items-center justify-center transition-all duration-200 ${
+                loading 
+                  ? 'bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 cursor-not-allowed' 
+                  : 'bg-gradient-to-r from-accent-500 to-primary-500 hover:from-accent-600 hover:to-primary-600 dark:from-accent-600 dark:to-primary-600 dark:hover:from-accent-700 dark:hover:to-primary-700 text-white shadow hover:shadow-md'
+              }`}
+            >
+              {loading ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-gray-700 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style={{ width: '1.25rem', height: '1.25rem' }}>
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Processing...
+                </>
+              ) : (
+                'Process Image'
+              )}
+            </button>
+          </div>
+        )}
+
+        {error && (
+          <div className="mt-3 flex items-center justify-center text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 w-full">
+            <ExclamationCircleIcon className="h-4 w-4 mr-1" style={{ width: '1rem', height: '1rem' }} />
+            {error}
+          </div>
+        )}
+
+        {result && (
+          <div className="mt-4 w-full">
+            <div className="flex items-center justify-center mb-2 text-green-600 dark:text-green-400">
+              <CheckCircleIcon className="h-5 w-5 mr-1" style={{ width: '1.25rem', height: '1.25rem' }} />
+              <span className="font-medium text-sm">Reading processed successfully!</span>
+            </div>
+            
+            <div className="bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 p-3 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="text-gray-600 dark:text-gray-400 text-left font-medium">Reading Date:</div>
+                <div className="text-primary-600 dark:text-primary-400 font-semibold text-right">{result.date}</div>
+                
+                <div className="text-gray-600 dark:text-gray-400 text-left font-medium">Consumption:</div>
+                <div className="text-accent-600 dark:text-accent-400 font-semibold text-right">{result.total_kwh_consumed} kWh</div>
+                
+                <div className="text-gray-600 dark:text-gray-400 text-left font-medium">Estimated Price:</div>
+                <div className="text-green-600 dark:text-green-400 font-semibold text-right">${result.price?.toFixed(2)}</div>
               </div>
             </div>
-          )}
-        </div>
+            
+            <button
+              onClick={() => {
+                setPreview(null);
+                setSelectedFile(null);
+                setFileName(null);
+                setResult(null);
+              }}
+              className="mt-3 py-2 px-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:from-gray-100 hover:to-gray-200 dark:hover:from-gray-600 dark:hover:to-gray-700 transition-colors duration-200 w-full font-medium shadow-sm text-sm"
+            >
+              Upload Another Image
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )

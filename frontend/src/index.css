@@ -13,6 +13,11 @@ body {
   color: rgb(17, 24, 39); /* text-gray-900 */
 }
 
+.dark body {
+  background-color: rgb(17, 24, 39); /* bg-gray-900 */
+  color: rgb(243, 244, 246); /* text-gray-100 */
+}
+
 /* Component styles */
 .btn-primary {
   padding: 0.5rem 1rem;
@@ -39,6 +44,11 @@ body {
   }
 }
 
+.dark .card {
+  background-color: rgb(31, 41, 55); /* bg-gray-800 */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
 .input-field {
   width: 100%;
   padding: 0.5rem 0.75rem;
@@ -54,6 +64,12 @@ body {
   --tw-ring-color: rgba(59, 130, 246, 0.5);
 }
 
+.dark .input-field {
+  background-color: rgb(31, 41, 55); /* bg-gray-800 */
+  border-color: rgb(55, 65, 81); /* border-gray-700 */
+  color: rgb(209, 213, 219); /* text-gray-300 */
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -67,6 +83,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.dark {
+  color-scheme: dark;
+}
+
+.dark:root {
+  color: #e6e6e6;
+  background-color: #1f2937;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -74,6 +99,13 @@ a {
 }
 a:hover {
   color: #535bf2;
+}
+
+.dark a {
+  color: #818cf8;
+}
+.dark a:hover {
+  color: #93c5fd;
 }
 
 /* Remove default Vite body and button styles for better mobile layout */
@@ -102,5 +134,15 @@ button {
   }
   button {
     background-color: unset;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    color: #e6e6e6;
+    background-color: #1f2937;
+  }
+  a:hover {
+    color: #93c5fd;
   }
 }
