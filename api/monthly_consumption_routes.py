@@ -1,7 +1,7 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, UploadFile, File, HTTPException, Response
 
 from services.NoObjectHasFoundException import NoObjectHasFoundException
-from services.db_save import get_monthly_consumption_from_db
+from services.db_save import get_monthly_consumption_from_db, get_file_from_db, get_all_monthly_consumption_from_db
 from services.model.MonthlyConsumption import MonthlyConsumption
 from services.process_image import ProcessImage
 
@@ -21,3 +21,20 @@ async def get_monthly_consumption(monthly_consumption_id: str) -> MonthlyConsump
         return monthly_consumption
     except NoObjectHasFoundException:
         raise HTTPException(status_code=404, detail="No object found with the given ID.")
+
+
+@router.get("/monthly-consumption", response_model=list[MonthlyConsumption])
+async def get_all_monthly_consumptions() -> list[MonthlyConsumption]:
+    return get_all_monthly_consumption_from_db()
+
+
+@router.get("/monthly-consumption/file/{file_id}")
+async def get_file(file_id: str):
+    file_data = get_file_from_db(file_id)
+    if file_data:
+        return Response(
+            content=file_data,
+            media_type="image/jpg",
+            headers={"Content-Disposition": f"attachment; filename={file_id}"})
+    else:
+        raise HTTPException(status_code=404, detail="No file found with the given ID.")
