@@ -1,107 +1,131 @@
 import {useState} from 'react'
-import {ArrowTrendingUpIcon, PhotoIcon} from '@heroicons/react/24/outline'
-import {BoltIcon} from '@heroicons/react/24/solid'
 import ImageUpload from './components/ImageUpload'
 import ConsumptionHistory from './components/ConsumptionHistory'
 import LatestReading from './components/LatestReading'
-import DarkModeToggle from './components/DarkModeToggle'
+// Import icons
+import { MdElectricBolt, MdOutlineUploadFile, MdHistory } from "react-icons/md";
+import './App.css'
 
 function App() {
     const [activeTab, setActiveTab] = useState<'upload' | 'history'>('upload')
 
     return (
-        <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950 transition-colors duration-200">
-            <header className="bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 dark:from-primary-800 dark:via-secondary-800 dark:to-accent-800 shadow-lg py-4 px-4">
-                <div className="max-w-6xl mx-auto flex justify-between items-center">
+        <div className="flex flex-col min-h-screen bg-light text-dark font-sans">
+            {/* Modern header */}
+            <header className="header shadow-sm">
+                <div className="container mx-auto px-4 flex justify-between items-center">
                     <div className="flex items-center">
-                        <div className="p-2 bg-white dark:bg-gray-800 rounded-full shadow-md">
-                            <BoltIcon className="h-6 w-6 text-accent-500" style={{ width: '1.5rem', height: '1.5rem' }} />
+                        <div className="icon-bg-primary rounded-lg mr-3 flex items-center justify-center">
+                            <MdElectricBolt size={28} />
                         </div>
-                        <h1 className="ml-3 text-2xl font-bold text-white">WattBot</h1>
+                        <div>
+                            <h1 className="font-bold text-2xl text-primary">WattBot</h1>
+                            <p className="text-xs text-muted">Electricity Meter Reading Assistant</p>
+                        </div>
                     </div>
-                    <DarkModeToggle />
+                    <nav className="bg-white shadow-sm rounded-full p-1">
+                        <div className="flex">
+                            <button
+                                onClick={() => setActiveTab('upload')}
+                                className={`text-base py-2 px-4 flex items-center rounded-full transition-all ${
+                                    activeTab === 'upload'
+                                        ? 'btn-primary'
+                                        : 'text-primary hover:bg-light'
+                                }`}
+                            >
+                                <MdOutlineUploadFile className="mr-1" />
+                                Upload Reading
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('history')}
+                                className={`text-base py-2 px-4 flex items-center rounded-full transition-all ${
+                                    activeTab === 'history'
+                                        ? 'btn-primary'
+                                        : 'text-primary hover:bg-light'
+                                }`}
+                            >
+                                <MdHistory className="mr-1" />
+                                Consumption History
+                            </button>
+                        </div>
+                    </nav>
                 </div>
             </header>
 
-            <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-md">
-                <div className="max-w-6xl mx-auto">
-                    <div className="flex">
-                        <button
-                            onClick={() => setActiveTab('upload')}
-                            className={`flex-1 py-3 px-6 font-medium text-base transition duration-200 ease-in-out text-center border-b-2
-                                ${activeTab === 'upload'
-                                    ? 'border-accent-500 text-accent-600 dark:border-accent-400 dark:text-accent-400 bg-gradient-to-b from-transparent to-accent-50 dark:from-transparent dark:to-accent-900/10'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600'
-                                }
-                            `}
-                        >
-                            <div className="flex items-center justify-center">
-                                <PhotoIcon className="h-5 w-5 mr-2" style={{ width: '1.25rem', height: '1.25rem' }} />
-                                <span>Upload Reading</span>
+            {/* Main content area */}
+            <main className="flex-1 py-10 bg-light">
+                {activeTab === 'upload' ? (
+                    <div className="container mx-auto px-4">
+                        <div className="flex flex-row space-x-6">
+                            {/* Upload Card - Left Side */}
+                            <div className="flex-1 card p-8 relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-40 h-40 bg-primary opacity-5 rounded-bl-full"></div>
+                                <div className="flex flex-col items-center relative z-16">
+                                    {/* Electric Meter SVG Illustration */}
+                                    <div className="w-full h-auto mb-10 flex items-center justify-center">
+                                        <svg width="320" height="320" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            {/* Meter Outline */}
+                                            <rect x="10" y="20" width="100" height="80" rx="8" fill="#f8f9fa" stroke="#3f51b5" strokeWidth="4"/>
+                                            
+                                            {/* Meter Screen */}
+                                            <rect x="20" y="30" width="80" height="30" rx="4" fill="#ffffff" stroke="#3f51b5" strokeWidth="2"/>
+                                            
+                                            {/* Display Numbers */}
+                                            <rect x="25" y="37.5" width="15" height="15" rx="2" fill="#f0f0f0" stroke="#3f51b5" strokeWidth="1"/>
+                                            <rect x="45" y="37.5" width="15" height="15" rx="2" fill="#f0f0f0" stroke="#3f51b5" strokeWidth="1"/>
+                                            <rect x="65" y="37.5" width="15" height="15" rx="2" fill="#f0f0f0" stroke="#3f51b5" strokeWidth="1"/>
+                                            <rect x="85" y="37.5" width="15" height="15" rx="2" fill="#f0f0f0" stroke="#3f51b5" strokeWidth="1"/>
+                                            
+                                            {/* Buttons */}
+                                            <rect x="25" y="70" width="18" height="8" rx="2" fill="#ff4081"/>
+                                            <rect x="50" y="70" width="18" height="8" rx="2" fill="#ff4081"/>
+                                            <rect x="75" y="70" width="18" height="8" rx="2" fill="#ff4081"/>
+                                            
+                                            {/* Label Text */}
+                                            <rect x="15" y="85" width="90" height="10" rx="2" fill="#3f51b5" fillOpacity="0.1"/>
+                                            
+                                            {/* Meter Top */}
+                                            <path d="M10 20 L20 5 H100 L110 20 H10Z" fill="#3f51b5"/>
+                                            
+                                            {/* Electric Symbol */}
+                                            <path d="M55 55 L63 63 L48 67 L55 82 L40 75 L53 55 Z" fill="#ff4081" stroke="#3f51b5" strokeWidth="0.5"/>
+                                            
+                                            {/* Connection Lines */}
+                                            <line x1="60" y1="100" x2="60" y2="110" stroke="#3f51b5" strokeWidth="4" strokeLinecap="round"/>
+                                            <line x1="50" y1="110" x2="70" y2="110" stroke="#3f51b5" strokeWidth="4" strokeLinecap="round"/>
+                                        </svg>
+                                    </div>
+                                    
+                                    <h2 className="text-2xl font-bold mb-6 text-center text-primary">
+                                        Upload Meter Reading
+                                    </h2>
+                                    <ImageUpload />
+                                </div>
                             </div>
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('history')}
-                            className={`flex-1 py-3 px-6 font-medium text-base transition duration-200 ease-in-out text-center border-b-2
-                                ${activeTab === 'history'
-                                    ? 'border-secondary-500 text-secondary-600 dark:border-secondary-400 dark:text-secondary-400 bg-gradient-to-b from-transparent to-secondary-50 dark:from-transparent dark:to-secondary-900/10'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600'
-                                }
-                            `}
-                        >
-                            <div className="flex items-center justify-center">
-                                <ArrowTrendingUpIcon className="h-5 w-5 mr-2" style={{ width: '1.25rem', height: '1.25rem' }} />
-                                <span>Consumption History</span>
+                            
+                            {/* Latest Reading Card - Right Side */}
+                            <div className="flex-1 card p-8">
+                                <div className="flex flex-col items-center">
+                                    <h2 className="text-2xl font-bold mb-6 text-center text-primary">Latest Reading</h2>
+                                    <LatestReading />
+                                </div>
                             </div>
-                        </button>
+                        </div>
                     </div>
-                </div>
-            </nav>
-
-            <main className="flex-1 py-6 px-4">
-                <div className="w-full max-w-6xl mx-auto">
-                    <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg w-full transition-colors duration-200 border border-gray-100 dark:border-gray-700">
-                        {activeTab === 'upload' ? (
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
-                                <div className="md:col-span-2 flex flex-col">
-                                    <h3 className="text-lg font-semibold text-primary-700 dark:text-primary-300 mb-4">Upload Meter Reading</h3>
-                                    <div className="flex-1">
-                                        <ImageUpload />
-                                    </div>
-                                </div>
-                                <div className="md:col-span-1 flex flex-col">
-                                    <h3 className="text-lg font-semibold text-primary-700 dark:text-primary-300 mb-4">Latest Reading</h3>
-                                    <div className="flex-1 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-800 p-4 rounded-lg shadow">
-                                        <LatestReading />
-                                    </div>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="p-6">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div className="md:col-span-2">
-                                        <h3 className="text-lg font-semibold text-secondary-700 dark:text-secondary-300 mb-4">Consumption History</h3>
-                                        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                                            <ConsumptionHistory />
-                                        </div>
-                                    </div>
-                                    <div className="md:col-span-1 flex flex-col">
-                                        <h3 className="text-lg font-semibold text-primary-700 dark:text-primary-300 mb-4">Latest Reading</h3>
-                                        <div className="flex-1 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-gray-700 dark:to-gray-800 p-4 rounded-lg shadow">
-                                            <LatestReading />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                ) : (
+                    <div className="container mx-auto px-4">
+                        <div className="card p-8">
+                            <ConsumptionHistory />
+                        </div>
                     </div>
-                </div>
+                )}
             </main>
 
-            <footer className="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950 py-3 border-t border-gray-200 dark:border-gray-700 text-center text-gray-500 dark:text-gray-400 text-sm transition-colors duration-200">
-                <div className="max-w-6xl mx-auto px-4">
-                    <p>© {new Date().getFullYear()} <span className="text-primary-600 dark:text-primary-400 font-medium">WattBot</span> - Electricity Consumption Monitoring</p>
-                </div>
+            {/* Footer */}
+            <footer className="footer">
+                <p className="text-sm">
+                    © {new Date().getFullYear()} WattBot — Electricity Consumption Monitoring
+                </p>
             </footer>
         </div>
     )

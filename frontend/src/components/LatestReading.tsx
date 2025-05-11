@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { CalendarIcon, ClockIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline'
-import { BoltIcon } from '@heroicons/react/24/solid'
+// Import Material Design icons
+import { MdArrowUpward, MdOutlineElectricMeter } from "react-icons/md";
+import { FaCalendarAlt, FaClock, FaDollarSign } from "react-icons/fa";
 
 interface MonthlyConsumption {
   modified_date: string;
@@ -18,10 +19,20 @@ export default function LatestReading() {
   const [latestReading, setLatestReading] = useState<MonthlyConsumption | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [labelImageUrl, setLabelImageUrl] = useState<string | null>(null)
 
   useEffect(() => {
     fetchLatestReading()
   }, [])
+
+  useEffect(() => {
+    // If we have a latest reading with a label file, fetch the image
+    if (latestReading?.label_file) {
+      const apiBaseUrl = 'http://localhost:8000';
+      const imageUrl = `${apiBaseUrl}/monthly-consumption/file/${latestReading.label_file}`;
+      setLabelImageUrl(imageUrl);
+    }
+  }, [latestReading])
 
   const fetchLatestReading = async () => {
     try {
@@ -68,7 +79,7 @@ export default function LatestReading() {
     }
   };
 
-  // Update the formatDate function
+  // Format the date
   const formatDate = (dateString: string | undefined): string => {
     const date = safeParseDate(dateString);
     if (!date) return 'Invalid date';
@@ -80,85 +91,82 @@ export default function LatestReading() {
     }).format(date);
   };
 
-  // Update the formatTime function
-  const formatTime = (dateString: string | undefined): string => {
-    const date = safeParseDate(dateString);
-    if (!date) return 'Invalid time';
-    
-    return date.toLocaleTimeString([], { 
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
   if (loading) {
     return (
-      <div className="w-full h-full flex items-center justify-center py-6">
-        <div className="animate-spin rounded-full h-8 w-8 border-4 border-primary-500 border-opacity-25 border-t-primary-500" />
+      <div className="py-8 text-center">
+        <div className="flex justify-center items-center space-x-2">
+          <div className="h-3 w-3 bg-primary rounded-full animate-pulse"></div>
+          <div className="h-3 w-3 bg-primary rounded-full animate-pulse delay-150"></div>
+          <div className="h-3 w-3 bg-primary rounded-full animate-pulse delay-300"></div>
+        </div>
+        <p className="text-muted text-sm mt-3">Loading data...</p>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-3 rounded-lg border border-red-200 dark:border-red-800 text-center">
-        <p className="text-sm">{error}</p>
+      <div className="text-center text-danger text-xs bg-danger/10 p-4 rounded border border-danger/30">
+        {error}
       </div>
     )
   }
 
   if (!latestReading) {
     return (
-      <div className="bg-gray-50 dark:bg-gray-800 p-4 text-center text-gray-500 dark:text-gray-400 rounded-lg border border-gray-200 dark:border-gray-700">
-        <p className="text-sm">No readings available yet</p>
-        <p className="text-xs mt-1">Upload your first meter reading to get started</p>
+      <div className="text-center text-muted text-xs p-4">
+        No readings available yet
       </div>
     )
   }
 
   return (
-    <div className="space-y-4">
-      {/* Reading Value and Price */}
-      <div className="bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/30 dark:to-secondary-900/30 rounded-lg p-3 text-center shadow-sm">
-        <div className="text-2xl font-bold text-primary-900 dark:text-primary-200">
-          {latestReading?.total_kwh_consumed.toFixed(2) || "-"} 
-          <span className="text-lg font-medium ml-1">kWh</span>
+    <div className="flex flex-col items-center text-center w-full">
+      {/* Display meter icon or labeled meter image */}
+      {labelImageUrl ? (
+        <div className="mb-6 w-full max-w-[240px] shadow rounded overflow-hidden">
+          <img 
+            src={labelImageUrl} 
+            alt="Latest meter reading" 
+            className="w-full object-contain"
+          />
         </div>
-        <div className="flex items-center justify-center text-gray-700 dark:text-gray-300 mt-1">
-          <div className="p-1 bg-green-100 dark:bg-green-900/30 rounded-full mr-1">
-            <CurrencyDollarIcon className="h-4 w-4 text-green-600 dark:text-green-400" style={{ width: '1rem', height: '1rem' }} />
-          </div>
-          <span className="text-base font-medium text-green-600 dark:text-green-400">${latestReading?.price.toFixed(2) || "-"}</span>
+      ) : (
+        <div className="mb-6 w-full max-w-[240px] flex items-center justify-center h-[180px] bg-light rounded shadow-sm">
+          <MdOutlineElectricMeter className="text-primary w-24 h-24 opacity-50" />
         </div>
-        <div className="flex items-center justify-center text-sm mt-2 bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-sm mx-auto w-fit">
-          <CalendarIcon className="h-4 w-4 mr-1 text-primary-600 dark:text-primary-400" style={{ width: '1rem', height: '1rem' }} />
-          {latestReading?.date ? formatDate(latestReading.date) : 'Date unknown'}
-        </div>
+      )}
+      
+      <div className="flex items-center justify-center mb-4 bg-light rounded-full py-2 px-4 shadow-sm">
+        <MdArrowUpward className="text-primary mr-2 text-xl" />
+        <p className="text-3xl font-medium text-primary">
+          {latestReading.total_kwh_consumed.toFixed(2)}
+        </p>
       </div>
-
-      {/* Reading Image */}
-      <div className="border rounded-lg overflow-hidden shadow-sm border-gray-200 dark:border-gray-700">
-        <div className="bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center" style={{ height: '140px' }}>
-          {latestReading ? (
-            <img
-              src={`http://localhost:8000/monthly-consumption/file/${latestReading.label_file}`}
-              alt="Latest meter reading"
-              className="object-contain mx-auto h-full p-2"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.onerror = null;
-                target.src = 'https://placehold.co/400x300?text=Image+Not+Available';
-              }}
-            />
-          ) : (
-            <div className="text-gray-500 dark:text-gray-400 text-center text-sm">No image available</div>
-          )}
+      
+      <p className="text-base text-muted mb-5 flex items-center justify-center">
+        <MdOutlineElectricMeter className="text-muted mr-1" /> kWh
+      </p>
+      
+      <div className="flex items-center justify-center mb-5 mt-2">
+        <div className="w-6 h-6 rounded-full bg-success text-white flex items-center justify-center mr-2">
+          <FaDollarSign className="text-white text-xs" />
         </div>
-        {latestReading && (
-          <div className="p-1 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-t border-gray-200 dark:border-gray-700 text-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{latestReading.file_name || latestReading.label_file}</p>
-          </div>
-        )}
+        <p className="text-2xl font-medium text-primary">
+          ${parseFloat(latestReading.price.toFixed(2)).toFixed(2)}
+        </p>
+      </div>
+      
+      <div className="flex flex-col gap-2 mt-2">
+        <p className="text-base text-muted flex items-center justify-center bg-light py-1 px-4 rounded-full shadow-sm">
+          <FaCalendarAlt className="text-muted mr-2" />
+          {formatDate(latestReading.date)}
+        </p>
+        
+        <p className="text-base text-muted flex items-center justify-center bg-light py-1 px-4 rounded-full shadow-sm">
+          <FaClock className="text-muted mr-2" />
+          09:35 PM
+        </p>
       </div>
     </div>
   )
