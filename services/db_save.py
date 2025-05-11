@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import gridfs
 import pymongo
 from bson.objectid import ObjectId
@@ -72,6 +74,31 @@ def get_all_monthly_consumption_from_db():
                 "file_label_name"]
         ))
     return monthly_consumptions
+
+
+def update_monthly_consumption_in_db(monthly_consumption_id: str, updated_monthly_consumption: MonthlyConsumption):
+    existing_consumption = get_monthly_consumption_from_db(monthly_consumption_id)
+    existing_consumption.total_kwh_consumed = updated_monthly_consumption.total_kwh_consumed
+    existing_consumption.price = updated_monthly_consumption.price
+    existing_consumption.modified_date = datetime.now()
+    existing_consumption.date = updated_monthly_consumption.date
+
+
+    collection = mongo_db["monthly_consumptions"]
+    updated_monthly_consumption = {
+        "modified_date": existing_consumption.modified_date,
+        "date": existing_consumption.date,
+        "total_kwh_consumed": existing_consumption.total_kwh_consumed,
+        "price": existing_consumption.price,
+        "original_file": existing_consumption.original_file,
+        "file_name": existing_consumption.file_name,
+        "label_file": existing_consumption.label_file,
+        "file_label_name": existing_consumption.file_label_name
+    }
+    result = collection.update_one({"_id": ObjectId(monthly_consumption_id)}, {"$set": updated_monthly_consumption})
+
+    if result.modified_count == 0:
+        raise NoObjectHasFoundException()
 
 
 def get_file_from_db(file_id):
