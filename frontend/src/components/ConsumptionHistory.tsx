@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { MdBarChart, MdElectricBolt, MdInfo, MdCalendarToday, MdTrendingUp, MdEdit, MdSave } from 'react-icons/md'
-import { FaLightbulb, FaCalendarDay, FaImage, FaClipboard, FaFilePdf } from 'react-icons/fa'
+import { FaLightbulb, FaCalendarDay, FaImage, FaClipboard } from 'react-icons/fa'
 
 interface MonthlyConsumption {
   modified_date: string;
@@ -12,6 +12,7 @@ interface MonthlyConsumption {
   file_name: string;
   label_file: any;
   file_label_name: any;
+  _id: string;
 }
 
 export default function ConsumptionHistory() {
@@ -32,7 +33,7 @@ export default function ConsumptionHistory() {
   useEffect(() => {
     // If we have a reading detail open and it has a label file, fetch the image
     if (detailId) {
-      const reading = readings.find(r => r.label_file === detailId);
+      const reading = readings.find(r => r._id === detailId);
       if (reading?.label_file) {
         const apiBaseUrl = 'http://localhost:8000';
         const imageUrl = `${apiBaseUrl}/monthly-consumption/file/${reading.label_file}`;
@@ -61,7 +62,19 @@ export default function ConsumptionHistory() {
         return dateB.getTime() - dateA.getTime();
       })
       
-      setReadings(sortedReadings)
+      // Ensure each reading has a unique _id
+      const readingsWithIds = sortedReadings.map((reading: MonthlyConsumption) => {
+        if (!reading._id) {
+          console.warn('Reading missing _id, using fallback:', reading);
+          return {
+            ...reading,
+            _id: reading.label_file || reading.file_name || `reading-${reading.date}-${Math.random().toString(36).substr(2, 9)}`
+          };
+        }
+        return reading;
+      });
+      
+      setReadings(readingsWithIds);
     } catch (err) {
       setError('Failed to fetch consumption history')
       console.error('Fetch error:', err)
@@ -116,6 +129,7 @@ export default function ConsumptionHistory() {
   };
 
   const handleEditClick = (readingId: string) => {
+    console.log(`Editing reading with ID: ${readingId}, current editingId: ${editingId}`);
     // If already editing this reading, close it. Otherwise, start editing it
     setEditingId(editingId === readingId ? null : readingId);
     setUpdateError(null);
@@ -126,7 +140,7 @@ export default function ConsumptionHistory() {
 
   const handleEditFormChange = (reading: MonthlyConsumption, field: string, value: string) => {
     const updatedReadings = readings.map(r => {
-      if (r.label_file === reading.label_file) {
+      if (r._id === reading._id) {
         return { 
           ...r, 
           [field]: field === 'date' ? value : parseFloat(value) || 0 
@@ -144,16 +158,20 @@ export default function ConsumptionHistory() {
     setUpdateSuccess(false);
     
     try {
-      // Send PUT request to update the reading
+      // Ensure _id is included in the payload
+      const payload = { ...reading, _id: reading._id, id: reading._id };
+      console.log('Sending update payload:', payload);
+      
+      // Send PUT request to update the reading using _id and include id in query params
       const response = await axios.put(
-        `http://localhost:8000/monthly-consumption/${reading.label_file}`,
-        reading
+        `http://localhost:8000/monthly-consumption/${reading._id}?id=${reading._id}`,
+        payload
       );
       
       // Update the readings state with the updated reading
       setReadings(prevReadings => 
         prevReadings.map(r => 
-          r.label_file === reading.label_file ? response.data : r
+          r._id === reading._id ? response.data : r
         )
       );
       
@@ -284,7 +302,7 @@ export default function ConsumptionHistory() {
           </div>
           <div>
             <p className="text-xs text-muted uppercase">Total Spending</p>
-            <p className="text-xl font-bold text-primary">${totalSpending.toFixed(2)}</p>
+            <p className="text-xl font-bold text-primary">${totalSpending.toFixed(4)}</p>
           </div>
         </div>
       </div>
@@ -316,25 +334,25 @@ export default function ConsumptionHistory() {
             </thead>
             <tbody>
               {readings.map((reading) => (
-                <React.Fragment key={reading.label_file || reading.file_name || 'reading-' + reading.date}>
+                <React.Fragment key={reading._id}>
                   <tr className="border-t border-gray-200 hover:bg-light transition-colors">
                     <td className="py-4 px-6 text-dark">{formatDate(reading.date)}</td>
                     <td className="py-4 px-6">
                       <span className="font-medium text-primary">{reading.total_kwh_consumed.toFixed(2)}</span>
                       <span className="text-muted text-sm ml-1">kWh</span>
                     </td>
-                    <td className="py-4 px-6 font-medium text-primary">${reading.price.toFixed(2)}</td>
+                    <td className="py-4 px-6 font-medium text-primary">${reading.price.toFixed(4)}</td>
                     <td className="py-4 px-6">
                       <div className="flex gap-2">
                         <button
-                          onClick={() => handleEditClick(reading.label_file)}
+                          onClick={() => handleEditClick(reading._id)}
                           className="btn-outline-secondary py-2 px-4 rounded-full text-sm flex items-center"
                           aria-label="Edit reading"
                         >
                           <MdEdit className="mr-1.5" /> Edit
                         </button>
                         <button 
-                          onClick={() => handleDetailClick(reading.label_file)}
+                          onClick={() => handleDetailClick(reading._id)}
                           className="btn-outline py-2 px-4 rounded-full text-sm flex items-center"
                           aria-label="View reading details"
                         >
@@ -345,7 +363,7 @@ export default function ConsumptionHistory() {
                   </tr>
                   
                   {/* Details view */}
-                  {detailId === reading.label_file && (
+                  {detailId === reading._id && (
                     <tr className="bg-gray-50">
                       <td colSpan={4} className="py-4 px-6">
                         <div className="bg-white p-5 rounded-lg shadow border border-gray-200">
@@ -377,7 +395,7 @@ export default function ConsumptionHistory() {
                                 <h5 className="text-sm font-medium text-gray-500 mb-1">Price</h5>
                                 <p className="flex items-center text-dark">
                                   <span className="text-primary mr-2">$</span>
-                                  {reading.price.toFixed(2)}
+                                  {reading.price.toFixed(4)}
                                 </p>
                               </div>
                               
@@ -443,7 +461,7 @@ export default function ConsumptionHistory() {
                   )}
                   
                   {/* Inline edit form - displays directly under the row being edited */}
-                  {editingId === reading.label_file && (
+                  {editingId !== null && editingId === reading._id && (
                     <tr className="bg-gray-50">
                       <td colSpan={4} className="py-4 px-6">
                         <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
@@ -459,12 +477,12 @@ export default function ConsumptionHistory() {
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                               {/* Date Field */}
                               <div>
-                                <label htmlFor={`date-${reading.label_file}`} className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor={`date-${reading._id}`} className="block text-sm font-medium text-gray-700 mb-1">
                                   Reading Date
                                 </label>
                                 <input
                                   type="date"
-                                  id={`date-${reading.label_file}`}
+                                  id={`date-${reading._id}`}
                                   value={formatDateForInput(reading.date)}
                                   onChange={(e) => handleEditFormChange(reading, 'date', e.target.value)}
                                   className="w-full px-3 py-2 border border-gray-300 rounded"
@@ -473,12 +491,12 @@ export default function ConsumptionHistory() {
                               
                               {/* Consumption Field */}
                               <div>
-                                <label htmlFor={`consumption-${reading.label_file}`} className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor={`consumption-${reading._id}`} className="block text-sm font-medium text-gray-700 mb-1">
                                   Consumption (kWh)
                                 </label>
                                 <input
                                   type="number"
-                                  id={`consumption-${reading.label_file}`}
+                                  id={`consumption-${reading._id}`}
                                   value={reading.total_kwh_consumed}
                                   onChange={(e) => handleEditFormChange(reading, 'total_kwh_consumed', e.target.value)}
                                   className="w-full px-3 py-2 border border-gray-300 rounded"
@@ -489,17 +507,17 @@ export default function ConsumptionHistory() {
                               
                               {/* Price Field */}
                               <div>
-                                <label htmlFor={`price-${reading.label_file}`} className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor={`price-${reading._id}`} className="block text-sm font-medium text-gray-700 mb-1">
                                   Price ($)
                                 </label>
                                 <input
                                   type="number"
-                                  id={`price-${reading.label_file}`}
+                                  id={`price-${reading._id}`}
                                   value={reading.price}
                                   onChange={(e) => handleEditFormChange(reading, 'price', e.target.value)}
                                   className="w-full px-3 py-2 border border-gray-300 rounded"
                                   min="0"
-                                  step="0.01"
+                                  step="0.0001"
                                 />
                               </div>
                               

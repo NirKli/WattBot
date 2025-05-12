@@ -30,9 +30,10 @@ async def get_monthly_consumption(monthly_consumption_id: str) -> MonthlyConsump
 
 
 @router.put("/monthly-consumption/{monthly_consumption_id}", response_model=MonthlyConsumption)
-async def update_monthly_consumption(monthly_consumption_id: str, monthly_consumption: MonthlyConsumption) -> str:
+async def update_monthly_consumption(monthly_consumption_id: str, monthly_consumption: MonthlyConsumption) -> MonthlyConsumption:
     try:
-        return update_monthly_consumption_in_db(monthly_consumption_id, monthly_consumption)
+        update_monthly_consumption_in_db(monthly_consumption_id, monthly_consumption)
+        return get_monthly_consumption_from_db(monthly_consumption_id)
     except NoObjectHasFoundException:
         raise HTTPException(status_code=404, detail="No object found with the given ID.")
 

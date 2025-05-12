@@ -116,6 +116,7 @@ def get_price_from_db(price_id):
     result = collection.find_one({"_id": ObjectId(price_id)})
     if result:
         return ElectricityPrice(
+            oid=result["_id"],
             price=result["price"],
             date=result["date"],
             created_at=result["created_at"],
@@ -164,6 +165,7 @@ def get_all_prices_from_db():
     prices = []
     for doc in results:
         prices.append(ElectricityPrice(
+            oid=doc["_id"],
             price=doc["price"],
             date=doc["date"],
             created_at=doc["created_at"],

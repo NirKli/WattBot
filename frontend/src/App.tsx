@@ -2,12 +2,13 @@ import {useState} from 'react'
 import ImageUpload from './components/ImageUpload'
 import ConsumptionHistory from './components/ConsumptionHistory'
 import LatestReading from './components/LatestReading'
+import PriceManagement from './components/PriceManagement'
 // Import icons
-import { MdElectricBolt, MdOutlineUploadFile, MdHistory } from "react-icons/md";
+import { MdElectricBolt, MdOutlineUploadFile, MdHistory, MdAttachMoney } from "react-icons/md";
 import './App.css'
 
 function App() {
-    const [activeTab, setActiveTab] = useState<'upload' | 'history'>('upload')
+    const [activeTab, setActiveTab] = useState<'upload' | 'history' | 'prices'>('upload')
 
     return (
         <div className="flex flex-col min-h-screen bg-light text-dark font-sans">
@@ -46,6 +47,17 @@ function App() {
                             >
                                 <MdHistory className="mr-1" />
                                 Consumption History
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('prices')}
+                                className={`text-base py-2 px-4 flex items-center rounded-full transition-all ${
+                                    activeTab === 'prices'
+                                        ? 'btn-primary'
+                                        : 'text-primary hover:bg-light'
+                                }`}
+                            >
+                                <MdAttachMoney className="mr-1" />
+                                Prices
                             </button>
                         </div>
                     </nav>
@@ -112,10 +124,16 @@ function App() {
                             </div>
                         </div>
                     </div>
-                ) : (
+                ) : activeTab === 'history' ? (
                     <div className="container mx-auto px-4">
                         <div className="card p-8">
                             <ConsumptionHistory />
+                        </div>
+                    </div>
+                ) : (
+                    <div className="container mx-auto px-4">
+                        <div className="card p-8">
+                            <PriceManagement />
                         </div>
                     </div>
                 )}
