@@ -30,7 +30,7 @@ async def get_monthly_consumption(monthly_consumption_id: str) -> MonthlyConsump
 
 
 @router.put("/monthly-consumption/{monthly_consumption_id}", response_model=MonthlyConsumption)
-async def update_monthly_consumption(monthly_consumption_id: str, monthly_consumption: MonthlyConsumption) -> MonthlyConsumption:
+async def update_monthly_consumption(monthly_consumption_id: str, monthly_consumption: MonthlyConsumption) -> str:
     try:
         return update_monthly_consumption_in_db(monthly_consumption_id, monthly_consumption)
     except NoObjectHasFoundException:
@@ -49,6 +49,6 @@ async def get_file(file_id: str):
         return Response(
             content=file_data,
             media_type="image/jpg",
-            headers={"Content-Disposition": f"attachment; filename={file_id}"})
+            headers={"Content-Disposition": f"attachment; filename={file_id}.jpg"})
     else:
         raise HTTPException(status_code=404, detail="No file found with the given ID.")

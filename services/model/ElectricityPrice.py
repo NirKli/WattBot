@@ -1,7 +1,10 @@
 from datetime import datetime
+from typing import Optional
 from bson import ObjectId
 from pydantic import BaseModel, Field
 from pydantic_core import core_schema
+from pydantic.json import pydantic_encoder
+
 
 class PyObjectId(ObjectId):
     @classmethod
@@ -17,19 +20,17 @@ class PyObjectId(ObjectId):
         raise ValueError("Invalid ObjectId")
 
 
-class MonthlyConsumption(BaseModel):
+class ElectricityPrice(BaseModel):
     oid: PyObjectId = Field(alias="_id")
-    modified_date: datetime
-    date: datetime
-    total_kwh_consumed: float
     price: float
-    original_file: object
-    file_name: str
-    label_file: object
-    file_label_name: object
+    date: str
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    is_default: bool
 
-    model_config = {
-        "arbitrary_types_allowed": True,
-        "json_encoders": {ObjectId: str},
-        "populate_by_name": True,
-    }
+    class Config:
+        arbitrary_types_allowed = True
+        json_encoders = {
+            ObjectId: str,
+        }
+        populate_by_name: True
