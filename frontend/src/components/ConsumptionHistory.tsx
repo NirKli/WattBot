@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { MdBarChart, MdElectricBolt, MdInfo, MdCalendarToday, MdTrendingUp, MdEdit, MdSave } from 'react-icons/md'
-import { FaLightbulb } from 'react-icons/fa'
+import { FaLightbulb, FaCalendarDay, FaImage, FaClipboard, FaFilePdf } from 'react-icons/fa'
 
 interface MonthlyConsumption {
   modified_date: string;
@@ -22,10 +22,28 @@ export default function ConsumptionHistory() {
   const [updateLoading, setUpdateLoading] = useState(false)
   const [updateError, setUpdateError] = useState<string | null>(null)
   const [updateSuccess, setUpdateSuccess] = useState(false)
+  const [detailId, setDetailId] = useState<string | null>(null)
+  const [detailImageUrl, setDetailImageUrl] = useState<string | null>(null)
 
   useEffect(() => {
     fetchReadings()
   }, [])
+
+  useEffect(() => {
+    // If we have a reading detail open and it has a label file, fetch the image
+    if (detailId) {
+      const reading = readings.find(r => r.label_file === detailId);
+      if (reading?.label_file) {
+        const apiBaseUrl = 'http://localhost:8000';
+        const imageUrl = `${apiBaseUrl}/monthly-consumption/file/${reading.label_file}`;
+        setDetailImageUrl(imageUrl);
+      } else {
+        setDetailImageUrl(null);
+      }
+    } else {
+      setDetailImageUrl(null);
+    }
+  }, [detailId, readings]);
 
   const fetchReadings = async () => {
     try {
@@ -102,6 +120,8 @@ export default function ConsumptionHistory() {
     setEditingId(editingId === readingId ? null : readingId);
     setUpdateError(null);
     setUpdateSuccess(false);
+    // Close details view if open
+    setDetailId(null);
   };
 
   const handleEditFormChange = (reading: MonthlyConsumption, field: string, value: string) => {
@@ -150,6 +170,37 @@ export default function ConsumptionHistory() {
       setUpdateError('Failed to update reading');
     } finally {
       setUpdateLoading(false);
+    }
+  };
+
+  const handleDetailClick = (readingId: string) => {
+    // If already showing details for this reading, close it. Otherwise, show it
+    setDetailId(detailId === readingId ? null : readingId);
+    // Close edit form if open
+    setEditingId(null);
+  };
+
+  // Format timestamp for display
+  const formatTimestamp = (dateString: string | undefined): string => {
+    if (!dateString) return 'Not available';
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return 'Invalid date';
+      }
+      
+      return new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }).format(date);
+    } catch (e) {
+      console.error('Error formatting timestamp:', e);
+      return 'Invalid date';
     }
   };
 
@@ -282,12 +333,114 @@ export default function ConsumptionHistory() {
                         >
                           <MdEdit className="mr-1.5" /> Edit
                         </button>
-                        <button className="btn-outline py-2 px-4 rounded-full text-sm flex items-center">
+                        <button 
+                          onClick={() => handleDetailClick(reading.label_file)}
+                          className="btn-outline py-2 px-4 rounded-full text-sm flex items-center"
+                          aria-label="View reading details"
+                        >
                           <MdInfo className="mr-1.5" /> Details
                         </button>
                       </div>
                     </td>
                   </tr>
+                  
+                  {/* Details view */}
+                  {detailId === reading.label_file && (
+                    <tr className="bg-gray-50">
+                      <td colSpan={4} className="py-4 px-6">
+                        <div className="bg-white p-5 rounded-lg shadow border border-gray-200">
+                          <h4 className="text-primary font-medium mb-4 flex items-center text-lg">
+                            <MdInfo className="mr-2" /> Reading Details
+                          </h4>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Reading details */}
+                            <div className="space-y-4">
+                              <div>
+                                <h5 className="text-sm font-medium text-gray-500 mb-1">Reading Date</h5>
+                                <p className="flex items-center text-dark">
+                                  <FaCalendarDay className="text-primary mr-2" />
+                                  {formatDate(reading.date)}
+                                </p>
+                              </div>
+                              
+                              <div>
+                                <h5 className="text-sm font-medium text-gray-500 mb-1">Consumption</h5>
+                                <p className="flex items-center text-dark">
+                                  <MdElectricBolt className="text-primary mr-2" />
+                                  <span>{reading.total_kwh_consumed.toFixed(2)}</span>
+                                  <span className="text-muted text-sm ml-1">kWh</span>
+                                </p>
+                              </div>
+                              
+                              <div>
+                                <h5 className="text-sm font-medium text-gray-500 mb-1">Price</h5>
+                                <p className="flex items-center text-dark">
+                                  <span className="text-primary mr-2">$</span>
+                                  {reading.price.toFixed(2)}
+                                </p>
+                              </div>
+                              
+                              <div>
+                                <h5 className="text-sm font-medium text-gray-500 mb-1">Last Modified</h5>
+                                <p className="text-dark text-sm">
+                                  {formatTimestamp(reading.modified_date)}
+                                </p>
+                              </div>
+                              
+                              <div>
+                                <h5 className="text-sm font-medium text-gray-500 mb-1">File Name</h5>
+                                <p className="flex items-center text-dark text-sm">
+                                  <FaClipboard className="text-primary mr-2" />
+                                  {reading.file_name || 'Not available'}
+                                </p>
+                              </div>
+                            </div>
+                            
+                            {/* Reading image */}
+                            <div className="flex flex-col items-center justify-center">
+                              {detailImageUrl ? (
+                                <div className="relative w-full">
+                                  <h5 className="text-sm font-medium text-gray-500 mb-2">Meter Image</h5>
+                                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                                    <img 
+                                      src={detailImageUrl} 
+                                      alt="Meter reading" 
+                                      className="w-full object-contain max-h-48" 
+                                    />
+                                  </div>
+                                  <div className="mt-2 text-center">
+                                    <a 
+                                      href={detailImageUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-primary text-sm flex items-center justify-center"
+                                    >
+                                      <FaImage className="mr-1" /> View Full Image
+                                    </a>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="border border-gray-200 rounded-lg p-8 text-center text-gray-400 w-full">
+                                  <FaImage size={32} className="mx-auto mb-2" />
+                                  <p className="text-sm">Image not available</p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div className="mt-6 text-right">
+                            <button
+                              onClick={() => setDetailId(null)}
+                              className="btn-outline py-2 px-5 rounded-full text-sm"
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
                   
                   {/* Inline edit form - displays directly under the row being edited */}
                   {editingId === reading.label_file && (
