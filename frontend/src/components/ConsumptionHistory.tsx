@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { MdBarChart, MdElectricBolt, MdInfo, MdCalendarToday, MdTrendingUp, MdEdit, MdClose, MdSave } from 'react-icons/md'
-import { FaLightbulb, FaCalendarAlt, FaDollarSign } from 'react-icons/fa'
+import { MdBarChart, MdElectricBolt, MdInfo, MdCalendarToday, MdTrendingUp, MdEdit, MdSave } from 'react-icons/md'
+import { FaLightbulb } from 'react-icons/fa'
 
 interface MonthlyConsumption {
   modified_date: string;
@@ -18,18 +18,10 @@ export default function ConsumptionHistory() {
   const [readings, setReadings] = useState<MonthlyConsumption[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [editModalOpen, setEditModalOpen] = useState(false)
-  const [editingReading, setEditingReading] = useState<MonthlyConsumption | null>(null)
-  const [editForm, setEditForm] = useState({
-    date: '',
-    total_kwh_consumed: 0,
-    price: 0
-  })
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [updateLoading, setUpdateLoading] = useState(false)
   const [updateError, setUpdateError] = useState<string | null>(null)
   const [updateSuccess, setUpdateSuccess] = useState(false)
-  const [editModalPosition, setEditModalPosition] = useState({ top: 0, left: 0 })
-  const editButtonRef = useRef<HTMLButtonElement | null>(null)
 
   useEffect(() => {
     fetchReadings()
@@ -89,88 +81,77 @@ export default function ConsumptionHistory() {
     }).format(date);
   };
 
-  const openEditModal = (reading: MonthlyConsumption, event: React.MouseEvent<HTMLButtonElement>) => {
-    setEditingReading(reading)
-    setEditForm({
-      date: reading.date,
-      total_kwh_consumed: reading.total_kwh_consumed,
-      price: reading.price
-    })
-    
-    // Simplified positioning logic - fixed offset from button
-    const buttonRect = event.currentTarget.getBoundingClientRect();
-    setEditModalPosition({
-      top: buttonRect.bottom + 10,
-      left: buttonRect.left - 100
-    });
-    
-    setEditModalOpen(true)
-    setUpdateError(null)
-    setUpdateSuccess(false)
-  }
-
-  const closeEditModal = () => {
-    setEditModalOpen(false)
-    setEditingReading(null)
-    setUpdateError(null)
-    setUpdateSuccess(false)
-  }
-
-  const handleEditFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setEditForm(prev => ({
-      ...prev,
-      [name]: name === 'date' ? value : parseFloat(value) || 0
-    }))
-  }
-
-  const handleSubmitEdit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!editingReading) return
-    
-    setUpdateLoading(true)
-    setUpdateError(null)
-    setUpdateSuccess(false)
+  // Add a function to format dates for the input field
+  const formatDateForInput = (dateString: string): string => {
+    if (!dateString) return '';
     
     try {
-      // Prepare the updated reading
-      const updatedReading = {
-        ...editingReading,
-        date: editForm.date,
-        total_kwh_consumed: editForm.total_kwh_consumed,
-        price: editForm.price
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return '';
       }
-      
+      return date.toISOString().split('T')[0];
+    } catch (e) {
+      console.error('Error formatting date for input:', e);
+      return '';
+    }
+  };
+
+  const handleEditClick = (readingId: string) => {
+    // If already editing this reading, close it. Otherwise, start editing it
+    setEditingId(editingId === readingId ? null : readingId);
+    setUpdateError(null);
+    setUpdateSuccess(false);
+  };
+
+  const handleEditFormChange = (reading: MonthlyConsumption, field: string, value: string) => {
+    const updatedReadings = readings.map(r => {
+      if (r.label_file === reading.label_file) {
+        return { 
+          ...r, 
+          [field]: field === 'date' ? value : parseFloat(value) || 0 
+        };
+      }
+      return r;
+    });
+    
+    setReadings(updatedReadings);
+  };
+
+  const handleSaveEdit = async (reading: MonthlyConsumption) => {
+    setUpdateLoading(true);
+    setUpdateError(null);
+    setUpdateSuccess(false);
+    
+    try {
       // Send PUT request to update the reading
       const response = await axios.put(
-        `http://localhost:8000/monthly-consumption/${editingReading.label_file}`,
-        updatedReading
-      )
+        `http://localhost:8000/monthly-consumption/${reading.label_file}`,
+        reading
+      );
       
       // Update the readings state with the updated reading
       setReadings(prevReadings => 
-        prevReadings.map(reading => 
-          reading.label_file === editingReading.label_file ? response.data : reading
+        prevReadings.map(r => 
+          r.label_file === reading.label_file ? response.data : r
         )
-      )
+      );
       
-      setUpdateSuccess(true)
+      setUpdateSuccess(true);
       
-      // Close the modal after a short delay
+      // Close the edit form after a short delay
       setTimeout(() => {
-        closeEditModal()
-        // Refresh readings
-        fetchReadings()
-      }, 1500)
+        setEditingId(null);
+        setUpdateSuccess(false);
+      }, 1500);
       
     } catch (err) {
-      console.error('Update error:', err)
-      setUpdateError('Failed to update reading')
+      console.error('Update error:', err);
+      setUpdateError('Failed to update reading');
     } finally {
-      setUpdateLoading(false)
+      setUpdateLoading(false);
     }
-  }
+  };
 
   if (loading) {
     return (
@@ -283,196 +264,141 @@ export default function ConsumptionHistory() {
               </tr>
             </thead>
             <tbody>
-              {readings.map((reading, index) => (
-                <tr 
-                  key={reading.label_file || index} 
-                  className={`border-t border-gray-200 hover:bg-light transition-colors`}
-                >
-                  <td className="py-4 px-6 text-dark">{formatDate(reading.date)}</td>
-                  <td className="py-4 px-6">
-                    <span className="font-medium text-primary">{reading.total_kwh_consumed.toFixed(2)}</span>
-                    <span className="text-muted text-sm ml-1">kWh</span>
-                  </td>
-                  <td className="py-4 px-6 font-medium text-primary">${reading.price.toFixed(2)}</td>
-                  <td className="py-4 px-6">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={(e) => openEditModal(reading, e)}
-                        className="btn-outline-secondary py-2 px-4 rounded-full text-sm flex items-center hover:bg-light transition-colors"
-                        aria-label="Edit reading"
-                      >
-                        <MdEdit className="mr-1.5" /> Edit
-                      </button>
-                      <button
-                        className="btn-outline py-2 px-4 rounded-full text-sm flex items-center hover:bg-light transition-colors"
-                      >
-                        <MdInfo className="mr-1.5" /> Details
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+              {readings.map((reading) => (
+                <React.Fragment key={reading.label_file || reading.file_name || 'reading-' + reading.date}>
+                  <tr className="border-t border-gray-200 hover:bg-light transition-colors">
+                    <td className="py-4 px-6 text-dark">{formatDate(reading.date)}</td>
+                    <td className="py-4 px-6">
+                      <span className="font-medium text-primary">{reading.total_kwh_consumed.toFixed(2)}</span>
+                      <span className="text-muted text-sm ml-1">kWh</span>
+                    </td>
+                    <td className="py-4 px-6 font-medium text-primary">${reading.price.toFixed(2)}</td>
+                    <td className="py-4 px-6">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleEditClick(reading.label_file)}
+                          className="btn-outline-secondary py-2 px-4 rounded-full text-sm flex items-center"
+                          aria-label="Edit reading"
+                        >
+                          <MdEdit className="mr-1.5" /> Edit
+                        </button>
+                        <button className="btn-outline py-2 px-4 rounded-full text-sm flex items-center">
+                          <MdInfo className="mr-1.5" /> Details
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  
+                  {/* Inline edit form - displays directly under the row being edited */}
+                  {editingId === reading.label_file && (
+                    <tr className="bg-gray-50">
+                      <td colSpan={4} className="py-4 px-6">
+                        <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
+                          <h4 className="text-primary font-medium mb-3 flex items-center">
+                            <MdEdit className="mr-2" /> Edit Meter Reading
+                          </h4>
+                          
+                          {updateSuccess ? (
+                            <div className="flex items-center text-green-700 bg-green-50 p-2 rounded">
+                              <MdSave className="mr-2" /> Reading updated successfully!
+                            </div>
+                          ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              {/* Date Field */}
+                              <div>
+                                <label htmlFor={`date-${reading.label_file}`} className="block text-sm font-medium text-gray-700 mb-1">
+                                  Reading Date
+                                </label>
+                                <input
+                                  type="date"
+                                  id={`date-${reading.label_file}`}
+                                  value={formatDateForInput(reading.date)}
+                                  onChange={(e) => handleEditFormChange(reading, 'date', e.target.value)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded"
+                                />
+                              </div>
+                              
+                              {/* Consumption Field */}
+                              <div>
+                                <label htmlFor={`consumption-${reading.label_file}`} className="block text-sm font-medium text-gray-700 mb-1">
+                                  Consumption (kWh)
+                                </label>
+                                <input
+                                  type="number"
+                                  id={`consumption-${reading.label_file}`}
+                                  value={reading.total_kwh_consumed}
+                                  onChange={(e) => handleEditFormChange(reading, 'total_kwh_consumed', e.target.value)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded"
+                                  min="0"
+                                  step="0.01"
+                                />
+                              </div>
+                              
+                              {/* Price Field */}
+                              <div>
+                                <label htmlFor={`price-${reading.label_file}`} className="block text-sm font-medium text-gray-700 mb-1">
+                                  Price ($)
+                                </label>
+                                <input
+                                  type="number"
+                                  id={`price-${reading.label_file}`}
+                                  value={reading.price}
+                                  onChange={(e) => handleEditFormChange(reading, 'price', e.target.value)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded"
+                                  min="0"
+                                  step="0.01"
+                                />
+                              </div>
+                              
+                              {/* Error Message */}
+                              {updateError && (
+                                <div className="col-span-3 text-sm text-danger bg-danger/10 p-2 rounded">
+                                  {updateError}
+                                </div>
+                              )}
+                              
+                              {/* Action Buttons */}
+                              <div className="col-span-3 flex justify-end gap-2 mt-2">
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingId(null)}
+                                  className="btn-outline py-1.5 px-3 rounded-full text-xs"
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleSaveEdit(reading)}
+                                  disabled={updateLoading}
+                                  className="btn-primary py-1.5 px-3 rounded-full text-xs flex items-center"
+                                >
+                                  {updateLoading ? (
+                                    <>
+                                      <svg className="animate-spin -ml-1 mr-1 h-3 w-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                      </svg>
+                                      Saving...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <MdSave className="mr-1" size={14} /> Save
+                                    </>
+                                  )}
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))}
             </tbody>
           </table>
         </div>
       </div>
-
-      {/* Edit Modal - Optimized for performance */}
-      {editModalOpen && (
-        <>
-          {/* Simplified overlay */}
-          <div 
-            className="fixed inset-0 z-40" 
-            onClick={closeEditModal}
-          ></div>
-          
-          {/* Floating edit panel with simplified styling */}
-          <div 
-            className="absolute z-50 bg-white rounded-xl w-full max-w-md shadow-xl"
-            style={{ 
-              top: `${editModalPosition.top}px`, 
-              left: `${editModalPosition.left}px`,
-              maxWidth: '360px'
-            }}
-          >
-            {/* Header with simplified gradient */}
-            <div className="bg-primary text-white py-3 px-5 rounded-t-xl flex justify-between items-center">
-              <h3 className="font-medium text-base">Edit Meter Reading</h3>
-              <button 
-                onClick={closeEditModal}
-                className="text-white hover:bg-white/20 p-1.5 rounded-full"
-                aria-label="Close modal"
-              >
-                <MdClose size={18} />
-              </button>
-            </div>
-            
-            {updateSuccess ? (
-              <div className="p-6 text-center">
-                <div className="mx-auto bg-green-100 text-green-800 rounded-full w-14 h-14 flex items-center justify-center mb-3">
-                  <MdSave size={24} />
-                </div>
-                <h4 className="text-lg font-medium text-gray-800 mb-2">Changes Saved!</h4>
-                <p className="text-gray-600 mb-4 text-sm">Your reading has been updated successfully.</p>
-                <button
-                  onClick={closeEditModal}
-                  className="btn-primary py-2 px-5 rounded-full text-sm"
-                >
-                  Close
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmitEdit} className="p-5">
-                <div className="space-y-4">
-                  {/* Date Field - simplified */}
-                  <div>
-                    <label htmlFor="date" className="flex items-center text-sm font-medium text-gray-700 mb-1.5">
-                      <FaCalendarAlt className="mr-2 text-primary" /> Reading Date
-                    </label>
-                    <input
-                      type="date"
-                      id="date"
-                      name="date"
-                      value={editForm.date}
-                      onChange={handleEditFormChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                      required
-                    />
-                  </div>
-                  
-                  {/* Consumption Field - simplified */}
-                  <div>
-                    <label htmlFor="total_kwh_consumed" className="flex items-center text-sm font-medium text-gray-700 mb-1.5">
-                      <MdElectricBolt className="mr-2 text-primary" /> Electricity Consumption
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        id="total_kwh_consumed"
-                        name="total_kwh_consumed"
-                        min="0"
-                        step="0.01"
-                        value={editForm.total_kwh_consumed}
-                        onChange={handleEditFormChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg pr-14"
-                        required
-                      />
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
-                        kWh
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Price Field - simplified */}
-                  <div>
-                    <label htmlFor="price" className="flex items-center text-sm font-medium text-gray-700 mb-1.5">
-                      <FaDollarSign className="mr-2 text-primary" /> Cost Amount
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
-                        $
-                      </div>
-                      <input
-                        type="number"
-                        id="price"
-                        name="price"
-                        min="0"
-                        step="0.01"
-                        value={editForm.price}
-                        onChange={handleEditFormChange}
-                        className="w-full pl-8 px-3 py-2 border border-gray-300 rounded-lg"
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {updateError && (
-                  <div className="mt-4 p-2.5 text-sm bg-danger/10 border border-danger/30 text-danger rounded-lg">
-                    <p className="flex items-center">
-                      <span className="bg-danger/20 rounded-full p-1 mr-2">
-                        <MdClose className="text-danger" size={14} />
-                      </span>
-                      {updateError}
-                    </p>
-                  </div>
-                )}
-                
-                <div className="flex justify-end gap-2 mt-5 pt-3 border-t border-gray-100">
-                  <button
-                    type="button"
-                    onClick={closeEditModal}
-                    className="btn-outline py-2 px-4 rounded-full text-xs font-medium"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={updateLoading}
-                    className={`btn-primary py-2 px-5 rounded-full text-xs font-medium flex items-center justify-center min-w-20 ${
-                      updateLoading ? 'opacity-70 cursor-not-allowed' : ''
-                    }`}
-                  >
-                    {updateLoading ? (
-                      <>
-                        <svg className="animate-spin -ml-1 mr-2 h-3 w-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Saving...
-                      </>
-                    ) : (
-                      <>
-                        <MdSave className="mr-1.5" /> Save
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        </>
-      )}
     </div>
   )
 } 
