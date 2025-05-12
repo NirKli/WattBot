@@ -3,147 +3,106 @@ import ImageUpload from './components/ImageUpload'
 import ConsumptionHistory from './components/ConsumptionHistory'
 import LatestReading from './components/LatestReading'
 import PriceManagement from './components/PriceManagement'
+import Tabs, { Tab } from './components/Tabs'
 // Import icons
-import { MdElectricBolt, MdOutlineUploadFile, MdHistory, MdAttachMoney } from "react-icons/md";
+import { MdElectricBolt, MdOutlineUploadFile, MdHistory, MdAttachMoney, MdDashboard, MdWbSunny } from "react-icons/md";
 import './App.css'
 
 function App() {
-    const [activeTab, setActiveTab] = useState<'upload' | 'history' | 'prices'>('upload')
+    const [activeTab, setActiveTab] = useState<number>(0)
+
+    const handleTabChange = (index: number) => {
+        setActiveTab(index);
+    }
 
     return (
         <div className="flex flex-col min-h-screen bg-light text-dark font-sans">
-            {/* Modern header */}
-            <header className="header shadow-sm">
-                <div className="container mx-auto px-4 flex justify-between items-center">
+            {/* Modern header with gradient */}
+            <header className="bg-gradient-to-r from-primary-dark to-primary shadow-md">
+                <div className="container mx-auto px-4 py-3 flex justify-between items-center">
                     <div className="flex items-center">
-                        <div className="icon-bg-primary rounded-lg mr-3 flex items-center justify-center">
-                            <MdElectricBolt size={28} />
+                        <div className="bg-white/10 backdrop-blur-sm rounded-lg mr-3 p-2 flex items-center justify-center">
+                            <MdElectricBolt size={28} className="text-white" />
                         </div>
                         <div>
-                            <h1 className="font-bold text-2xl text-primary">WattBot</h1>
-                            <p className="text-xs text-muted">Electricity Meter Reading Assistant</p>
+                            <h1 className="font-bold text-2xl text-white">WattBot</h1>
+                            <p className="text-xs text-white/80">Electricity Meter Reading Assistant</p>
                         </div>
                     </div>
-                    <nav className="bg-white shadow-sm rounded-full p-1">
-                        <div className="flex">
-                            <button
-                                onClick={() => setActiveTab('upload')}
-                                className={`text-base py-2 px-4 flex items-center rounded-full transition-all ${
-                                    activeTab === 'upload'
-                                        ? 'btn-primary'
-                                        : 'text-primary hover:bg-light'
-                                }`}
-                            >
-                                <MdOutlineUploadFile className="mr-1" />
-                                Upload Reading
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('history')}
-                                className={`text-base py-2 px-4 flex items-center rounded-full transition-all ${
-                                    activeTab === 'history'
-                                        ? 'btn-primary'
-                                        : 'text-primary hover:bg-light'
-                                }`}
-                            >
-                                <MdHistory className="mr-1" />
-                                Consumption History
-                            </button>
-                            <button
-                                onClick={() => setActiveTab('prices')}
-                                className={`text-base py-2 px-4 flex items-center rounded-full transition-all ${
-                                    activeTab === 'prices'
-                                        ? 'btn-primary'
-                                        : 'text-primary hover:bg-light'
-                                }`}
-                            >
-                                <MdAttachMoney className="mr-1" />
-                                Prices
-                            </button>
-                        </div>
-                    </nav>
                 </div>
             </header>
 
             {/* Main content area */}
-            <main className="flex-1 py-10 bg-light">
-                {activeTab === 'upload' ? (
-                    <div className="container mx-auto px-4">
-                        <div className="flex flex-row space-x-6">
-                            {/* Upload Card - Left Side */}
-                            <div className="flex-1 card p-8 relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-40 h-40 bg-primary opacity-5 rounded-bl-full"></div>
-                                <div className="flex flex-col items-center relative z-16">
-                                    {/* Electric Meter SVG Illustration */}
-                                    <div className="w-full h-auto mb-10 flex items-center justify-center">
-                                        <svg width="320" height="320" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            {/* Meter Outline */}
-                                            <rect x="10" y="20" width="100" height="80" rx="8" fill="#f8f9fa" stroke="#3f51b5" strokeWidth="4"/>
-                                            
-                                            {/* Meter Screen */}
-                                            <rect x="20" y="30" width="80" height="30" rx="4" fill="#ffffff" stroke="#3f51b5" strokeWidth="2"/>
-                                            
-                                            {/* Display Numbers */}
-                                            <rect x="25" y="37.5" width="15" height="15" rx="2" fill="#f0f0f0" stroke="#3f51b5" strokeWidth="1"/>
-                                            <rect x="45" y="37.5" width="15" height="15" rx="2" fill="#f0f0f0" stroke="#3f51b5" strokeWidth="1"/>
-                                            <rect x="65" y="37.5" width="15" height="15" rx="2" fill="#f0f0f0" stroke="#3f51b5" strokeWidth="1"/>
-                                            <rect x="85" y="37.5" width="15" height="15" rx="2" fill="#f0f0f0" stroke="#3f51b5" strokeWidth="1"/>
-                                            
-                                            {/* Buttons */}
-                                            <rect x="25" y="70" width="18" height="8" rx="2" fill="#ff4081"/>
-                                            <rect x="50" y="70" width="18" height="8" rx="2" fill="#ff4081"/>
-                                            <rect x="75" y="70" width="18" height="8" rx="2" fill="#ff4081"/>
-                                            
-                                            {/* Label Text */}
-                                            <rect x="15" y="85" width="90" height="10" rx="2" fill="#3f51b5" fillOpacity="0.1"/>
-                                            
-                                            {/* Meter Top */}
-                                            <path d="M10 20 L20 5 H100 L110 20 H10Z" fill="#3f51b5"/>
-                                            
-                                            {/* Electric Symbol */}
-                                            <path d="M55 55 L63 63 L48 67 L55 82 L40 75 L53 55 Z" fill="#ff4081" stroke="#3f51b5" strokeWidth="0.5"/>
-                                            
-                                            {/* Connection Lines */}
-                                            <line x1="60" y1="100" x2="60" y2="110" stroke="#3f51b5" strokeWidth="4" strokeLinecap="round"/>
-                                            <line x1="50" y1="110" x2="70" y2="110" stroke="#3f51b5" strokeWidth="4" strokeLinecap="round"/>
-                                        </svg>
+            <main className="flex-1 py-6 bg-light">
+                <div className="container mx-auto px-4">
+                    {/* App description banner */}
+                    <div className="bg-gradient-to-r from-primary to-primary-dark text-white rounded-lg mb-6 overflow-hidden shadow-md">
+                        <div className="px-6 py-4 flex items-center justify-between">
+                            <div className="flex items-center">
+                                <MdDashboard size={24} className="mr-3" />
+                                <div>
+                                    <h2 className="text-lg font-semibold">Electricity Management Dashboard</h2>
+                                    <p className="text-sm opacity-90">Track and manage your electricity consumption and prices</p>
+                                </div>
+                            </div>
+                            <div className="hidden md:flex items-center bg-white/10 rounded-full px-3 py-1">
+                                <MdWbSunny className="mr-1 text-secondary-light" /> 
+                                <span className="text-sm">Energy Saver</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {/* Modern material design tabs with sliding indicator */}
+                    <Tabs defaultTab={activeTab} className="mb-6">
+                        <Tab label="Upload Reading" icon={<MdOutlineUploadFile />}>
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                {/* Upload Card - Left Side */}
+                                <div className="card p-6 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-bl-full"></div>
+                                    <div className="flex flex-col items-center relative z-10">
+                                        {/* Electric Meter SVG Illustration */}
+                                        <div className="w-full h-auto mb-6 flex items-center justify-center">
+                                            <ImageUpload />
+                                        </div>
                                     </div>
-                                    
-                                    <h2 className="text-2xl font-bold mb-6 text-center text-primary">
-                                        Upload Meter Reading
-                                    </h2>
-                                    <ImageUpload />
+                                </div>
+                                
+                                {/* Latest Reading Card - Right Side */}
+                                <div className="card p-6">
+                                    <div className="flex flex-col items-center">
+                                        <h2 className="text-xl font-bold mb-6 text-center text-primary">Latest Reading</h2>
+                                        <LatestReading />
+                                    </div>
                                 </div>
                             </div>
-                            
-                            {/* Latest Reading Card - Right Side */}
-                            <div className="flex-1 card p-8">
-                                <div className="flex flex-col items-center">
-                                    <h2 className="text-2xl font-bold mb-6 text-center text-primary">Latest Reading</h2>
-                                    <LatestReading />
-                                </div>
+                        </Tab>
+                        <Tab label="Consumption History" icon={<MdHistory />}>
+                            <div className="card p-6">
+                                <ConsumptionHistory />
                             </div>
-                        </div>
-                    </div>
-                ) : activeTab === 'history' ? (
-                    <div className="container mx-auto px-4">
-                        <div className="card p-8">
-                            <ConsumptionHistory />
-                        </div>
-                    </div>
-                ) : (
-                    <div className="container mx-auto px-4">
-                        <div className="card p-8">
-                            <PriceManagement />
-                        </div>
-                    </div>
-                )}
+                        </Tab>
+                        <Tab label="Prices" icon={<MdAttachMoney />}>
+                            <div className="card p-6">
+                                <PriceManagement />
+                            </div>
+                        </Tab>
+                    </Tabs>
+                </div>
             </main>
 
             {/* Footer */}
-            <footer className="footer">
-                <p className="text-sm">
-                    © {new Date().getFullYear()} WattBot — Electricity Consumption Monitoring
-                </p>
+            <footer className="bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200">
+                <div className="container mx-auto px-4">
+                    <div className="flex justify-between items-center py-4">
+                        <p className="text-sm text-text-muted">
+                            © {new Date().getFullYear()} WattBot — Electricity Consumption Monitoring
+                        </p>
+                        <div className="flex items-center">
+                            <MdElectricBolt className="text-primary mr-1" size={16} />
+                            <span className="text-xs text-text-muted">Real-time electricity monitoring</span>
+                        </div>
+                    </div>
+                </div>
             </footer>
         </div>
     )

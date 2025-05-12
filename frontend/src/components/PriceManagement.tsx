@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { MdAdd, MdDelete, MdEdit, MdSave, MdTimeline, MdAttachMoney } from 'react-icons/md'
+import { MdAdd, MdDelete, MdEdit, MdSave, MdTimeline, MdAttachMoney, MdInfo, MdClose, MdCheck } from 'react-icons/md'
+import { FaChartLine, FaRegCalendarAlt, FaRegClock } from 'react-icons/fa'
 
 interface ElectricityPrice {
-  id: string;
   _id: string;
   price: number;
   date: string;
-  created_at: string;
-  updated_at: string;
   is_default: boolean;
 }
 
@@ -139,7 +137,7 @@ export default function PriceManagement() {
     }))
   }
 
-  // Add a new price
+  // Add new price
   const handleAddSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
@@ -147,52 +145,46 @@ export default function PriceManagement() {
     setSuccessMessage(null)
     
     try {
-      const response = await axios.post('http://localhost:8000/electricity-price', newPrice)
+      await axios.post('http://localhost:8000/electricity-prices', newPrice)
       
-      setElectricityPrices(prev => [...prev, response.data])
-      setSuccessMessage('Price added successfully')
-      
-      // Reset form
+      setSuccessMessage('New price added successfully')
+      setShowAddForm(false)
       setNewPrice({
         price: 0,
         date: formatDateForInput(new Date().toISOString()),
         is_default: false
       })
       
-      setShowAddForm(false)
-      fetchPrices() // Refresh data to ensure we have the latest
+      // Refresh prices
+      fetchPrices()
     } catch (err) {
       console.error('Error adding price:', err)
-      setError('Failed to add price')
+      setError('Failed to add new price')
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  // Update an existing price
+  // Update price
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!editId) return
-    
     setIsSubmitting(true)
     setError(null)
     setSuccessMessage(null)
     
     try {
-      // Make sure the ID is in the payload
-      const payload = { ...editForm, _id: editId }
-      console.log('Sending edit payload:', payload)
-      
-      // No query params needed for electricity price
-      const response = await axios.put(`http://localhost:8000/electricity-price/${editId}`, payload)
-      
-      setElectricityPrices(prev => 
-        prev.map(price => price._id === editId ? response.data : price)
-      )
+      await axios.put(`http://localhost:8000/electricity-prices/${editForm._id}`, {
+        _id: editForm._id,
+        price: editForm.price,
+        date: editForm.date,
+        is_default: editForm.is_default
+      })
       
       setSuccessMessage('Price updated successfully')
-      setEditId(null) // Close edit form
-      fetchPrices() // Refresh data to ensure we have the latest
+      setEditId(null)
+      
+      // Refresh prices
+      fetchPrices()
     } catch (err) {
       console.error('Error updating price:', err)
       setError('Failed to update price')
@@ -201,9 +193,9 @@ export default function PriceManagement() {
     }
   }
 
-  // Delete a price
+  // Delete price
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this price?')) {
+    if (!window.confirm('Are you sure you want to delete this price record?')) {
       return
     }
     
@@ -212,12 +204,12 @@ export default function PriceManagement() {
     setSuccessMessage(null)
     
     try {
-      // No query params needed for electricity price
-      await axios.delete(`http://localhost:8000/electricity-price/${id}`)
+      await axios.delete(`http://localhost:8000/electricity-prices/${id}`)
       
-      setElectricityPrices(prev => prev.filter(price => price._id !== id))
       setSuccessMessage('Price deleted successfully')
-      fetchPrices() // Refresh data to ensure we have the latest
+      
+      // Refresh prices
+      fetchPrices()
     } catch (err) {
       console.error('Error deleting price:', err)
       setError('Failed to delete price')
@@ -226,85 +218,160 @@ export default function PriceManagement() {
     }
   }
 
-  // Loading state
-  if (loading) {
-    return (
-      <div className="animate-pulse">
-        <div className="h-10 bg-primary/10 rounded mb-8 w-1/3"></div>
-        <div className="space-y-4">
-          {[...Array(3)].map((_, i) => (
-            <div key={`loading-item-${i}`} className="h-14 bg-primary/5 rounded"></div>
-          ))}
-        </div>
-      </div>
-    )
+  // Cancel editing
+  const handleCancelEdit = () => {
+    setEditId(null)
   }
 
-  // Error state with no data
-  if (error && electricityPrices.length === 0) {
+  // Loading UI
+  if (loading) {
     return (
-      <div className="text-center text-danger bg-danger/10 border border-danger/30 rounded p-6">
-        <p className="flex items-center justify-center">{error}</p>
+      <div className="w-full flex justify-center items-center py-10">
+        <div className="animate-pulse w-full">
+          <div className="h-10 bg-primary/10 rounded mb-8 w-1/3"></div>
+          <div className="space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-14 bg-primary/5 rounded"></div>
+            ))}
+          </div>
+        </div>
       </div>
     )
   }
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-8 text-center text-primary">
+      <h2 className="text-2xl font-bold mb-6 text-center text-primary">
         Electricity Price Management
       </h2>
       
-      {/* Current price indicator */}
-      <div className="bg-white rounded shadow p-5 flex items-center mb-8">
-        <div className="icon-bg-primary p-3 rounded mr-4">
-          <MdAttachMoney size={24} />
-        </div>
-        <div>
-          <p className="text-xs text-muted uppercase">Current Price</p>
-          <p className="text-xl font-bold text-primary">
-            ${currentPrice !== null ? currentPrice.toFixed(4) : '0.0000'} <span className="text-sm font-normal">per kWh</span>
-          </p>
-        </div>
-      </div>
-      
       {/* Messages */}
       {successMessage && (
-        <div className="bg-green-100 border border-green-300 text-green-800 rounded p-4 mb-6">
-          {successMessage}
-        </div>
-      )}
-      
-      {error && (
-        <div className="bg-danger/10 border border-danger/30 text-danger rounded p-4 mb-6">
-          {error}
-        </div>
-      )}
-      
-      {/* Add button - only show when not in edit mode */}
-      {!showAddForm && editId === null && (
-        <div className="mb-6">
-          <button
-            onClick={() => setShowAddForm(true)}
-            className="btn-primary py-2 px-5 rounded-full text-sm flex items-center"
-            disabled={isSubmitting}
+        <div className="bg-green-100 border border-green-300 text-green-800 rounded-lg p-4 mb-6 flex items-center justify-between">
+          <div className="flex items-center">
+            <MdCheck className="text-green-500 mr-2" size={20} />
+            {successMessage}
+          </div>
+          <button 
+            onClick={() => setSuccessMessage(null)} 
+            className="text-green-700 hover:text-green-900"
           >
-            <MdAdd className="mr-1.5" /> Add New Price
+            <MdClose size={18} />
           </button>
         </div>
       )}
       
+      {error && (
+        <div className="bg-danger/10 border border-danger/30 text-danger rounded-lg p-4 mb-6 flex items-center justify-between">
+          <div className="flex items-center">
+            <MdInfo className="text-danger mr-2" size={20} />
+            {error}
+          </div>
+          <button 
+            onClick={() => setError(null)} 
+            className="text-danger hover:text-danger/70"
+          >
+            <MdClose size={18} />
+          </button>
+        </div>
+      )}
+      
+      {/* Dashboard Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* Current Price Card */}
+        <div className="bg-white rounded-lg shadow-md p-6 flex flex-col">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-sm uppercase text-gray-500 font-medium">Current Price</h3>
+            <div className="icon-bg-primary rounded-full p-2">
+              <MdAttachMoney size={20} />
+            </div>
+          </div>
+          <div className="mt-2">
+            <div className="text-3xl font-bold text-primary">
+              ${currentPrice !== null ? currentPrice.toFixed(4) : '0.0000'}
+            </div>
+            <div className="text-sm text-muted mt-1">per kWh</div>
+          </div>
+          <div className="mt-auto pt-4 text-xs text-gray-500 flex items-center">
+            <FaRegClock className="mr-1" /> 
+            Last updated: {electricityPrices.length > 0 ? formatDate(electricityPrices[0].date) : 'N/A'}
+          </div>
+        </div>
+        
+        {/* Price Stats Card */}
+        <div className="bg-white rounded-lg shadow-md p-6 flex flex-col">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-sm uppercase text-gray-500 font-medium">Price Statistics</h3>
+            <div className="icon-bg-primary rounded-full p-2">
+              <FaChartLine size={20} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4 mt-2">
+            <div>
+              <div className="text-sm text-gray-500">Highest</div>
+              <div className="text-xl font-bold text-primary">
+                ${Math.max(...electricityPrices.map(p => p.price), 0).toFixed(4)}
+              </div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-500">Lowest</div>
+              <div className="text-xl font-bold text-primary">
+                ${Math.min(...(electricityPrices.length > 0 ? electricityPrices.map(p => p.price) : [0])).toFixed(4)}
+              </div>
+            </div>
+          </div>
+          <div className="mt-auto pt-4 text-xs text-gray-500 flex items-center">
+            <FaRegCalendarAlt className="mr-1" /> 
+            Total records: {electricityPrices.length}
+          </div>
+        </div>
+        
+        {/* Actions Card */}
+        <div className="bg-white rounded-lg shadow-md p-6 flex flex-col">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-sm uppercase text-gray-500 font-medium">Quick Actions</h3>
+            <div className="icon-bg-primary rounded-full p-2">
+              <MdTimeline size={20} />
+            </div>
+          </div>
+          <div className="flex flex-col gap-3 mt-2">
+            <button
+              onClick={() => {
+                setShowAddForm(true)
+                setEditId(null)
+              }}
+              className="btn-primary py-2 px-4 rounded-lg text-sm flex items-center justify-center"
+              disabled={isSubmitting}
+            >
+              <MdAdd className="mr-1.5" /> Add New Price
+            </button>
+            <button
+              onClick={() => window.print()}
+              className="btn-outline py-2 px-4 rounded-lg text-sm flex items-center justify-center"
+            >
+              Export Price History
+            </button>
+          </div>
+          <div className="mt-auto pt-4 text-xs text-gray-500 flex items-center">
+            <MdInfo className="mr-1" /> 
+            Manage all electricity prices
+          </div>
+        </div>
+      </div>
+      
       {/* Add price form */}
       {showAddForm && (
-        <div className="bg-white rounded shadow mb-6 p-6">
-          <h3 className="text-lg font-medium mb-4 flex items-center text-primary">
-            <MdAdd className="mr-2" /> Add New Price
-          </h3>
+        <div className="bg-white rounded-lg shadow-md mb-6 overflow-hidden">
+          <div className="bg-primary text-white py-3 px-6">
+            <h3 className="font-medium flex items-center">
+              <MdAdd className="mr-2" /> Add New Price
+            </h3>
+          </div>
           
-          <form onSubmit={handleAddSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <form onSubmit={handleAddSubmit} className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label htmlFor="add_price" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="add_price" className="block text-sm font-medium text-gray-700 mb-2">
                   Price per kWh ($)
                 </label>
                 <div className="relative">
@@ -319,14 +386,14 @@ export default function PriceManagement() {
                     onChange={handleNewPriceChange}
                     min="0"
                     step="0.0001"
-                    className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded shadow-sm"
+                    className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm"
                     required
                   />
                 </div>
               </div>
               
               <div>
-                <label htmlFor="add_date" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="add_date" className="block text-sm font-medium text-gray-700 mb-2">
                   Effective Date
                 </label>
                 <input
@@ -335,12 +402,12 @@ export default function PriceManagement() {
                   name="date"
                   value={newPrice.date}
                   onChange={handleNewPriceChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded shadow-sm"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm"
                   required
                 />
               </div>
               
-              <div className="col-span-2">
+              <div className="md:col-span-2">
                 <label className="flex items-center">
                   <input
                     type="checkbox"
@@ -359,7 +426,7 @@ export default function PriceManagement() {
               <button
                 type="button"
                 onClick={() => setShowAddForm(false)}
-                className="btn-outline py-2 px-5 rounded-full text-sm"
+                className="btn-outline py-2 px-4 rounded-lg text-sm"
                 disabled={isSubmitting}
               >
                 Cancel
@@ -367,10 +434,10 @@ export default function PriceManagement() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn-primary py-2 px-5 rounded-full text-sm flex items-center"
+                className="btn-primary py-2 px-4 rounded-lg text-sm flex items-center"
               >
                 {isSubmitting ? 'Saving...' : (
-                  <React.Fragment key="save-button-content">
+                  <React.Fragment>
                     <MdSave className="mr-1.5" /> Save
                   </React.Fragment>
                 )}
@@ -381,8 +448,8 @@ export default function PriceManagement() {
       )}
       
       {/* Price list */}
-      <div className="bg-white rounded shadow overflow-hidden">
-        <div className="bg-primary text-white py-4 px-6">
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="bg-primary text-white py-3 px-6">
           <h3 className="font-medium flex items-center">
             <MdTimeline className="mr-2" /> Price History
           </h3>
@@ -395,150 +462,153 @@ export default function PriceManagement() {
             <p className="text-sm mt-2">Add a new price to get started</p>
           </div>
         ) : (
-          <div>
-            {/* Price table */}
+          <div className="overflow-x-auto">
             <table className="w-full border-collapse">
-              <thead className="bg-light">
+              <thead className="bg-gray-50">
                 <tr>
-                  <th key="header-date" className="py-3 px-6 text-left text-primary font-medium text-sm tracking-wider">Date</th>
-                  <th key="header-price" className="py-3 px-6 text-left text-primary font-medium text-sm tracking-wider">Price</th>
-                  <th key="header-default" className="py-3 px-6 text-left text-primary font-medium text-sm tracking-wider">Default</th>
-                  <th key="header-actions" className="py-3 px-6 text-right text-primary font-medium text-sm tracking-wider">Actions</th>
+                  <th className="py-3 px-6 text-left text-primary font-medium text-sm tracking-wider">
+                    <div className="flex items-center">
+                      <FaRegCalendarAlt className="mr-2" /> Date
+                    </div>
+                  </th>
+                  <th className="py-3 px-6 text-left text-primary font-medium text-sm tracking-wider">
+                    <div className="flex items-center">
+                      <MdAttachMoney className="mr-2" /> Price
+                    </div>
+                  </th>
+                  <th className="py-3 px-6 text-left text-primary font-medium text-sm tracking-wider">Default</th>
+                  <th className="py-3 px-6 text-right text-primary font-medium text-sm tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {electricityPrices.map(price => (
-                  <tr key={price._id} className="border-t border-gray-200 hover:bg-light">
-                    <td key={`date-${price._id}`} className="py-4 px-6 text-dark">
-                      {formatDate(price.date)}
-                    </td>
-                    <td key={`price-${price._id}`} className="py-4 px-6">
-                      <span key={`price-value-${price._id}`} className="font-medium text-primary">
-                        ${price.price.toFixed(4)}
-                      </span>
-                      <span key={`price-unit-${price._id}`} className="text-muted text-sm ml-1">
-                        per kWh
-                      </span>
-                    </td>
-                    <td key={`default-${price._id}`} className="py-4 px-6">
-                      {price.is_default ? (
-                        <span key={`default-badge-${price._id}`} className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                          Default
+                  <React.Fragment key={price._id}>
+                    <tr className="border-t border-gray-200 hover:bg-gray-50 transition-colors">
+                      <td className="py-4 px-6 text-dark">
+                        {formatDate(price.date)}
+                      </td>
+                      <td className="py-4 px-6">
+                        <span className="font-medium text-primary">
+                          ${price.price.toFixed(4)}
                         </span>
-                      ) : "—"}
-                    </td>
-                    <td key={`actions-${price._id}`} className="py-4 px-6 text-right">
-                      <div key={`buttons-${price._id}`} className="flex justify-end gap-2">
-                        <button
-                          key={`edit-btn-${price._id}`}
-                          onClick={() => handleEditClick(price)}
-                          className="p-1.5 text-blue-600 hover:bg-blue-50 rounded"
-                          aria-label="Edit price"
-                          disabled={editId !== null || isSubmitting}
-                        >
-                          <MdEdit size={18} />
-                        </button>
-                        <button
-                          key={`delete-btn-${price._id}`}
-                          onClick={() => handleDelete(price._id)}
-                          className="p-1.5 text-red-600 hover:bg-red-50 rounded"
-                          aria-label="Delete price"
-                          disabled={editId !== null || isSubmitting}
-                        >
-                          <MdDelete size={18} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                        <span className="text-muted text-sm ml-1">
+                          per kWh
+                        </span>
+                      </td>
+                      <td className="py-4 px-6">
+                        {price.is_default ? (
+                          <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            Default
+                          </span>
+                        ) : "—"}
+                      </td>
+                      <td className="py-4 px-6">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => handleEditClick(price)}
+                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-full"
+                            aria-label="Edit price"
+                            disabled={editId !== null || isSubmitting}
+                          >
+                            <MdEdit size={18} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(price._id)}
+                            className="p-1.5 text-red-600 hover:bg-red-50 rounded-full"
+                            aria-label="Delete price"
+                            disabled={editId !== null || isSubmitting}
+                          >
+                            <MdDelete size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    
+                    {/* Edit form - inline in the table */}
+                    {editId === price._id && (
+                      <tr className="border-t border-gray-200 bg-blue-50">
+                        <td colSpan={4} className="py-4 px-6">
+                          <form onSubmit={handleEditSubmit} className="flex flex-wrap gap-4 items-end">
+                            <div className="flex-1 min-w-[200px]">
+                              <label htmlFor="edit_price" className="block text-sm font-medium text-gray-700 mb-1">
+                                Price per kWh ($)
+                              </label>
+                              <div className="relative">
+                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                  <span className="text-gray-500">$</span>
+                                </div>
+                                <input
+                                  type="number"
+                                  id="edit_price"
+                                  name="price"
+                                  value={editForm.price}
+                                  onChange={handleEditFormChange}
+                                  min="0"
+                                  step="0.0001"
+                                  className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm"
+                                  required
+                                />
+                              </div>
+                            </div>
+                            
+                            <div className="flex-1 min-w-[200px]">
+                              <label htmlFor="edit_date" className="block text-sm font-medium text-gray-700 mb-1">
+                                Effective Date
+                              </label>
+                              <input
+                                type="date"
+                                id="edit_date"
+                                name="date"
+                                value={editForm.date}
+                                onChange={handleEditFormChange}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm"
+                                required
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="flex items-center">
+                                <input
+                                  type="checkbox"
+                                  id="edit_default"
+                                  name="is_default"
+                                  checked={editForm.is_default}
+                                  onChange={handleEditFormChange}
+                                  className="mr-2 h-4 w-4"
+                                />
+                                <span className="text-sm font-medium text-gray-700">Default</span>
+                              </label>
+                            </div>
+                            
+                            <div className="flex gap-2 ml-auto">
+                              <button
+                                type="button"
+                                onClick={handleCancelEdit}
+                                className="btn-outline py-2 px-4 rounded-lg text-sm"
+                                disabled={isSubmitting}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="btn-primary py-2 px-4 rounded-lg text-sm flex items-center"
+                              >
+                                {isSubmitting ? 'Saving...' : (
+                                  <React.Fragment>
+                                    <MdSave className="mr-1.5" /> Save
+                                  </React.Fragment>
+                                )}
+                              </button>
+                            </div>
+                          </form>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>
-            
-            {/* Edit form - outside of the table */}
-            {editId && (
-              <div className="border-t border-gray-200 bg-light p-6">
-                <h3 className="text-lg font-medium mb-4 flex items-center text-primary">
-                  <MdEdit className="mr-2" /> Edit Price
-                </h3>
-                
-                <form onSubmit={handleEditSubmit}>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div>
-                      <label htmlFor="edit_price" className="block text-sm font-medium text-gray-700 mb-1">
-                        Price per kWh ($)
-                      </label>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                          <span className="text-gray-500">$</span>
-                        </div>
-                        <input
-                          type="number"
-                          id="edit_price"
-                          name="price"
-                          value={editForm.price}
-                          onChange={handleEditFormChange}
-                          min="0"
-                          step="0.0001"
-                          className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded shadow-sm"
-                          required
-                        />
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="edit_date" className="block text-sm font-medium text-gray-700 mb-1">
-                        Effective Date
-                      </label>
-                      <input
-                        type="date"
-                        id="edit_date"
-                        name="date"
-                        value={editForm.date}
-                        onChange={handleEditFormChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded shadow-sm"
-                        required
-                      />
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <label className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="edit_default"
-                          name="is_default"
-                          checked={editForm.is_default}
-                          onChange={handleEditFormChange}
-                          className="mr-2 h-4 w-4"
-                        />
-                        <span className="text-sm font-medium text-gray-700">Set as default price</span>
-                      </label>
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-end gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setEditId(null)}
-                      className="btn-outline py-1.5 px-4 rounded-full text-xs"
-                      disabled={isSubmitting}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="btn-primary py-1.5 px-4 rounded-full text-xs flex items-center"
-                    >
-                      {isSubmitting ? 'Saving...' : (
-                        <React.Fragment key="edit-button-content">
-                          <MdSave className="mr-1" size={16} /> Update
-                        </React.Fragment>
-                      )}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            )}
           </div>
         )}
       </div>

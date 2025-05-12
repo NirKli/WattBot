@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { MdBarChart, MdElectricBolt, MdInfo, MdCalendarToday, MdTrendingUp, MdEdit, MdSave } from 'react-icons/md'
+import { MdBarChart, MdElectricBolt, MdInfo, MdCalendarToday, MdTrendingUp, MdEdit, MdSave, MdClose, MdCheck } from 'react-icons/md'
 import { FaLightbulb, FaCalendarDay, FaImage, FaClipboard } from 'react-icons/fa'
 
 interface MonthlyConsumption {
@@ -19,32 +19,37 @@ export default function ConsumptionHistory() {
   const [readings, setReadings] = useState<MonthlyConsumption[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [expandedId, setExpandedId] = useState<string | null>(null)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [updateLoading, setUpdateLoading] = useState(false)
-  const [updateError, setUpdateError] = useState<string | null>(null)
-  const [updateSuccess, setUpdateSuccess] = useState(false)
-  const [detailId, setDetailId] = useState<string | null>(null)
-  const [detailImageUrl, setDetailImageUrl] = useState<string | null>(null)
-
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  
+  // Form states
+  const [editingReading, setEditingReading] = useState<MonthlyConsumption | null>(null)
+  
   useEffect(() => {
     fetchReadings()
   }, [])
-
-  useEffect(() => {
-    // If we have a reading detail open and it has a label file, fetch the image
-    if (detailId) {
-      const reading = readings.find(r => r._id === detailId);
-      if (reading?.label_file) {
-        const apiBaseUrl = 'http://localhost:8000';
-        const imageUrl = `${apiBaseUrl}/monthly-consumption/file/${reading.label_file}`;
-        setDetailImageUrl(imageUrl);
-      } else {
-        setDetailImageUrl(null);
+  
+  // Format date for display
+  const formatDate = (dateString: string | undefined): string => {
+    if (!dateString) return 'Not available';
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return 'Invalid date';
       }
-    } else {
-      setDetailImageUrl(null);
+      
+      return new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }).format(date);
+    } catch (e) {
+      console.error('Error formatting date:', e);
+      return 'Invalid date';
     }
-  }, [detailId, readings]);
+  };
 
   const fetchReadings = async () => {
     try {
@@ -99,104 +104,68 @@ export default function ConsumptionHistory() {
       return null;
     }
   };
-
-  // Format the date
-  const formatDate = (dateString: string | undefined): string => {
-    const date = safeParseDate(dateString);
-    if (!date) return 'Invalid date';
-    
-    return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }).format(date);
-  };
-
-  // Add a function to format dates for the input field
-  const formatDateForInput = (dateString: string): string => {
-    if (!dateString) return '';
-    
-    try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
-        return '';
-      }
-      return date.toISOString().split('T')[0];
-    } catch (e) {
-      console.error('Error formatting date for input:', e);
-      return '';
-    }
-  };
-
-  const handleEditClick = (readingId: string) => {
-    console.log(`Editing reading with ID: ${readingId}, current editingId: ${editingId}`);
-    // If already editing this reading, close it. Otherwise, start editing it
-    setEditingId(editingId === readingId ? null : readingId);
-    setUpdateError(null);
-    setUpdateSuccess(false);
-    // Close details view if open
-    setDetailId(null);
-  };
-
-  const handleEditFormChange = (reading: MonthlyConsumption, field: string, value: string) => {
-    const updatedReadings = readings.map(r => {
-      if (r._id === reading._id) {
-        return { 
-          ...r, 
-          [field]: field === 'date' ? value : parseFloat(value) || 0 
-        };
-      }
-      return r;
-    });
-    
-    setReadings(updatedReadings);
-  };
-
-  const handleSaveEdit = async (reading: MonthlyConsumption) => {
-    setUpdateLoading(true);
-    setUpdateError(null);
-    setUpdateSuccess(false);
-    
-    try {
-      // Ensure _id is included in the payload
-      const payload = { ...reading, _id: reading._id, id: reading._id };
-      console.log('Sending update payload:', payload);
-      
-      // Send PUT request to update the reading using _id and include id in query params
-      const response = await axios.put(
-        `http://localhost:8000/monthly-consumption/${reading._id}?id=${reading._id}`,
-        payload
-      );
-      
-      // Update the readings state with the updated reading
-      setReadings(prevReadings => 
-        prevReadings.map(r => 
-          r._id === reading._id ? response.data : r
-        )
-      );
-      
-      setUpdateSuccess(true);
-      
-      // Close the edit form after a short delay
-      setTimeout(() => {
-        setEditingId(null);
-        setUpdateSuccess(false);
-      }, 1500);
-      
-    } catch (err) {
-      console.error('Update error:', err);
-      setUpdateError('Failed to update reading');
-    } finally {
-      setUpdateLoading(false);
-    }
-  };
-
-  const handleDetailClick = (readingId: string) => {
-    // If already showing details for this reading, close it. Otherwise, show it
-    setDetailId(detailId === readingId ? null : readingId);
-    // Close edit form if open
+  
+  // Handle details view toggle
+  const handleDetailClick = (id: string) => {
+    setExpandedId(expandedId === id ? null : id);
     setEditingId(null);
-  };
+  }
+  
+  // Handle edit mode toggle
+  const handleEditClick = (id: string) => {
+    const reading = readings.find(r => r._id === id);
+    if (reading) {
+      setEditingReading({ ...reading });
+      setEditingId(id);
+      setExpandedId(null);
+    }
+  }
+  
+  // Handle form field changes
+  const handleEditFormChange = (reading: MonthlyConsumption, field: keyof MonthlyConsumption, value: any) => {
+    setEditingReading(prev => {
+      if (!prev) return prev;
+      
+      return {
+        ...prev,
+        [field]: field === 'total_kwh_consumed' || field === 'price' 
+          ? parseFloat(value) || 0 
+          : value
+      };
+    });
+  }
+  
+  // Handle form submission
+  const handleEditSubmit = async (e: React.FormEvent, id: string) => {
+    e.preventDefault();
+    
+    if (!editingReading) return;
+    
+    try {
+      await axios.put(`http://localhost:8000/monthly-consumption/${id}`, editingReading);
+      
+      // Update the local state with the edited reading
+      setReadings(prev => prev.map(reading => 
+        reading._id === id ? { ...editingReading } : reading
+      ));
+      
+      setSuccessMessage('Reading updated successfully');
+      setEditingId(null);
+      setEditingReading(null);
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccessMessage(null), 3000);
+    } catch (err) {
+      setError('Failed to update reading');
+      console.error('Update error:', err);
+    }
+  }
+  
+  // Handle canceling edit mode
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditingReading(null);
+  }
 
   // Format timestamp for display
   const formatTimestamp = (dateString: string | undefined): string => {
@@ -239,7 +208,7 @@ export default function ConsumptionHistory() {
 
   if (error) {
     return (
-      <div className="text-center text-danger bg-danger/10 border border-danger/30 rounded p-6">
+      <div className="text-center text-danger bg-danger/10 border border-danger/30 rounded-lg p-6">
         <p className="flex items-center justify-center">
           <span className="bg-danger/20 rounded-full p-1 mr-2">
             <MdInfo className="text-danger" size={20} />
@@ -252,7 +221,7 @@ export default function ConsumptionHistory() {
 
   if (readings.length === 0) {
     return (
-      <div className="text-center text-primary bg-primary/5 border border-primary/20 rounded p-8">
+      <div className="text-center text-primary bg-primary/5 border border-primary/20 rounded-lg p-8">
         <div className="bg-primary text-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow">
           <FaLightbulb size={30} />
         </div>
@@ -271,52 +240,85 @@ export default function ConsumptionHistory() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-8 text-center text-primary">
+      <h2 className="text-2xl font-bold mb-6 text-center text-primary">
         Consumption History
       </h2>
       
+      {/* Success message */}
+      {successMessage && (
+        <div className="bg-green-100 border border-green-300 text-green-800 rounded-lg p-4 mb-6 flex items-center justify-between">
+          <div className="flex items-center">
+            <MdCheck className="text-green-500 mr-2" size={20} />
+            {successMessage}
+          </div>
+          <button 
+            onClick={() => setSuccessMessage(null)}
+            className="text-green-700 hover:text-green-900"
+          >
+            <MdClose size={18} />
+          </button>
+        </div>
+      )}
+      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white rounded shadow p-5 flex items-center">
-          <div className="icon-bg-primary p-3 rounded mr-4">
-            <MdBarChart size={24} />
+        <div className="stat-card">
+          <div className="stat-card-header">
+            <span className="stat-card-title">Total Readings</span>
+            <div className="stat-card-icon">
+              <MdBarChart size={20} />
+            </div>
           </div>
-          <div>
-            <p className="text-xs text-muted uppercase">Total Readings</p>
-            <p className="text-xl font-bold text-primary">{readings.length}</p>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded shadow p-5 flex items-center">
-          <div className="icon-bg-primary p-3 rounded mr-4">
-            <MdElectricBolt size={24} />
-          </div>
-          <div>
-            <p className="text-xs text-muted uppercase">Avg. Consumption</p>
-            <p className="text-xl font-bold text-primary">{averageKwh.toFixed(1)} <span className="text-sm font-normal">kWh</span></p>
+          <div className="stat-card-value">{readings.length}</div>
+          <div className="stat-card-label">energy consumption records</div>
+          <div className="stat-card-footer">
+            <MdCalendarToday size={14} />
+            <span>Last reading: {formatDate(readings[0]?.date)}</span>
           </div>
         </div>
         
-        <div className="bg-white rounded shadow p-5 flex items-center">
-          <div className="icon-bg-primary p-3 rounded mr-4">
-            <MdTrendingUp size={24} />
+        <div className="stat-card">
+          <div className="stat-card-header">
+            <span className="stat-card-title">Avg. Consumption</span>
+            <div className="stat-card-icon">
+              <MdElectricBolt size={20} />
+            </div>
           </div>
-          <div>
-            <p className="text-xs text-muted uppercase">Total Spending</p>
-            <p className="text-xl font-bold text-primary">${totalSpending.toFixed(4)}</p>
+          <div className="stat-card-value">{averageKwh.toFixed(1)}</div>
+          <div className="stat-card-label">kWh per reading</div>
+          <div className="stat-card-footer">
+            <MdInfo size={14} />
+            <span>Based on {readings.length} readings</span>
+          </div>
+        </div>
+        
+        <div className="stat-card">
+          <div className="stat-card-header">
+            <span className="stat-card-title">Total Spending</span>
+            <div className="stat-card-icon">
+              <MdTrendingUp size={20} />
+            </div>
+          </div>
+          <div className="stat-card-value">${totalSpending.toFixed(4)}</div>
+          <div className="stat-card-label">on electricity</div>
+          <div className="stat-card-footer">
+            <MdElectricBolt size={14} />
+            <span>Total: {totalKwh.toFixed(2)} kWh</span>
           </div>
         </div>
       </div>
       
-      <div className="bg-white rounded overflow-hidden shadow">
-        <div className="bg-primary text-white py-4 px-6">
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="bg-primary text-white py-3 px-6">
           <div className="flex justify-between items-center">
-            <h3 className="font-medium">Reading History</h3>
+            <h3 className="font-medium flex items-center">
+              <MdCalendarToday className="mr-2" /> Reading History
+            </h3>
             <p className="text-sm opacity-90">Total: {totalKwh.toFixed(2)} kWh</p>
           </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
-            <thead className="bg-light">
+            <thead>
               <tr className="text-left">
                 <th className="py-4 px-6 text-primary font-medium text-sm tracking-wider">
                   <div className="flex items-center">
@@ -335,7 +337,7 @@ export default function ConsumptionHistory() {
             <tbody>
               {readings.map((reading) => (
                 <React.Fragment key={reading._id}>
-                  <tr className="border-t border-gray-200 hover:bg-light transition-colors">
+                  <tr className="border-t border-gray-200 hover:bg-gray-50 transition-colors">
                     <td className="py-4 px-6 text-dark">{formatDate(reading.date)}</td>
                     <td className="py-4 px-6">
                       <span className="font-medium text-primary">{reading.total_kwh_consumed.toFixed(2)}</span>
@@ -346,14 +348,14 @@ export default function ConsumptionHistory() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleEditClick(reading._id)}
-                          className="btn-outline-secondary py-2 px-4 rounded-full text-sm flex items-center"
+                          className="btn-outline-secondary py-1.5 px-3 rounded-lg text-sm flex items-center"
                           aria-label="Edit reading"
                         >
                           <MdEdit className="mr-1.5" /> Edit
                         </button>
                         <button 
                           onClick={() => handleDetailClick(reading._id)}
-                          className="btn-outline py-2 px-4 rounded-full text-sm flex items-center"
+                          className="btn-outline py-1.5 px-3 rounded-lg text-sm flex items-center"
                           aria-label="View reading details"
                         >
                           <MdInfo className="mr-1.5" /> Details
@@ -363,10 +365,10 @@ export default function ConsumptionHistory() {
                   </tr>
                   
                   {/* Details view */}
-                  {detailId === reading._id && (
+                  {expandedId === reading._id && (
                     <tr className="bg-gray-50">
                       <td colSpan={4} className="py-4 px-6">
-                        <div className="bg-white p-5 rounded-lg shadow border border-gray-200">
+                        <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
                           <h4 className="text-primary font-medium mb-4 flex items-center text-lg">
                             <MdInfo className="mr-2" /> Reading Details
                           </h4>
@@ -416,65 +418,37 @@ export default function ConsumptionHistory() {
                             </div>
                             
                             {/* Reading image */}
-                            <div className="flex flex-col items-center justify-center">
-                              {detailImageUrl ? (
-                                <div className="relative w-full">
-                                  <h5 className="text-sm font-medium text-gray-500 mb-2">Meter Image</h5>
-                                  <div className="border border-gray-200 rounded-lg overflow-hidden">
-                                    <img 
-                                      src={detailImageUrl} 
-                                      alt="Meter reading" 
-                                      className="w-full object-contain max-h-48" 
-                                    />
-                                  </div>
-                                  <div className="mt-2 text-center">
-                                    <a 
-                                      href={detailImageUrl}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-primary text-sm flex items-center justify-center"
-                                    >
-                                      <FaImage className="mr-1" /> View Full Image
-                                    </a>
-                                  </div>
-                                </div>
+                            <div className="border rounded-lg p-4 bg-gray-50 flex items-center justify-center">
+                              {reading.original_file ? (
+                                <img 
+                                  src={`data:image/jpeg;base64,${reading.original_file}`} 
+                                  alt="Meter Reading" 
+                                  className="max-w-full h-auto max-h-[300px] object-contain rounded"
+                                />
                               ) : (
-                                <div className="border border-gray-200 rounded-lg p-8 text-center text-gray-400 w-full">
-                                  <FaImage size={32} className="mx-auto mb-2" />
-                                  <p className="text-sm">Image not available</p>
+                                <div className="text-center p-8 text-gray-400">
+                                  <FaImage size={48} className="mx-auto mb-2 opacity-30" />
+                                  <p>No image available</p>
                                 </div>
                               )}
                             </div>
-                          </div>
-                          
-                          <div className="mt-6 text-right">
-                            <button
-                              onClick={() => setDetailId(null)}
-                              className="btn-outline py-2 px-5 rounded-full text-sm"
-                            >
-                              Close
-                            </button>
                           </div>
                         </div>
                       </td>
                     </tr>
                   )}
                   
-                  {/* Inline edit form - displays directly under the row being edited */}
-                  {editingId !== null && editingId === reading._id && (
-                    <tr className="bg-gray-50">
+                  {/* Edit mode */}
+                  {editingId === reading._id && editingReading && (
+                    <tr className="bg-blue-50">
                       <td colSpan={4} className="py-4 px-6">
-                        <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
-                          <h4 className="text-primary font-medium mb-3 flex items-center">
-                            <MdEdit className="mr-2" /> Edit Meter Reading
+                        <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
+                          <h4 className="text-primary font-medium mb-4 flex items-center text-lg">
+                            <MdEdit className="mr-2" /> Edit Reading
                           </h4>
                           
-                          {updateSuccess ? (
-                            <div className="flex items-center text-green-700 bg-green-50 p-2 rounded">
-                              <MdSave className="mr-2" /> Reading updated successfully!
-                            </div>
-                          ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <form onSubmit={(e) => handleEditSubmit(e, reading._id)}>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                               {/* Date Field */}
                               <div>
                                 <label htmlFor={`date-${reading._id}`} className="block text-sm font-medium text-gray-700 mb-1">
@@ -483,9 +457,9 @@ export default function ConsumptionHistory() {
                                 <input
                                   type="date"
                                   id={`date-${reading._id}`}
-                                  value={formatDateForInput(reading.date)}
-                                  onChange={(e) => handleEditFormChange(reading, 'date', e.target.value)}
-                                  className="w-full px-3 py-2 border border-gray-300 rounded"
+                                  value={editingReading?.date.split('T')[0]}
+                                  onChange={(e) => handleEditFormChange(editingReading, 'date', e.target.value)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                                 />
                               </div>
                               
@@ -497,9 +471,9 @@ export default function ConsumptionHistory() {
                                 <input
                                   type="number"
                                   id={`consumption-${reading._id}`}
-                                  value={reading.total_kwh_consumed}
-                                  onChange={(e) => handleEditFormChange(reading, 'total_kwh_consumed', e.target.value)}
-                                  className="w-full px-3 py-2 border border-gray-300 rounded"
+                                  value={editingReading?.total_kwh_consumed}
+                                  onChange={(e) => handleEditFormChange(editingReading, 'total_kwh_consumed', e.target.value)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                                   min="0"
                                   step="0.01"
                                 />
@@ -513,53 +487,31 @@ export default function ConsumptionHistory() {
                                 <input
                                   type="number"
                                   id={`price-${reading._id}`}
-                                  value={reading.price}
-                                  onChange={(e) => handleEditFormChange(reading, 'price', e.target.value)}
-                                  className="w-full px-3 py-2 border border-gray-300 rounded"
+                                  value={editingReading?.price}
+                                  onChange={(e) => handleEditFormChange(editingReading, 'price', e.target.value)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                                   min="0"
                                   step="0.0001"
                                 />
                               </div>
-                              
-                              {/* Error Message */}
-                              {updateError && (
-                                <div className="col-span-3 text-sm text-danger bg-danger/10 p-2 rounded">
-                                  {updateError}
-                                </div>
-                              )}
-                              
-                              {/* Action Buttons */}
-                              <div className="col-span-3 flex justify-end gap-2 mt-2">
-                                <button
-                                  type="button"
-                                  onClick={() => setEditingId(null)}
-                                  className="btn-outline py-1.5 px-3 rounded-full text-xs"
-                                >
-                                  Cancel
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => handleSaveEdit(reading)}
-                                  disabled={updateLoading}
-                                  className="btn-primary py-1.5 px-3 rounded-full text-xs flex items-center"
-                                >
-                                  {updateLoading ? (
-                                    <>
-                                      <svg className="animate-spin -ml-1 mr-1 h-3 w-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                      </svg>
-                                      Saving...
-                                    </>
-                                  ) : (
-                                    <>
-                                      <MdSave className="mr-1" size={14} /> Save
-                                    </>
-                                  )}
-                                </button>
-                              </div>
                             </div>
-                          )}
+                            
+                            <div className="flex justify-end gap-3">
+                              <button
+                                type="button"
+                                onClick={handleCancelEdit}
+                                className="btn-outline py-2 px-4 rounded-lg text-sm"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                type="submit"
+                                className="btn-primary py-2 px-4 rounded-lg text-sm flex items-center"
+                              >
+                                <MdSave className="mr-1.5" /> Save
+                              </button>
+                            </div>
+                          </form>
                         </div>
                       </td>
                     </tr>
