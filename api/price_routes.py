@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
 
-from services.NoObjectHasFoundException import NoObjectHasFoundException
-from services.db_save import get_all_prices_from_db, get_price_from_db, save_price_to_db, update_price_in_db
+from services.exception.NoObjectHasFoundException import NoObjectHasFoundException
+from services.db_save import get_all_prices_from_db, get_price_from_db, save_price_to_db, update_price_in_db, \
+    delete_price_from_db
 from services.model.ElectricityPrice import ElectricityPrice
 
 router = APIRouter()
@@ -30,5 +31,13 @@ async def update_price(electricity_price_id: str, electricity_price: Electricity
     try:
         update_price_in_db(electricity_price_id, electricity_price)
         return get_price_from_db(electricity_price_id)
+    except NoObjectHasFoundException:
+        raise HTTPException(status_code=404, detail="No object found with the given ID.")
+
+
+@router.delete("/electricity-price/{electricity_price_id}")
+async def delete_price(electricity_price_id: str):
+    try:
+        delete_price_from_db(electricity_price_id)
     except NoObjectHasFoundException:
         raise HTTPException(status_code=404, detail="No object found with the given ID.")

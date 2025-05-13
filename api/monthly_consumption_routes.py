@@ -1,8 +1,8 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, Response
 
-from services.NoObjectHasFoundException import NoObjectHasFoundException
+from services.exception.NoObjectHasFoundException import NoObjectHasFoundException
 from services.db_save import get_monthly_consumption_from_db, get_file_from_db, get_all_monthly_consumption_from_db, \
-    update_monthly_consumption_in_db
+    update_monthly_consumption_in_db, delete_monthly_consumption_from_db
 from services.model.MonthlyConsumption import MonthlyConsumption
 from services.process_image import ProcessImage
 
@@ -30,7 +30,8 @@ async def get_monthly_consumption(monthly_consumption_id: str) -> MonthlyConsump
 
 
 @router.put("/monthly-consumption/{monthly_consumption_id}", response_model=MonthlyConsumption)
-async def update_monthly_consumption(monthly_consumption_id: str, monthly_consumption: MonthlyConsumption) -> MonthlyConsumption:
+async def update_monthly_consumption(monthly_consumption_id: str,
+                                     monthly_consumption: MonthlyConsumption) -> MonthlyConsumption:
     try:
         update_monthly_consumption_in_db(monthly_consumption_id, monthly_consumption)
         return get_monthly_consumption_from_db(monthly_consumption_id)
@@ -41,6 +42,14 @@ async def update_monthly_consumption(monthly_consumption_id: str, monthly_consum
 @router.get("/monthly-consumption", response_model=list[MonthlyConsumption])
 async def get_all_monthly_consumptions() -> list[MonthlyConsumption]:
     return get_all_monthly_consumption_from_db()
+
+
+@router.delete("/monthly-consumption/{monthly_consumption_id}")
+async def delete_monthly_consumption(monthly_consumption_id: str):
+    try:
+        delete_monthly_consumption_from_db(monthly_consumption_id)
+    except NoObjectHasFoundException:
+        raise HTTPException(status_code=404, detail="No object found with the given ID.")
 
 
 @router.get("/monthly-consumption/file/{file_id}")

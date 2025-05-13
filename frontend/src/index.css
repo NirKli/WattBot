@@ -553,3 +553,190 @@ tbody td {
   justify-content: center;
   transition: all 0.2s ease;
 }
+
+/* Settings styles */
+.settings-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.setting-section {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1.5rem;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 56px;
+  height: 28px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e2e8f0;
+  transition: .4s;
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-switch .slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked + .slider {
+  background-color: var(--color-primary);
+}
+
+.toggle-switch input:focus + .slider {
+  box-shadow: 0 0 2px var(--color-primary);
+}
+
+.toggle-switch input:checked + .slider:before {
+  transform: translateX(28px);
+}
+
+.toggle-switch .slider.round {
+  border-radius: 34px;
+}
+
+.toggle-switch .slider.round:before {
+  border-radius: 50%;
+}
+
+.dark .toggle-switch .slider {
+  background-color: #4b5563;
+  border: 1px solid #6b7280;
+}
+
+.dark .toggle-switch .slider:before {
+  background-color: #f1f5f9;
+}
+
+.dark .toggle-switch input:checked + .slider {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* Dark theme variables */
+.dark {
+  --color-primary: #5b8def;        /* Lighter blue for dark mode */
+  --color-primary-light: #7ba4f9;  /* Even lighter blue for accents */
+  --color-primary-dark: #4065c7;   /* Darker blue for depth */
+  --color-secondary: #ff9248;      /* Brighter orange for dark mode */
+  --color-secondary-light: #ffb383;/* Soft orange for hover states */
+  --color-secondary-dark: #e06c2a; /* Deep orange for contrast */
+  
+  /* Dark mode specific colors */
+  --text-primary: #e1e7f5;         /* Light gray-blue for main text */
+  --text-muted: #9fadc5;           /* Medium gray-blue for secondary text */
+  --text-light: #f8fafc;           /* Off-white for text on dark backgrounds */
+  --bg-light: #1a1a2e;             /* Dark blue-tinted background */
+  --bg-white: #252538;             /* Dark gray for cards and components */
+  
+  /* Accessibility and visual helpers */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.35);
+  --border-color: #38384f;         /* Darker border for dark mode */
+  
+  /* Background and text colors */
+  color: var(--text-primary);
+  background-color: var(--bg-light);
+}
+
+/* Dark mode specific overrides */
+.dark body {
+  background-color: var(--bg-light);
+  color: var(--text-primary);
+}
+
+.dark .stat-card,
+.dark .card,
+.dark .tabs-header,
+.dark div.bg-white,
+.dark .bg-gray-50,
+.dark .bg-gray-100 {
+  background-color: var(--bg-white);
+  border-color: var(--border-color);
+}
+
+.dark .bg-white {
+  background-color: var(--bg-white) !important;
+}
+
+.dark thead th {
+  background-color: #1e1e2d;
+  color: var(--color-primary-light);
+  border-color: var(--border-color);
+}
+
+.dark tbody tr:hover {
+  background-color: rgba(30, 30, 45, 0.8);
+}
+
+.dark tbody td {
+  border-color: var(--border-color);
+}
+
+.dark .border,
+.dark .border-t,
+.dark .border-gray-200 {
+  border-color: var(--border-color);
+}
+
+.dark select,
+.dark input,
+.dark textarea {
+  color: var(--text-primary);
+  background-color: var(--bg-white);
+  border-color: var(--border-color);
+}
+
+.dark .text-dark,
+.dark .text-primary {
+  color: var(--text-primary);
+}
+
+.dark .text-muted,
+.dark .text-gray-500,
+.dark .text-gray-700 {
+  color: var(--text-muted);
+}
+
+.dark .btn-outline {
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.dark .btn-outline:hover:not(:disabled) {
+  background-color: #2f2f45;
+}
+
+.dark .header {
+  background-color: var(--bg-white);
+  border-color: var(--border-color);
+}
+
+.dark footer {
+  background: linear-gradient(to right, #1e1e2d, #252538);
+}

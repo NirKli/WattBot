@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { MdBarChart, MdElectricBolt, MdInfo, MdCalendarToday, MdTrendingUp, MdEdit, MdSave, MdClose, MdCheck } from 'react-icons/md'
+import { MdBarChart, MdElectricBolt, MdInfo, MdCalendarToday, MdTrendingUp, MdEdit, MdSave, MdClose, MdCheck, MdDelete } from 'react-icons/md'
 import { FaLightbulb, FaCalendarDay, FaImage, FaClipboard } from 'react-icons/fa'
 
 interface MonthlyConsumption {
@@ -22,12 +22,32 @@ export default function ConsumptionHistory() {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [currency, setCurrency] = useState('USD')
   
   // Form states
   const [editingReading, setEditingReading] = useState<MonthlyConsumption | null>(null)
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   
   useEffect(() => {
     fetchReadings()
+    
+    // Get initial currency from localStorage
+    const savedCurrency = localStorage.getItem('currency');
+    if (savedCurrency) {
+      setCurrency(savedCurrency);
+    }
+    
+    // Listen for currency changes
+    const handleCurrencyChange = (e: CustomEvent) => {
+      if (e.detail && e.detail.currency) {
+        setCurrency(e.detail.currency);
+      }
+    };
+    
+    window.addEventListener('currencyChange', handleCurrencyChange as EventListener);
+    return () => {
+      window.removeEventListener('currencyChange', handleCurrencyChange as EventListener);
+    };
   }, [])
   
   // Format date for display
@@ -122,7 +142,7 @@ export default function ConsumptionHistory() {
   }
   
   // Handle form field changes
-  const handleEditFormChange = (reading: MonthlyConsumption, field: keyof MonthlyConsumption, value: any) => {
+  const handleEditFormChange = (field: keyof MonthlyConsumption, value: any) => {
     setEditingReading(prev => {
       if (!prev) return prev;
       
@@ -190,6 +210,53 @@ export default function ConsumptionHistory() {
       return 'Invalid date';
     }
   };
+
+  // Get currency symbol based on selected currency
+  const getCurrencySymbol = (currencyCode: string): string => {
+    const symbols: {[key: string]: string} = {
+      'USD': '$',
+      'EUR': '€',
+      'GBP': '£',
+      'ILS': '₪',
+      'JPY': '¥',
+      'CNY': '¥',
+      'INR': '₹',
+      'BTC': '₿'
+    };
+    
+    return symbols[currencyCode] || currencyCode;
+  };
+
+  // Handle delete confirmation
+  const handleDeleteClick = (id: string) => {
+    setDeleteConfirmId(id);
+    setExpandedId(null);
+    setEditingId(null);
+  }
+
+  // Handle actual deletion
+  const handleDeleteConfirm = async (id: string) => {
+    try {
+      await axios.delete(`http://localhost:8000/monthly-consumption/${id}`);
+      
+      // Update the local state by removing the deleted reading
+      setReadings(prev => prev.filter(reading => reading._id !== id));
+      
+      setSuccessMessage('Reading deleted successfully');
+      setDeleteConfirmId(null);
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccessMessage(null), 3000);
+    } catch (err) {
+      setError('Failed to delete reading');
+      console.error('Delete error:', err);
+    }
+  }
+
+  // Handle cancel delete
+  const handleCancelDelete = () => {
+    setDeleteConfirmId(null);
+  }
 
   if (loading) {
     return (
@@ -298,7 +365,7 @@ export default function ConsumptionHistory() {
               <MdTrendingUp size={20} />
             </div>
           </div>
-          <div className="stat-card-value">${totalSpending.toFixed(4)}</div>
+          <div className="stat-card-value">{getCurrencySymbol(currency)}{totalSpending.toFixed(4)}</div>
           <div className="stat-card-label">on electricity</div>
           <div className="stat-card-footer">
             <MdElectricBolt size={14} />
@@ -343,7 +410,7 @@ export default function ConsumptionHistory() {
                       <span className="font-medium text-primary">{reading.total_kwh_consumed.toFixed(2)}</span>
                       <span className="text-muted text-sm ml-1">kWh</span>
                     </td>
-                    <td className="py-4 px-6 font-medium text-primary">${reading.price.toFixed(4)}</td>
+                    <td className="py-4 px-6 font-medium text-primary">{getCurrencySymbol(currency)}{reading.price.toFixed(4)}</td>
                     <td className="py-4 px-6">
                       <div className="flex gap-2">
                         <button
@@ -360,9 +427,51 @@ export default function ConsumptionHistory() {
                         >
                           <MdInfo className="mr-1.5" /> Details
                         </button>
+                        <button 
+                          onClick={() => handleDeleteClick(reading._id)}
+                          className="btn-outline-danger py-1.5 px-3 rounded-lg text-sm flex items-center"
+                          aria-label="Delete reading"
+                        >
+                          <MdDelete className="mr-1.5" /> Delete
+                        </button>
                       </div>
                     </td>
                   </tr>
+                  
+                  {/* Delete confirmation */}
+                  {deleteConfirmId === reading._id && (
+                    <tr className="bg-red-50">
+                      <td colSpan={4} className="py-4 px-6">
+                        <div className="bg-white p-5 rounded-lg shadow-sm border border-red-200">
+                          <h4 className="text-danger font-medium mb-4 flex items-center text-lg">
+                            <MdDelete className="mr-2" /> Delete Reading
+                          </h4>
+                          
+                          <p className="mb-4 text-gray-700">
+                            Are you sure you want to delete the reading from <span className="font-semibold">{formatDate(reading.date)}</span>? 
+                            This action cannot be undone.
+                          </p>
+                          
+                          <div className="flex justify-end gap-3">
+                            <button
+                              type="button"
+                              onClick={handleCancelDelete}
+                              className="btn-outline py-2 px-4 rounded-lg text-sm"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteConfirm(reading._id)}
+                              className="bg-danger text-white py-2 px-4 rounded-lg text-sm flex items-center hover:bg-red-700 transition-colors"
+                            >
+                              <MdDelete className="mr-1.5" /> Confirm Delete
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
                   
                   {/* Details view */}
                   {expandedId === reading._id && (
@@ -396,7 +505,7 @@ export default function ConsumptionHistory() {
                               <div>
                                 <h5 className="text-sm font-medium text-gray-500 mb-1">Price</h5>
                                 <p className="flex items-center text-dark">
-                                  <span className="text-primary mr-2">$</span>
+                                  <span className="text-primary mr-2">{getCurrencySymbol(currency)}</span>
                                   {reading.price.toFixed(4)}
                                 </p>
                               </div>
@@ -458,7 +567,7 @@ export default function ConsumptionHistory() {
                                   type="date"
                                   id={`date-${reading._id}`}
                                   value={editingReading?.date.split('T')[0]}
-                                  onChange={(e) => handleEditFormChange(editingReading, 'date', e.target.value)}
+                                  onChange={(e) => handleEditFormChange('date', e.target.value)}
                                   className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                                 />
                               </div>
@@ -472,7 +581,7 @@ export default function ConsumptionHistory() {
                                   type="number"
                                   id={`consumption-${reading._id}`}
                                   value={editingReading?.total_kwh_consumed}
-                                  onChange={(e) => handleEditFormChange(editingReading, 'total_kwh_consumed', e.target.value)}
+                                  onChange={(e) => handleEditFormChange('total_kwh_consumed', e.target.value)}
                                   className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                                   min="0"
                                   step="0.01"
@@ -482,13 +591,13 @@ export default function ConsumptionHistory() {
                               {/* Price Field */}
                               <div>
                                 <label htmlFor={`price-${reading._id}`} className="block text-sm font-medium text-gray-700 mb-1">
-                                  Price ($)
+                                  Price ({getCurrencySymbol(currency)})
                                 </label>
                                 <input
                                   type="number"
                                   id={`price-${reading._id}`}
                                   value={editingReading?.price}
-                                  onChange={(e) => handleEditFormChange(editingReading, 'price', e.target.value)}
+                                  onChange={(e) => handleEditFormChange('price', e.target.value)}
                                   className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                                   min="0"
                                   step="0.0001"

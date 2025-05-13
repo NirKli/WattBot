@@ -16,6 +16,7 @@ export default function PriceManagement() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [currentPrice, setCurrentPrice] = useState<number | null>(null)
+  const [currency, setCurrency] = useState('USD')
   
   // UI states
   const [showAddForm, setShowAddForm] = useState(false)
@@ -40,6 +41,24 @@ export default function PriceManagement() {
   // Load data on component mount
   useEffect(() => {
     fetchPrices()
+    
+    // Get initial currency from localStorage
+    const savedCurrency = localStorage.getItem('currency');
+    if (savedCurrency) {
+      setCurrency(savedCurrency);
+    }
+    
+    // Listen for currency changes
+    const handleCurrencyChange = (e: CustomEvent) => {
+      if (e.detail && e.detail.currency) {
+        setCurrency(e.detail.currency);
+      }
+    };
+    
+    window.addEventListener('currencyChange', handleCurrencyChange as EventListener);
+    return () => {
+      window.removeEventListener('currencyChange', handleCurrencyChange as EventListener);
+    };
   }, [])
 
   // Format date helper for input fields
@@ -145,7 +164,7 @@ export default function PriceManagement() {
     setSuccessMessage(null)
     
     try {
-      await axios.post('http://localhost:8000/electricity-prices', newPrice)
+      await axios.post('http://localhost:8000/electricity-price', newPrice)
       
       setSuccessMessage('New price added successfully')
       setShowAddForm(false)
@@ -173,7 +192,7 @@ export default function PriceManagement() {
     setSuccessMessage(null)
     
     try {
-      await axios.put(`http://localhost:8000/electricity-prices/${editForm._id}`, {
+      await axios.put(`http://localhost:8000/electricity-price/${editForm._id}`, {
         _id: editForm._id,
         price: editForm.price,
         date: editForm.date,
@@ -204,7 +223,7 @@ export default function PriceManagement() {
     setSuccessMessage(null)
     
     try {
-      await axios.delete(`http://localhost:8000/electricity-prices/${id}`)
+      await axios.delete(`http://localhost:8000/electricity-price/${id}`)
       
       setSuccessMessage('Price deleted successfully')
       
@@ -222,6 +241,22 @@ export default function PriceManagement() {
   const handleCancelEdit = () => {
     setEditId(null)
   }
+
+  // Get currency symbol based on selected currency
+  const getCurrencySymbol = (currencyCode: string): string => {
+    const symbols: {[key: string]: string} = {
+      'USD': '$',
+      'EUR': '€',
+      'GBP': '£',
+      'ILS': '₪',
+      'JPY': '¥',
+      'CNY': '¥',
+      'INR': '₹',
+      'BTC': '₿'
+    };
+    
+    return symbols[currencyCode] || currencyCode;
+  };
 
   // Loading UI
   if (loading) {
@@ -288,7 +323,7 @@ export default function PriceManagement() {
           </div>
           <div className="mt-2">
             <div className="text-3xl font-bold text-primary">
-              ${currentPrice !== null ? currentPrice.toFixed(4) : '0.0000'}
+              {getCurrencySymbol(currency)}{currentPrice !== null ? currentPrice.toFixed(4) : '0.0000'}
             </div>
             <div className="text-sm text-muted mt-1">per kWh</div>
           </div>
@@ -310,13 +345,13 @@ export default function PriceManagement() {
             <div>
               <div className="text-sm text-gray-500">Highest</div>
               <div className="text-xl font-bold text-primary">
-                ${Math.max(...electricityPrices.map(p => p.price), 0).toFixed(4)}
+                {getCurrencySymbol(currency)}{Math.max(...electricityPrices.map(p => p.price), 0).toFixed(4)}
               </div>
             </div>
             <div>
               <div className="text-sm text-gray-500">Lowest</div>
               <div className="text-xl font-bold text-primary">
-                ${Math.min(...(electricityPrices.length > 0 ? electricityPrices.map(p => p.price) : [0])).toFixed(4)}
+                {getCurrencySymbol(currency)}{Math.min(...(electricityPrices.length > 0 ? electricityPrices.map(p => p.price) : [0])).toFixed(4)}
               </div>
             </div>
           </div>
@@ -372,11 +407,11 @@ export default function PriceManagement() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
                 <label htmlFor="add_price" className="block text-sm font-medium text-gray-700 mb-2">
-                  Price per kWh ($)
+                  Price per kWh ({getCurrencySymbol(currency)})
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <span className="text-gray-500">$</span>
+                    <span className="text-gray-500">{getCurrencySymbol(currency)}</span>
                   </div>
                   <input
                     type="number"
@@ -489,7 +524,7 @@ export default function PriceManagement() {
                       </td>
                       <td className="py-4 px-6">
                         <span className="font-medium text-primary">
-                          ${price.price.toFixed(4)}
+                          {getCurrencySymbol(currency)}{price.price.toFixed(4)}
                         </span>
                         <span className="text-muted text-sm ml-1">
                           per kWh
@@ -531,11 +566,11 @@ export default function PriceManagement() {
                           <form onSubmit={handleEditSubmit} className="flex flex-wrap gap-4 items-end">
                             <div className="flex-1 min-w-[200px]">
                               <label htmlFor="edit_price" className="block text-sm font-medium text-gray-700 mb-1">
-                                Price per kWh ($)
+                                Price per kWh ({getCurrencySymbol(currency)})
                               </label>
                               <div className="relative">
                                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                  <span className="text-gray-500">$</span>
+                                  <span className="text-gray-500">{getCurrencySymbol(currency)}</span>
                                 </div>
                                 <input
                                   type="number"

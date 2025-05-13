@@ -13,12 +13,13 @@ class ProcessImage:
     model = YOLO("models/best.pt")
 
     def process_image(self, file: UploadFile):
+        cleanup("", "runs/detect/predict/")
         temp_file_path = f"temp_{file.filename}"
         with open(temp_file_path, "wb") as temp_file:
             shutil.copyfileobj(file.file, temp_file)
 
         results = self.model(temp_file_path, save=True, save_dir="process_imgs", rect=True, save_txt=True)
-        #results[0].show()
+        # results[0].show()
 
         detections = []
         for box in results[0].boxes:
@@ -43,15 +44,26 @@ class ProcessImage:
             price=0.0,
             original_file=db_save.save_file_to_db(temp_file_path, file.filename),
             file_name=file.filename,
-            label_file=db_save.save_file_to_db("runs/detect/predict/" + temp_file_path.replace("JPEG", "jpg"),
-                                               temp_file_path.replace("JPEG", "jpg")),
+            label_file=db_save.save_file_to_db("runs/detect/predict/" + temp_file_path.replace(extract_file_name_type(temp_file_path)[1], "jpg"),
+                                               temp_file_path.replace(extract_file_name_type(temp_file_path)[1], "jpg")),
             file_label_name=db_save.save_file_to_db(
-                "runs/detect/predict/labels/" + temp_file_path.replace("JPEG", "txt"),
-                temp_file_path.replace("JPEG", "txt")))
+                "runs/detect/predict/labels/" + temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".txt"),
+                temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".txt")))
 
         db_save.save_monthly_consumption_to_db(monthly_consumption)
 
-        os.remove(temp_file_path)
-        shutil.rmtree("runs/detect/predict/")
+        cleanup(temp_file_path, "runs/detect/predict/")
 
         return monthly_consumption
+
+
+def extract_file_name_type(file_name):
+    file_name, file_type = os.path.splitext(file_name)
+    return file_name, file_type
+
+
+def cleanup(temp_file_path, directory):
+    if os.path.exists(temp_file_path):
+        os.remove(temp_file_path)
+    if os.path.exists(directory):
+        shutil.rmtree(directory)

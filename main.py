@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api import monthly_consumption_routes
 from api import price_routes
+from api import settings_routes
 
 app = FastAPI()
 
@@ -26,6 +27,7 @@ app.add_middleware(
 
 app.include_router(monthly_consumption_routes.router)
 app.include_router(price_routes.router)
+app.include_router(settings_routes.router)
 
 
 @app.get("/")

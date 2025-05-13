@@ -4,9 +4,10 @@ import gridfs
 import pymongo
 from bson.objectid import ObjectId
 
-from services.NoObjectHasFoundException import NoObjectHasFoundException
-from services.model.MonthlyConsumption import MonthlyConsumption
+from services.exception.NoObjectHasFoundException import NoObjectHasFoundException
 from services.model.ElectricityPrice import ElectricityPrice
+from services.model.MonthlyConsumption import MonthlyConsumption
+from services.model.Settings import Settings
 
 mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
 
@@ -86,7 +87,6 @@ def update_monthly_consumption_in_db(monthly_consumption_id: str, updated_monthl
     existing_consumption.modified_date = datetime.now()
     existing_consumption.date = updated_monthly_consumption.date
 
-
     collection = mongo_db["monthly_consumptions"]
     updated_monthly_consumption = {
         "modified_date": existing_consumption.modified_date,
@@ -104,12 +104,20 @@ def update_monthly_consumption_in_db(monthly_consumption_id: str, updated_monthl
         raise NoObjectHasFoundException()
 
 
+def delete_monthly_consumption_from_db(monthly_consumption_id: str):
+    collection = mongo_db["monthly_consumptions"]
+    result = collection.delete_one({"_id": ObjectId(monthly_consumption_id)})
+    if result.deleted_count == 0:
+        raise NoObjectHasFoundException()
+
+
 def get_file_from_db(file_id):
     file_data = save_imgs_db.open_download_stream(ObjectId(file_id))
     if file_data:
         return file_data.read()
     else:
         raise NoObjectHasFoundException()
+
 
 def get_price_from_db(price_id):
     collection = mongo_db["electricity-prices"]
@@ -126,6 +134,7 @@ def get_price_from_db(price_id):
     else:
         raise NoObjectHasFoundException()
 
+
 def save_price_to_db(electricity_price: ElectricityPrice):
     collection = mongo_db["electricity-prices"]
     price_dict = {
@@ -138,6 +147,7 @@ def save_price_to_db(electricity_price: ElectricityPrice):
     }
     result = collection.insert_one(price_dict)
     return str(result.inserted_id)
+
 
 def update_price_in_db(electricity_price_id: str, updated_electricity_price: ElectricityPrice):
     existing_price = get_price_from_db(electricity_price_id)
@@ -159,6 +169,7 @@ def update_price_in_db(electricity_price_id: str, updated_electricity_price: Ele
     if result.modified_count == 0:
         raise NoObjectHasFoundException()
 
+
 def get_all_prices_from_db():
     collection = mongo_db["electricity-prices"]
     results = collection.find()
@@ -173,3 +184,66 @@ def get_all_prices_from_db():
             is_default=doc["is_default"]
         ))
     return prices
+
+
+def delete_price_from_db(price_id: str):
+    collection = mongo_db["electricity-prices"]
+    result = collection.delete_one({"_id": ObjectId(price_id)})
+    if result.deleted_count == 0:
+        raise NoObjectHasFoundException()
+
+
+def save_setting_to_db(setting: Settings):
+    collection = mongo_db["settings"]
+    setting_dict = {
+        "currency": setting.currency,
+        "dark_mode": setting.dark_mode,
+        "created_at": datetime.now(),
+        "updated_at": datetime.now()
+    }
+    result = collection.insert_one(setting_dict)
+    return str(result.inserted_id)
+
+
+def get_setting_from_db():
+    collection = mongo_db["settings"]
+    result = collection.find()
+    if result.retrieved > 0:
+        return Settings(
+            _id=1,
+            currency=result["currency"],
+            dark_mode=result["dark_mode"],
+            created_at=result["created_at"],
+            updated_at=result["updated_at"]
+        )
+    elif result.retrieved == 0:
+        settings =  Settings(
+            _id=1,
+            currency="usd",
+            dark_mode=False,
+            created_at=datetime.now(),
+            updated_at=datetime.now()
+        )
+        save_setting_to_db(settings)
+        return settings
+    else:
+        raise NoObjectHasFoundException()
+
+
+def update_setting_in_db(updated_setting: Settings):
+    existing_setting = get_setting_from_db()
+    existing_setting.currency = updated_setting.currency
+    existing_setting.dark_mode = updated_setting.dark_mode
+    existing_setting.updated_at = datetime.now()
+
+    collection = mongo_db["settings"]
+    updated_setting_dict = {
+        "currency": existing_setting.currency,
+        "dark_mode": existing_setting.dark_mode,
+        "created_at": existing_setting.created_at,
+        "updated_at": existing_setting.updated_at
+    }
+    result = collection.update_one({"_id": 1}, {"$set": updated_setting_dict})
+
+    if result.modified_count == 0:
+        raise NoObjectHasFoundException()
