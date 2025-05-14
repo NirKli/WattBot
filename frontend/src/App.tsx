@@ -74,11 +74,6 @@ function App() {
                             <p className="text-xs text-white/80">Electricity Meter Reading Assistant</p>
                         </div>
                     </div>
-                    
-                    {/* Display current currency */}
-                    <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-full px-3 py-1">
-                        <span className="text-sm text-white font-medium">{currency}</span>
-                    </div>
                 </div>
             </header>
 

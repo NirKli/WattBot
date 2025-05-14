@@ -20,9 +20,28 @@ export default function LatestReading() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [labelImageUrl, setLabelImageUrl] = useState<string | null>(null)
+  const [currency, setCurrency] = useState('USD')
 
   useEffect(() => {
     fetchLatestReading()
+    
+    // Get initial currency from localStorage
+    const savedCurrency = localStorage.getItem('currency');
+    if (savedCurrency) {
+      setCurrency(savedCurrency);
+    }
+    
+    // Listen for currency changes
+    const handleCurrencyChange = (e: CustomEvent) => {
+      if (e.detail && e.detail.currency) {
+        setCurrency(e.detail.currency);
+      }
+    };
+    
+    window.addEventListener('currencyChange', handleCurrencyChange as EventListener);
+    return () => {
+      window.removeEventListener('currencyChange', handleCurrencyChange as EventListener);
+    };
   }, [])
 
   useEffect(() => {
@@ -91,6 +110,22 @@ export default function LatestReading() {
     }).format(date);
   };
 
+  // Get currency symbol based on selected currency
+  const getCurrencySymbol = (currencyCode: string): string => {
+    const symbols: {[key: string]: string} = {
+      'USD': '$',
+      'EUR': '€',
+      'GBP': '£',
+      'ILS': '₪',
+      'JPY': '¥',
+      'CNY': '¥',
+      'INR': '₹',
+      'BTC': '₿'
+    };
+    
+    return symbols[currencyCode] || currencyCode;
+  };
+
   if (loading) {
     return (
       <div className="py-8 text-center">
@@ -150,10 +185,10 @@ export default function LatestReading() {
       
       <div className="flex items-center justify-center mb-5 mt-2">
         <div className="w-6 h-6 rounded-full bg-success text-white flex items-center justify-center mr-2">
-          <FaDollarSign className="text-white text-xs" />
+          <span className="text-white text-xs font-bold">{getCurrencySymbol(currency)}</span>
         </div>
         <p className="text-2xl font-medium text-primary">
-          ${parseFloat(latestReading.price.toFixed(2)).toFixed(2)}
+          {parseFloat(latestReading.price.toFixed(2)).toFixed(2)}
         </p>
       </div>
       
