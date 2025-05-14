@@ -32,7 +32,7 @@ class PyObjectId(str):
 
 
 class MonthlyConsumption(BaseModel):
-    oid: PyObjectId = Field(alias="_id")
+    oid: PyObjectId = Field(default=None, alias="_id")
     modified_date: datetime
     date: datetime
     total_kwh_consumed: float

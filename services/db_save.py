@@ -27,7 +27,7 @@ def save_monthly_consumption_to_db(monthly_consumption):
         "modified_date": monthly_consumption.modified_date,
         "date": monthly_consumption.date,
         "total_kwh_consumed": monthly_consumption.total_kwh_consumed,
-        "price": monthly_consumption.price,
+        "price": calculate_price_from_current_consumption_from_last_month(monthly_consumption.total_kwh_consumed),
         "original_file": monthly_consumption.original_file,
         "file_name": monthly_consumption.file_name,
         "label_file": monthly_consumption.label_file,
@@ -108,6 +108,22 @@ def delete_monthly_consumption_from_db(monthly_consumption_id: str):
     collection = mongo_db["monthly_consumptions"]
     result = collection.delete_one({"_id": ObjectId(monthly_consumption_id)})
     if result.deleted_count == 0:
+        raise NoObjectHasFoundException()
+
+
+def calculate_price_from_current_consumption_from_last_month(current_total_kwh_consumed: float) -> float:
+    collection = mongo_db["monthly_consumptions"]
+    last_month_consumption = collection.find().sort("date", pymongo.DESCENDING).limit(1)
+    if last_month_consumption:
+        last_month_consumption = list(last_month_consumption)[0]
+        last_month_total_kwh_consumed = last_month_consumption["total_kwh_consumed"]
+        collection = mongo_db["electricity-prices"]
+        electricity_price = collection.find().sort("date", pymongo.DESCENDING).limit(1)
+        if electricity_price:
+            return electricity_price[0]["price"] * (current_total_kwh_consumed - last_month_total_kwh_consumed)
+        else:
+            raise NoObjectHasFoundException()
+    else:
         raise NoObjectHasFoundException()
 
 
@@ -217,7 +233,7 @@ def get_setting_from_db():
             updated_at=result["updated_at"]
         )
     elif result.retrieved == 0:
-        settings =  Settings(
+        settings = Settings(
             _id=1,
             currency="usd",
             dark_mode=False,

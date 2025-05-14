@@ -44,8 +44,8 @@ class ProcessImage:
             price=0.0,
             original_file=db_save.save_file_to_db(temp_file_path, file.filename),
             file_name=file.filename,
-            label_file=db_save.save_file_to_db("runs/detect/predict/" + temp_file_path.replace(extract_file_name_type(temp_file_path)[1], "jpg"),
-                                               temp_file_path.replace(extract_file_name_type(temp_file_path)[1], "jpg")),
+            label_file=db_save.save_file_to_db("runs/detect/predict/" + temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".jpg"),
+                                               temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".jpg")),
             file_label_name=db_save.save_file_to_db(
                 "runs/detect/predict/labels/" + temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".txt"),
                 temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".txt")))
