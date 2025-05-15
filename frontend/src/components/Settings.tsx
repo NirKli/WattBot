@@ -15,12 +15,14 @@ import {
 interface SettingsData {
   darkMode: boolean;
   currency: string;
+  calculatePrice: boolean;
 }
 
 const Settings = () => {
   // Settings state
   const [darkMode, setDarkMode] = useState(false);
   const [currency, setCurrency] = useState('USD');
+  const [calculatePrice, setCalculatePrice] = useState(true);
   
   // UI state
   const [loading, setLoading] = useState(true);
@@ -49,20 +51,22 @@ const Settings = () => {
       const response = await axios.get('http://localhost:8000/settings');
       const settings = response.data;
       
-      // Apply settings from API
-      setDarkMode(settings.darkMode);
+      // Apply settings from API - convert from snake_case to camelCase
+      setDarkMode(settings.dark_mode);
       setCurrency(settings.currency || 'USD');
+      setCalculatePrice(settings.calculate_price !== undefined ? settings.calculate_price : true);
       
       // Apply dark mode
-      if (settings.darkMode) {
+      if (settings.dark_mode) {
         document.documentElement.classList.add('dark');
       } else {
         document.documentElement.classList.remove('dark');
       }
       
       // Save settings to localStorage for persistence
-      localStorage.setItem('darkMode', settings.darkMode.toString());
+      localStorage.setItem('darkMode', settings.dark_mode.toString());
       localStorage.setItem('currency', settings.currency || 'USD');
+      localStorage.setItem('calculatePrice', settings.calculate_price !== undefined ? settings.calculate_price.toString() : 'true');
       
       // Dispatch currency event for other components
       window.dispatchEvent(new CustomEvent('currencyChange', { 
@@ -91,6 +95,12 @@ const Settings = () => {
       const savedCurrency = localStorage.getItem('currency');
       if (savedCurrency) {
         setCurrency(savedCurrency);
+      }
+      
+      // Load calculate price from localStorage
+      const savedCalculatePrice = localStorage.getItem('calculatePrice');
+      if (savedCalculatePrice) {
+        setCalculatePrice(savedCalculatePrice === 'true');
       }
       
       // Apply dark mode
@@ -135,21 +145,31 @@ const Settings = () => {
     setDarkMode(!darkMode);
   };
 
+  // Toggle calculate price
+  const toggleCalculatePrice = () => {
+    setCalculatePrice(!calculatePrice);
+  };
+
   // Save settings to localStorage
   const saveSettings = async () => {
     try {
       setSaving(true);
       setError(null);
       
-      // Create settings data object
+      // Create settings data object with proper snake_case for backend
       const settingsData: SettingsData = {
         darkMode,
-        currency
+        currency,
+        calculatePrice
       };
       
-      // Try to save to API first
+      // Try to save to API first - convert from camelCase to snake_case for backend
       try {
-        await axios.put('http://localhost:8000/settings', settingsData);
+        await axios.put('http://localhost:8000/settings', {
+          dark_mode: darkMode,
+          currency: currency,
+          calculate_price: calculatePrice
+        });
         setInfoMessage('Settings saved to server');
       } catch (apiError) {
         console.error('Failed to save to API, falling back to localStorage:', apiError);
@@ -160,6 +180,7 @@ const Settings = () => {
       // Always save to localStorage as backup
       localStorage.setItem('darkMode', darkMode.toString());
       localStorage.setItem('currency', currency);
+      localStorage.setItem('calculatePrice', calculatePrice.toString());
       
       // Dispatch currency event
       window.dispatchEvent(new CustomEvent('currencyChange', { 
@@ -306,24 +327,55 @@ const Settings = () => {
             </div>
           </div>
           
+          {/* Calculate Price Option */}
+          <div className="setting-section mb-6">
+            <h3 className="text-lg font-semibold mb-3 dark:text-text-light flex items-center">
+              <span className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center mr-2">
+                <span className="text-primary text-xs font-bold">3</span>
+              </span>
+              Calculation Settings
+            </h3>
+            <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center">
+                <MdCurrencyExchange className="mr-3 text-primary" size={22} />
+                <div>
+                  <span className="font-medium dark:text-text-light block">Auto-calculate Price</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    {calculatePrice ? 'Automatically calculate price when adding new readings' : 'Manual price entry for new readings'}
+                  </span>
+                </div>
+              </div>
+              <label className="toggle-switch">
+                <input
+                  type="checkbox"
+                  checked={calculatePrice}
+                  onChange={toggleCalculatePrice}
+                />
+                <span className="slider round"></span>
+              </label>
+            </div>
+          </div>
+          
           {/* Buttons */}
           <div className="mt-8 flex justify-center">
             <button 
               id="save-settings-button"
               onClick={saveSettings}
               disabled={saving}
-              className={`flex items-center px-6 py-3 bg-primary text-white hover:bg-primary-dark rounded-md transition-colors font-medium shadow-md ${saving ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`flex items-center px-8 py-3 bg-gradient-to-r from-primary to-primary-dark text-white rounded-full transition-all duration-300 font-medium shadow-lg hover:shadow-xl hover:scale-105 ${saving ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
               {saving ? (
-                <>
-                  <div className="animate-spin mr-2 h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
-                  Saving...
-                </>
+                <div className="flex items-center">
+                  <div className="animate-spin mr-3 h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+                  <span>Saving Changes...</span>
+                </div>
               ) : (
-                <>
-                  <MdSave className="mr-2" size={20} />
-                  Save Settings
-                </>
+                <div className="flex items-center">
+                  <div className="bg-white/20 rounded-full p-1.5 mr-3">
+                    <MdSave className="text-white" size={18} />
+                  </div>
+                  <span>Apply Settings</span>
+                </div>
               )}
             </button>
           </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { MdBarChart, MdElectricBolt, MdInfo, MdCalendarToday, MdTrendingUp, MdEdit, MdSave, MdClose, MdCheck, MdDelete } from 'react-icons/md'
+import { MdBarChart, MdElectricBolt, MdInfo, MdCalendarToday, MdTrendingUp, MdEdit, MdSave, MdClose, MdCheck, MdDelete, MdImage, MdLabel, MdDescription } from 'react-icons/md'
 import { FaLightbulb, FaCalendarDay, FaImage, FaClipboard } from 'react-icons/fa'
 
 interface MonthlyConsumption {
@@ -23,6 +23,7 @@ export default function ConsumptionHistory() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [currency, setCurrency] = useState('USD')
+  const [activeImageTab, setActiveImageTab] = useState<'original' | 'labeled' | 'text'>('original')
   
   // Form states
   const [editingReading, setEditingReading] = useState<MonthlyConsumption | null>(null)
@@ -258,6 +259,26 @@ export default function ConsumptionHistory() {
     setDeleteConfirmId(null);
   }
 
+  // Function to fetch file from the server
+  const getFileUrl = (fileId: string | undefined): string => {
+    if (!fileId) return '';
+    return `http://localhost:8000/monthly-consumption/file/${fileId}`;
+  };
+
+  // Get readable file type name
+  const getFileTypeName = (fileType: 'original' | 'labeled' | 'text'): string => {
+    switch (fileType) {
+      case 'original':
+        return 'Original Image';
+      case 'labeled':
+        return 'Labeled Image';
+      case 'text':
+        return 'Text Labels';
+      default:
+        return '';
+    }
+  };
+
   if (loading) {
     return (
       <div className="w-full flex justify-center items-center py-10">
@@ -304,6 +325,9 @@ export default function ConsumptionHistory() {
   
   // Calculate total spending
   const totalSpending = readings.reduce((acc, reading) => acc + reading.price, 0);
+  
+  // Calculate average monthly spending
+  const averageMonthlySpending = readings.length > 0 ? totalSpending / readings.length : 0;
 
   return (
     <div>
@@ -365,11 +389,11 @@ export default function ConsumptionHistory() {
               <MdTrendingUp size={20} />
             </div>
           </div>
-          <div className="stat-card-value">{getCurrencySymbol(currency)}{totalSpending.toFixed(4)}</div>
+          <div className="stat-card-value">{getCurrencySymbol(currency)}{totalSpending.toFixed(2)}</div>
           <div className="stat-card-label">on electricity</div>
           <div className="stat-card-footer">
             <MdElectricBolt size={14} />
-            <span>Total: {totalKwh.toFixed(2)} kWh</span>
+            <span>Avg: {getCurrencySymbol(currency)}{averageMonthlySpending.toFixed(2)}/month</span>
           </div>
         </div>
       </div>
@@ -380,7 +404,7 @@ export default function ConsumptionHistory() {
             <h3 className="font-medium flex items-center">
               <MdCalendarToday className="mr-2" /> Reading History
             </h3>
-            <p className="text-sm opacity-90">Total: {totalKwh.toFixed(2)} kWh</p>
+            <p className="text-sm opacity-90">Readings: {readings.length}</p>
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -526,20 +550,92 @@ export default function ConsumptionHistory() {
                               </div>
                             </div>
                             
-                            {/* Reading image */}
-                            <div className="border rounded-lg p-4 bg-gray-50 flex items-center justify-center">
-                              {reading.original_file ? (
-                                <img 
-                                  src={`data:image/jpeg;base64,${reading.original_file}`} 
-                                  alt="Meter Reading" 
-                                  className="max-w-full h-auto max-h-[300px] object-contain rounded"
-                                />
-                              ) : (
-                                <div className="text-center p-8 text-gray-400">
-                                  <FaImage size={48} className="mx-auto mb-2 opacity-30" />
-                                  <p>No image available</p>
-                                </div>
-                              )}
+                            {/* Reading files tabs */}
+                            <div className="border rounded-lg bg-gray-50 overflow-hidden flex flex-col">
+                              {/* Tabs */}
+                              <div className="flex border-b border-gray-200 bg-gray-100">
+                                <button
+                                  onClick={() => setActiveImageTab('original')}
+                                  className={`flex items-center py-2 px-4 text-sm font-medium ${
+                                    activeImageTab === 'original' 
+                                      ? 'text-primary border-b-2 border-primary bg-white' 
+                                      : 'text-gray-500 hover:text-gray-700'
+                                  }`}
+                                >
+                                  <MdImage className="mr-2" size={18} />
+                                  Original
+                                </button>
+                                <button
+                                  onClick={() => setActiveImageTab('labeled')}
+                                  className={`flex items-center py-2 px-4 text-sm font-medium ${
+                                    activeImageTab === 'labeled' 
+                                      ? 'text-primary border-b-2 border-primary bg-white' 
+                                      : 'text-gray-500 hover:text-gray-700'
+                                  }`}
+                                >
+                                  <MdLabel className="mr-2" size={18} />
+                                  Labeled
+                                </button>
+                                <button
+                                  onClick={() => setActiveImageTab('text')}
+                                  className={`flex items-center py-2 px-4 text-sm font-medium ${
+                                    activeImageTab === 'text' 
+                                      ? 'text-primary border-b-2 border-primary bg-white' 
+                                      : 'text-gray-500 hover:text-gray-700'
+                                  }`}
+                                >
+                                  <MdDescription className="mr-2" size={18} />
+                                  Text
+                                </button>
+                              </div>
+                              
+                              {/* Content */}
+                              <div className="flex-1 p-4 flex items-center justify-center">
+                                {activeImageTab === 'original' && (
+                                  reading.original_file ? (
+                                    <img 
+                                      src={getFileUrl(reading.original_file)} 
+                                      alt="Original Meter Reading" 
+                                      className="max-w-full h-auto max-h-[300px] object-contain rounded"
+                                    />
+                                  ) : (
+                                    <div className="text-center p-8 text-gray-400">
+                                      <FaImage size={48} className="mx-auto mb-2 opacity-30" />
+                                      <p>No original image available</p>
+                                    </div>
+                                  )
+                                )}
+                                
+                                {activeImageTab === 'labeled' && (
+                                  reading.label_file ? (
+                                    <img 
+                                      src={getFileUrl(reading.label_file)} 
+                                      alt="Labeled Meter Reading" 
+                                      className="max-w-full h-auto max-h-[300px] object-contain rounded"
+                                    />
+                                  ) : (
+                                    <div className="text-center p-8 text-gray-400">
+                                      <MdLabel size={48} className="mx-auto mb-2 opacity-30" />
+                                      <p>No labeled image available</p>
+                                    </div>
+                                  )
+                                )}
+                                
+                                {activeImageTab === 'text' && (
+                                  reading.file_label_name ? (
+                                    <div className="w-full h-full p-4 bg-white rounded border border-gray-200 overflow-auto">
+                                      <pre className="text-sm text-gray-600 whitespace-pre-wrap font-mono">
+                                        {reading.file_label_name}
+                                      </pre>
+                                    </div>
+                                  ) : (
+                                    <div className="text-center p-8 text-gray-400">
+                                      <MdDescription size={48} className="mx-auto mb-2 opacity-30" />
+                                      <p>No text labels available</p>
+                                    </div>
+                                  )
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>

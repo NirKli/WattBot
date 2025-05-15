@@ -20,8 +20,8 @@ export default function ImageUpload() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [fileName, setFileName] = useState<string | null>(null)
+  const [inputKey, setInputKey] = useState(Date.now())
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const inputKey = Date.now()
 
   useEffect(() => {
     // Clean up preview URL
@@ -78,6 +78,18 @@ export default function ImageUpload() {
     }
   }
 
+  const resetSelection = () => {
+    if (preview) {
+      URL.revokeObjectURL(preview)
+    }
+    setPreview(null)
+    setSelectedFile(null)
+    setFileName(null)
+    setError(null)
+    // Reset the input by changing its key
+    setInputKey(Date.now())
+  }
+
   const triggerFileInput = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click()
@@ -126,9 +138,7 @@ export default function ImageUpload() {
                 />
                 <button
                   onClick={() => {
-                    setPreview(null);
-                    setSelectedFile(null);
-                    setFileName(null);
+                    resetSelection();
                   }}
                   className="absolute top-2 right-2 bg-white shadow text-danger rounded-full p-1.5 text-sm"
                 >
@@ -140,29 +150,41 @@ export default function ImageUpload() {
                   <MdOutlineUploadFile className="mr-2" size={20} /> {fileName}
                 </p>
               )}
-              <button
-                onClick={handleUpload}
-                disabled={loading}
-                className={`mt-4 w-full py-3 text-sm rounded-full flex items-center justify-center transition-all ${
-                  loading 
-                    ? 'bg-gray-400 text-white cursor-not-allowed' 
-                    : 'btn-primary'
-                }`}
-              >
-                {loading ? (
-                  <span className="flex items-center">
-                    <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Processing...
-                  </span>
-                ) : (
-                  <span className="flex items-center">
-                    <MdOutlineUploadFile className="mr-2" size={24} /> Process Image
-                  </span>
-                )}
-              </button>
+              <div className="flex flex-col sm:flex-row gap-2 mt-4">
+                <button
+                  onClick={handleUpload}
+                  disabled={loading}
+                  className={`flex-1 py-3 text-sm rounded-full flex items-center justify-center transition-all ${
+                    loading 
+                      ? 'bg-gray-400 text-white cursor-not-allowed' 
+                      : 'btn-primary'
+                  }`}
+                >
+                  {loading ? (
+                    <span className="flex items-center">
+                      <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Processing...
+                    </span>
+                  ) : (
+                    <span className="flex items-center">
+                      <MdOutlineUploadFile className="mr-2" size={24} /> Process Image
+                    </span>
+                  )}
+                </button>
+                <button
+                  onClick={() => {
+                    resetSelection();
+                    triggerFileInput();
+                  }}
+                  disabled={loading}
+                  className="py-3 px-4 text-sm rounded-full flex items-center justify-center transition-all btn-outline-secondary"
+                >
+                  <MdAddPhotoAlternate className="mr-2" size={20} /> Choose Different
+                </button>
+              </div>
             </div>
           )}
 
@@ -174,6 +196,15 @@ export default function ImageUpload() {
                 </span>
                 {error}
               </p>
+              <button
+                onClick={() => {
+                  resetSelection();
+                  triggerFileInput();
+                }}
+                className="mt-3 px-4 py-2 text-sm rounded-full flex items-center justify-center mx-auto btn-outline-secondary"
+              >
+                <MdAddPhotoAlternate className="mr-2" size={20} /> Select Another Image
+              </button>
             </div>
           )}
 
@@ -187,10 +218,8 @@ export default function ImageUpload() {
               </div>
               <button
                 onClick={() => {
-                  setPreview(null);
-                  setSelectedFile(null);
-                  setFileName(null);
-                  setResult(null);
+                  resetSelection();
+                  triggerFileInput();
                 }}
                 className="mt-3 py-3 px-6 text-sm btn-primary rounded-full flex items-center justify-center mx-auto"
               >

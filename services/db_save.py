@@ -112,6 +112,9 @@ def delete_monthly_consumption_from_db(monthly_consumption_id: str):
 
 
 def calculate_price_from_current_consumption_from_last_month(current_total_kwh_consumed: float) -> float:
+    settings = get_setting_from_db()
+    if not settings.calculate_price:
+        return 0.0
     collection = mongo_db["monthly_consumptions"]
     last_month_consumption = collection.find().sort("date", pymongo.DESCENDING).limit(1)
     if last_month_consumption:
@@ -212,8 +215,10 @@ def delete_price_from_db(price_id: str):
 def save_setting_to_db(setting: Settings):
     collection = mongo_db["settings"]
     setting_dict = {
+        "_id": 1,
         "currency": setting.currency,
         "dark_mode": setting.dark_mode,
+        "calculate_price": setting.calculate_price,
         "created_at": datetime.now(),
         "updated_at": datetime.now()
     }
@@ -223,20 +228,22 @@ def save_setting_to_db(setting: Settings):
 
 def get_setting_from_db():
     collection = mongo_db["settings"]
-    result = collection.find()
-    if result.retrieved > 0:
+    result = collection.find_one({"_id": 1})
+    if result:
         return Settings(
             _id=1,
             currency=result["currency"],
             dark_mode=result["dark_mode"],
+            calculate_price=result["calculate_price"],
             created_at=result["created_at"],
             updated_at=result["updated_at"]
         )
-    elif result.retrieved == 0:
+    elif result is None:
         settings = Settings(
             _id=1,
             currency="usd",
             dark_mode=False,
+            calculate_price=True,
             created_at=datetime.now(),
             updated_at=datetime.now()
         )
@@ -250,12 +257,14 @@ def update_setting_in_db(updated_setting: Settings):
     existing_setting = get_setting_from_db()
     existing_setting.currency = updated_setting.currency
     existing_setting.dark_mode = updated_setting.dark_mode
+    existing_setting.calculate_price = updated_setting.calculate_price
     existing_setting.updated_at = datetime.now()
 
     collection = mongo_db["settings"]
     updated_setting_dict = {
         "currency": existing_setting.currency,
         "dark_mode": existing_setting.dark_mode,
+        "calculate_price": existing_setting.calculate_price,
         "created_at": existing_setting.created_at,
         "updated_at": existing_setting.updated_at
     }

@@ -9,6 +9,7 @@ class Settings(BaseModel):
     _id: Optional[int] = 1
     currency: Optional[str] = "usd"
     dark_mode: Optional[bool] = False
+    calculate_price: Optional[bool] = True
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
