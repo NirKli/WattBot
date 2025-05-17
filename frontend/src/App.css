@@ -269,3 +269,215 @@ input:focus, select:focus, textarea:focus {
   background-color: var(--gray-100);
   color: var(--primary);
 }
+
+/* Mobile-friendly tabs */
+.tabs-header-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* For smoother scrolling on iOS */
+  margin-bottom: 0.5rem;
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+}
+
+.tabs-header-container::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome and Safari */
+}
+
+.tabs-header {
+  display: flex;
+  position: relative;
+  white-space: nowrap;
+  min-width: min-content;
+}
+
+@media (max-width: 767px) {
+  .tab {
+    padding: 0.75rem 1rem;
+  }
+  
+  .tab-label {
+    font-size: 0.875rem;
+  }
+  
+  .tab-icon {
+    margin-right: 0.5rem;
+  }
+  
+  /* Footer adjustments for mobile */
+  footer .flex {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  /* Table adjustments for mobile */
+  table {
+    width: 100%;
+    display: block;
+  }
+  
+  /* Make card spacing more compact on mobile */
+  .card {
+    padding: 1rem !important;
+  }
+  
+  /* Adjust grid gap for mobile */
+  .gap-6 {
+    gap: 1rem !important;
+  }
+  
+  /* Make heading sizes more appropriate for mobile */
+  h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  h2 {
+    font-size: 1.25rem !important;
+  }
+  
+  /* Make buttons larger on mobile for easier touch targets */
+  .btn {
+    padding: 0.625rem 1.25rem !important;
+    min-height: 44px; /* Minimum touch target size */
+  }
+  
+  /* Improve form elements for touch */
+  input, select, textarea, button {
+    font-size: 16px !important; /* Prevent iOS zoom on focus */
+    min-height: 44px; /* Minimum touch target size */
+  }
+}
+
+/* Dark mode and mobile friendly modals */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: var(--white);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  max-width: 90%;
+  max-height: 90%;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+
+@media (prefers-color-scheme: dark) {
+  .modal-content {
+    background-color: var(--gray-800);
+    color: var(--white);
+  }
+}
+
+/* Responsive tables */
+@media (max-width: 767px) {
+  .responsive-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .responsive-table thead {
+    display: none; /* Hide table headers on small screens */
+  }
+  
+  .responsive-table tbody tr {
+    display: block;
+    border-bottom: 1px solid var(--gray-200);
+    padding: 0.75rem 0;
+  }
+  
+  .responsive-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    text-align: right;
+    border: none;
+  }
+  
+  .responsive-table tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    margin-right: auto;
+    text-align: left;
+  }
+  
+  /* Ensure action buttons are displayed properly */
+  .responsive-table .action-buttons {
+    justify-content: flex-start !important;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .responsive-table .action-buttons button {
+    margin: 0.25rem;
+  }
+}
+
+/* Toggle switch improvements */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--gray-300);
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: var(--primary);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--primary);
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.slider.round {
+  border-radius: 24px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}

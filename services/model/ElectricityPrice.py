@@ -32,7 +32,7 @@ class PyObjectId(str):
 
 
 class ElectricityPrice(BaseModel):
-    oid: PyObjectId = Field(alias="_id")
+    oid: PyObjectId = Field(default=None, alias="_id")
     price: float
     date: str
     created_at: Optional[datetime] = None

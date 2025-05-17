@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { MdAdd, MdDelete, MdEdit, MdSave, MdTimeline, MdAttachMoney, MdInfo, MdClose, MdCheck } from 'react-icons/md'
-import { FaChartLine, FaRegCalendarAlt, FaRegClock } from 'react-icons/fa'
+import { FaChartLine, FaRegCalendarAlt, FaRegClock, FaSortDown, FaSortUp, FaSort } from 'react-icons/fa'
 
 interface ElectricityPrice {
   _id: string;
   price: number;
   date: string;
   is_default: boolean;
+}
+
+interface SortConfig {
+  key: 'date' | 'price';
+  direction: 'ascending' | 'descending';
 }
 
 export default function PriceManagement() {
@@ -17,6 +22,7 @@ export default function PriceManagement() {
   const [error, setError] = useState<string | null>(null)
   const [currentPrice, setCurrentPrice] = useState<number | null>(null)
   const [currency, setCurrency] = useState('USD')
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'date', direction: 'descending' })
   
   // UI states
   const [showAddForm, setShowAddForm] = useState(false)
@@ -125,6 +131,55 @@ export default function PriceManagement() {
       setLoading(false)
     }
   }
+
+  // Sort function for electricity prices
+  const sortedPrices = React.useMemo(() => {
+    const sortablePrices = [...electricityPrices];
+    if (sortConfig !== null) {
+      sortablePrices.sort((a, b) => {
+        if (sortConfig.key === 'date') {
+          const dateA = new Date(a.date).getTime();
+          const dateB = new Date(b.date).getTime();
+          if (dateA < dateB) {
+            return sortConfig.direction === 'ascending' ? -1 : 1;
+          }
+          if (dateA > dateB) {
+            return sortConfig.direction === 'ascending' ? 1 : -1;
+          }
+          return 0;
+        } else if (sortConfig.key === 'price') {
+          if (a.price < b.price) {
+            return sortConfig.direction === 'ascending' ? -1 : 1;
+          }
+          if (a.price > b.price) {
+            return sortConfig.direction === 'ascending' ? 1 : -1;
+          }
+          return 0;
+        }
+        return 0;
+      });
+    }
+    return sortablePrices;
+  }, [electricityPrices, sortConfig]);
+
+  // Sorting request handler
+  const requestSort = (key: 'date' | 'price') => {
+    let direction: 'ascending' | 'descending' = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // Get sort icon for column headers
+  const getSortIcon = (columnName: 'date' | 'price') => {
+    if (sortConfig.key !== columnName) {
+      return <FaSort className="ml-1 text-gray-400" />;
+    }
+    return sortConfig.direction === 'ascending' ? 
+      <FaSortUp className="ml-1 text-primary" /> : 
+      <FaSortDown className="ml-1 text-primary" />;
+  };
 
   // Start editing a price
   const handleEditClick = (price: ElectricityPrice) => {
@@ -502,21 +557,27 @@ export default function PriceManagement() {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="py-3 px-6 text-left text-primary font-medium text-sm tracking-wider">
-                    <div className="flex items-center">
-                      <FaRegCalendarAlt className="mr-2" /> Date
-                    </div>
+                    <button 
+                      onClick={() => requestSort('date')}
+                      className="flex items-center focus:outline-none hover:text-primary-dark"
+                    >
+                      <FaRegCalendarAlt className="mr-2" /> Date {getSortIcon('date')}
+                    </button>
                   </th>
                   <th className="py-3 px-6 text-left text-primary font-medium text-sm tracking-wider">
-                    <div className="flex items-center">
-                      <MdAttachMoney className="mr-2" /> Price
-                    </div>
+                    <button 
+                      onClick={() => requestSort('price')}
+                      className="flex items-center focus:outline-none hover:text-primary-dark"
+                    >
+                      <MdAttachMoney className="mr-2" /> Price {getSortIcon('price')}
+                    </button>
                   </th>
                   <th className="py-3 px-6 text-left text-primary font-medium text-sm tracking-wider">Default</th>
                   <th className="py-3 px-6 text-right text-primary font-medium text-sm tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {electricityPrices.map(price => (
+                {sortedPrices.map(price => (
                   <React.Fragment key={price._id}>
                     <tr className="border-t border-gray-200 hover:bg-gray-50 transition-colors">
                       <td className="py-4 px-6 text-dark">

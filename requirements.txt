@@ -8,3 +8,5 @@ starlette
 albucore
 albumentations
 pymongo[srv]
+ultralytics
+torch

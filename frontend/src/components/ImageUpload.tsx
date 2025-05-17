@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
-import { MdOutlineUploadFile, MdClose, MdAddPhotoAlternate, MdRestartAlt, MdDone } from 'react-icons/md'
+import { MdOutlineUploadFile, MdClose, MdAddPhotoAlternate, MdRestartAlt, MdDone, MdInfo, MdCalendarMonth, MdElectricalServices, MdAttachMoney } from 'react-icons/md'
 
 interface MonthlyConsumption {
   modified_date: string;
@@ -21,6 +21,7 @@ export default function ImageUpload() {
   const [error, setError] = useState<string | null>(null)
   const [fileName, setFileName] = useState<string | null>(null)
   const [inputKey, setInputKey] = useState(Date.now())
+  const [currency, setCurrency] = useState('USD')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -31,6 +32,26 @@ export default function ImageUpload() {
       }
     }
   }, [preview])
+
+  useEffect(() => {
+    // Get currency from localStorage
+    const savedCurrency = localStorage.getItem('currency');
+    if (savedCurrency) {
+      setCurrency(savedCurrency);
+    }
+    
+    // Listen for currency changes
+    const handleCurrencyChange = (e: CustomEvent) => {
+      if (e.detail && e.detail.currency) {
+        setCurrency(e.detail.currency);
+      }
+    };
+    
+    window.addEventListener('currencyChange', handleCurrencyChange as EventListener);
+    return () => {
+      window.removeEventListener('currencyChange', handleCurrencyChange as EventListener);
+    };
+  }, [])
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -95,6 +116,43 @@ export default function ImageUpload() {
       fileInputRef.current.click()
     }
   }
+
+  // Format date helper for display
+  function formatDate(dateString: string): string {
+    if (!dateString) return 'N/A'
+    
+    try {
+      const date = new Date(dateString)
+      if (isNaN(date.getTime())) {
+        return 'Invalid date'
+      }
+      
+      return new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }).format(date)
+    } catch (e) {
+      console.error('Error formatting date:', e)
+      return 'Invalid date'
+    }
+  }
+
+  // Get currency symbol based on selected currency
+  const getCurrencySymbol = (currencyCode: string): string => {
+    const symbols: {[key: string]: string} = {
+      'USD': '$',
+      'EUR': '€',
+      'GBP': '£',
+      'ILS': '₪',
+      'JPY': '¥',
+      'CNY': '¥',
+      'INR': '₹',
+      'BTC': '₿'
+    };
+    
+    return symbols[currencyCode] || currencyCode;
+  };
 
   return (
     <div className="text-center w-full">
@@ -216,6 +274,37 @@ export default function ImageUpload() {
                 </div>
                 <p className="text-lg font-medium">Processing Complete</p>
               </div>
+              
+              {/* New: Display response details */}
+              <div className="bg-white rounded-lg shadow-sm p-4 my-4">
+                <h3 className="text-primary font-medium mb-3 text-sm uppercase flex items-center justify-center">
+                  <MdInfo className="mr-1" /> Reading Details
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600 flex items-center">
+                      <MdCalendarMonth className="mr-1.5 text-primary" /> Date
+                    </span>
+                    <span className="font-medium">{formatDate(result.date)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600 flex items-center">
+                      <MdElectricalServices className="mr-1.5 text-primary" /> Consumption
+                    </span>
+                    <span className="font-medium">{result.total_kwh_consumed} kWh</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600 flex items-center">
+                      <MdAttachMoney className="mr-1.5 text-primary" /> Cost
+                    </span>
+                    <span className="font-medium">{getCurrencySymbol(currency)}{result.price.toFixed(2)}</span>
+                  </div>
+                </div>
+                <div className="mt-3 text-xs text-gray-500 text-center">
+                  Saved successfully to your consumption history
+                </div>
+              </div>
+              
               <button
                 onClick={() => {
                   resetSelection();

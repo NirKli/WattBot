@@ -141,8 +141,8 @@ function App() {
             {/* Footer */}
             <footer className="bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200 dark:from-gray-900 dark:to-gray-800 dark:border-gray-800">
                 <div className="container mx-auto px-4">
-                    <div className="flex justify-between items-center py-4">
-                        <p className="text-sm text-text-muted">
+                    <div className="flex flex-col sm:flex-row justify-between items-center py-4 gap-2">
+                        <p className="text-sm text-text-muted text-center sm:text-left">
                             © {new Date().getFullYear()} WattBot — Electricity Consumption Monitoring
                         </p>
                         <div className="flex items-center">

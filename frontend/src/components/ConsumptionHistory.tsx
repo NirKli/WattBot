@@ -408,7 +408,7 @@ export default function ConsumptionHistory() {
           </div>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
+          <table className="w-full border-collapse responsive-table">
             <thead>
               <tr className="text-left">
                 <th className="py-4 px-6 text-primary font-medium text-sm tracking-wider">
@@ -429,14 +429,18 @@ export default function ConsumptionHistory() {
               {readings.map((reading) => (
                 <React.Fragment key={reading._id}>
                   <tr className="border-t border-gray-200 hover:bg-gray-50 transition-colors">
-                    <td className="py-4 px-6 text-dark">{formatDate(reading.date)}</td>
-                    <td className="py-4 px-6">
+                    <td className="py-4 px-6 text-dark" data-label="Date">
+                      {formatDate(reading.date)}
+                    </td>
+                    <td className="py-4 px-6" data-label="Consumption">
                       <span className="font-medium text-primary">{reading.total_kwh_consumed.toFixed(2)}</span>
                       <span className="text-muted text-sm ml-1">kWh</span>
                     </td>
-                    <td className="py-4 px-6 font-medium text-primary">{getCurrencySymbol(currency)}{reading.price.toFixed(4)}</td>
-                    <td className="py-4 px-6">
-                      <div className="flex gap-2">
+                    <td className="py-4 px-6 font-medium text-primary" data-label="Price">
+                      {getCurrencySymbol(currency)}{reading.price.toFixed(4)}
+                    </td>
+                    <td className="py-4 px-6" data-label="Actions">
+                      <div className="flex gap-2 action-buttons">
                         <button
                           onClick={() => handleEditClick(reading._id)}
                           className="btn-outline-secondary py-1.5 px-3 rounded-lg text-sm flex items-center"
