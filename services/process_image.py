@@ -51,11 +51,11 @@ class ProcessImage:
                 DETECT_FOLDER + "labels/" + temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".txt"),
                 temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".txt")))
 
-        db_save.save_monthly_consumption_to_db(monthly_consumption)
+        monthly_consumption_id = db_save.save_monthly_consumption_to_db(monthly_consumption)
 
         cleanup(temp_file_path, DETECT_FOLDER)
 
-        return monthly_consumption
+        return db_save.get_monthly_consumption_from_db(monthly_consumption_id)
 
 
 def extract_file_name_type(file_name):

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
 import { MdOutlineUploadFile, MdClose, MdAddPhotoAlternate, MdRestartAlt, MdDone, MdInfo, MdCalendarMonth, MdElectricalServices, MdAttachMoney } from 'react-icons/md'
+import { API_URL } from '../config'
 
 interface MonthlyConsumption {
   modified_date: string;
@@ -82,7 +83,7 @@ export default function ImageUpload() {
 
     try {
       console.log('Sending request to backend...')
-      const response = await axios.post('http://localhost:8000/monthly-consumption', formData, {
+      const response = await axios.post(`${API_URL}/monthly-consumption`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

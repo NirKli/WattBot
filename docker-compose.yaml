@@ -1,0 +1,28 @@
+services:
+  wattbot:
+    image: test/wattbot:0.0.0
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      MONGODB_URL: "host.docker.internal:27017"
+
+  wattbot-ui:
+    image: test/wattbot-ui:0.0.0
+    restart: always
+    ports:
+      - "80:80"
+    environment:
+      API_URL: "http://backend:8000"
+
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb:/data/db
+
+volumes:
+  mongodb:

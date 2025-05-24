@@ -36,44 +36,25 @@ file uploads and retrievals for consumption-related data.
     - pip (for Python dependencies)
     - npm (for JavaScript/TypeScript dependencies)
 
-## Installation
 
-### Prerequisites
+## Project Overview
 
-- Python 3.9+
-- Node.js and npm
-- MongoDB
+This project includes a frontend and backend, both containerized using Docker Compose.
 
-### Backend Setup
+### How to Run
 
-**Docker will be added in the future, for backend and frontend.**
+No manual setup is needed. Just run:
 
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd <repository-folder>
-   ```
-2. Install Python dependencies:
-   pip install -r requirements.txt
-3. Start MongoDB: Ensure MongoDB is running locally on mongodb://localhost:27017/.
-4. Run the FastAPI server:
-   ```bash
-   uvicorn main:app --reload
-   ```
-   The API will be available at http://127.0.0.1:8000.
+```bash
+docker compose pull
+docker compose up -d
+```
 
-### Frontend Setup
+Once running, open your browser at:
 
-1. Install dependencies:
-    ```bash
-    cd frontend
-    npm install
-    ```
-2. Start the React development server:
-    ```bash
-    npm start
-    ```
-   The frontend will be available at http://localhost:5173.
+http://localhost
+
+(Port 80 is exposed by default)
 
 ### API Endpoints
 

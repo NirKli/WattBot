@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 import gridfs
@@ -9,7 +10,7 @@ from services.model.ElectricityPrice import ElectricityPrice
 from services.model.MonthlyConsumption import MonthlyConsumption
 from services.model.Settings import Settings
 
-mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
+mongo_client = pymongo.MongoClient("mongodb://" + os.environ["MONGODB_URL"])
 
 mongo_db = mongo_client["monthly-consumption"]
 save_imgs_db = gridfs.GridFSBucket(mongo_db)
@@ -116,18 +117,21 @@ def calculate_price_from_current_consumption_from_last_month(current_total_kwh_c
     if not settings.calculate_price:
         return 0.0
     collection = mongo_db["monthly_consumptions"]
-    last_month_consumption = collection.find().sort("date", pymongo.DESCENDING).limit(1)
+    last_month_consumption = list(collection.find().sort("date", pymongo.DESCENDING).limit(1))
     if last_month_consumption:
-        last_month_consumption = list(last_month_consumption)[0]
-        last_month_total_kwh_consumed = last_month_consumption["total_kwh_consumed"]
         collection = mongo_db["electricity-prices"]
-        electricity_price = collection.find().sort("date", pymongo.DESCENDING).limit(1)
+        electricity_price = list(collection.find().sort("date", pymongo.DESCENDING).limit(1))
         if electricity_price:
-            return electricity_price[0]["price"] * (current_total_kwh_consumed - last_month_total_kwh_consumed)
+            return electricity_price[0]["price"] * (current_total_kwh_consumed - last_month_consumption[0]["total_kwh_consumed"])
         else:
             raise NoObjectHasFoundException()
     else:
-        raise NoObjectHasFoundException()
+        collection = mongo_db["electricity-prices"]
+        electricity_price = list(collection.find().sort("date", pymongo.DESCENDING).limit(1))
+        if electricity_price:
+            return electricity_price[0]["price"] * current_total_kwh_consumed
+        else:
+            raise NoObjectHasFoundException()
 
 
 def get_file_from_db(file_id):

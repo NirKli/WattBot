@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { MdAdd, MdDelete, MdEdit, MdSave, MdTimeline, MdAttachMoney, MdInfo, MdClose, MdCheck } from 'react-icons/md'
 import { FaChartLine, FaRegCalendarAlt, FaRegClock, FaSortDown, FaSortUp, FaSort } from 'react-icons/fa'
+import { API_URL } from '../config'
 
 interface ElectricityPrice {
   _id: string;
@@ -110,7 +111,7 @@ export default function PriceManagement() {
       setLoading(true)
       setError(null)
       
-      const response = await axios.get('http://localhost:8000/electricity-prices')
+      const response = await axios.get(`${API_URL}/electricity-prices`)
       setElectricityPrices(response.data)
       
       // Find current price (most recent date that's not in the future)
@@ -219,7 +220,7 @@ export default function PriceManagement() {
     setSuccessMessage(null)
     
     try {
-      await axios.post('http://localhost:8000/electricity-price', newPrice)
+      await axios.post(`${API_URL}/electricity-price`, newPrice)
       
       setSuccessMessage('New price added successfully')
       setShowAddForm(false)
@@ -247,7 +248,7 @@ export default function PriceManagement() {
     setSuccessMessage(null)
     
     try {
-      await axios.put(`http://localhost:8000/electricity-price/${editForm._id}`, {
+      await axios.put(`${API_URL}/electricity-price/${editForm._id}`, {
         _id: editForm._id,
         price: editForm.price,
         date: editForm.date,
@@ -278,7 +279,7 @@ export default function PriceManagement() {
     setSuccessMessage(null)
     
     try {
-      await axios.delete(`http://localhost:8000/electricity-price/${id}`)
+      await axios.delete(`${API_URL}/electricity-price/${id}`)
       
       setSuccessMessage('Price deleted successfully')
       

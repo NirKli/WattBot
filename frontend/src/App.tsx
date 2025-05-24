@@ -12,7 +12,6 @@ import './App.css'
 function App() {
     // Using 0 as default tab without the setter since we're not changing it
     const defaultTab = 0
-    const [currency, setCurrency] = useState('USD')
     const [darkMode, setDarkMode] = useState(false)
 
     // Check for dark mode
@@ -37,27 +36,6 @@ function App() {
         observer.observe(document.documentElement, { attributes: true });
         
         return () => observer.disconnect();
-    }, []);
-
-    // Listen for currency changes from Settings component
-    useEffect(() => {
-        const handleCurrencyChange = (e: CustomEvent) => {
-            if (e.detail && e.detail.currency) {
-                setCurrency(e.detail.currency);
-            }
-        };
-
-        window.addEventListener('currencyChange', handleCurrencyChange as EventListener);
-        
-        // Get initial currency from localStorage
-        const savedCurrency = localStorage.getItem('currency');
-        if (savedCurrency) {
-            setCurrency(savedCurrency);
-        }
-        
-        return () => {
-            window.removeEventListener('currencyChange', handleCurrencyChange as EventListener);
-        };
     }, []);
 
     return (

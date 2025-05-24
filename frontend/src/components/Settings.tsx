@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config';
 import { 
   MdDarkMode, 
   MdLightMode, 
@@ -11,12 +12,6 @@ import {
   MdWarning,
   MdInfo
 } from 'react-icons/md';
-
-interface SettingsData {
-  darkMode: boolean;
-  currency: string;
-  calculatePrice: boolean;
-}
 
 const Settings = () => {
   // Settings state
@@ -48,7 +43,7 @@ const Settings = () => {
       setLoading(true);
       setError(null);
       
-      const response = await axios.get('http://localhost:8000/settings');
+      const response = await axios.get(`${API_URL}/settings`);
       const settings = response.data;
       
       // Apply settings from API - convert from snake_case to camelCase
@@ -156,16 +151,10 @@ const Settings = () => {
       setSaving(true);
       setError(null);
       
-      // Create settings data object with proper snake_case for backend
-      const settingsData: SettingsData = {
-        darkMode,
-        currency,
-        calculatePrice
-      };
       
       // Try to save to API first - convert from camelCase to snake_case for backend
       try {
-        await axios.put('http://localhost:8000/settings', {
+        await axios.put(`${API_URL}/settings`, {
           dark_mode: darkMode,
           currency: currency,
           calculate_price: calculatePrice

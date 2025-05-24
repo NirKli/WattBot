@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { API_URL } from '../config'
 // Import Material Design icons
 import { MdArrowUpward, MdOutlineElectricMeter } from "react-icons/md";
-import { FaCalendarAlt, FaClock, FaDollarSign } from "react-icons/fa";
+import { FaCalendarAlt, FaClock } from "react-icons/fa";
 
 interface MonthlyConsumption {
   modified_date: string;
@@ -47,15 +48,14 @@ export default function LatestReading() {
   useEffect(() => {
     // If we have a latest reading with a label file, fetch the image
     if (latestReading?.label_file) {
-      const apiBaseUrl = 'http://localhost:8000';
-      const imageUrl = `${apiBaseUrl}/monthly-consumption/file/${latestReading.label_file}`;
+      const imageUrl = `${API_URL}/monthly-consumption/file/${latestReading.label_file}`;
       setLabelImageUrl(imageUrl);
     }
   }, [latestReading])
 
   const fetchLatestReading = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/monthly-consumption')
+      const response = await axios.get(`${API_URL}/monthly-consumption`)
       const readings = response.data
       if (readings.length > 0) {
         // Sort by date in descending order and get the latest with safe date parsing

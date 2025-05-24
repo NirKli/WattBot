@@ -52,7 +52,6 @@ const Tabs: React.FC<TabsProps> = ({ children, defaultTab = 0, className = '' })
         const tabLeft = activeTabElement.offsetLeft;
         const tabWidth = activeTabElement.offsetWidth;
         const containerWidth = container.offsetWidth;
-        const scrollLeft = container.scrollLeft;
         
         // Center the tab in the container
         const targetScrollLeft = tabLeft - (containerWidth / 2) + (tabWidth / 2);

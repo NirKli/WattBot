@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { MdBarChart, MdElectricBolt, MdInfo, MdCalendarToday, MdTrendingUp, MdEdit, MdSave, MdClose, MdCheck, MdDelete, MdImage, MdLabel, MdDescription } from 'react-icons/md'
 import { FaLightbulb, FaCalendarDay, FaImage, FaClipboard } from 'react-icons/fa'
+import { API_URL } from '../config'
 
 interface MonthlyConsumption {
   modified_date: string;
@@ -74,7 +75,7 @@ export default function ConsumptionHistory() {
 
   const fetchReadings = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/monthly-consumption')
+      const response = await axios.get(`${API_URL}/monthly-consumption`)
       
       // Sort readings by date (newest first) with safe date parsing
       const sortedReadings = response.data.sort((a: MonthlyConsumption, b: MonthlyConsumption) => {
@@ -163,7 +164,7 @@ export default function ConsumptionHistory() {
     if (!editingReading) return;
     
     try {
-      await axios.put(`http://localhost:8000/monthly-consumption/${id}`, editingReading);
+      await axios.put(`${API_URL}/monthly-consumption/${id}`, editingReading);
       
       // Update the local state with the edited reading
       setReadings(prev => prev.map(reading => 
@@ -238,7 +239,7 @@ export default function ConsumptionHistory() {
   // Handle actual deletion
   const handleDeleteConfirm = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:8000/monthly-consumption/${id}`);
+      await axios.delete(`${API_URL}/monthly-consumption/${id}`);
       
       // Update the local state by removing the deleted reading
       setReadings(prev => prev.filter(reading => reading._id !== id));
@@ -262,22 +263,9 @@ export default function ConsumptionHistory() {
   // Function to fetch file from the server
   const getFileUrl = (fileId: string | undefined): string => {
     if (!fileId) return '';
-    return `http://localhost:8000/monthly-consumption/file/${fileId}`;
+    return `${API_URL}/monthly-consumption/file/${fileId}`;
   };
 
-  // Get readable file type name
-  const getFileTypeName = (fileType: 'original' | 'labeled' | 'text'): string => {
-    switch (fileType) {
-      case 'original':
-        return 'Original Image';
-      case 'labeled':
-        return 'Labeled Image';
-      case 'text':
-        return 'Text Labels';
-      default:
-        return '';
-    }
-  };
 
   if (loading) {
     return (
