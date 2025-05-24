@@ -8,25 +8,26 @@ from ultralytics import YOLO
 from services import db_save
 from services.model.MonthlyConsumption import MonthlyConsumption
 
+DETECT_FOLDER = "runs/obb/predict/"
 
 class ProcessImage:
     model = YOLO("models/best.pt")
 
     def process_image(self, file: UploadFile):
-        cleanup("", "runs/detect/predict/")
+        cleanup("", DETECT_FOLDER)
         temp_file_path = f"temp_{file.filename}"
         with open(temp_file_path, "wb") as temp_file:
             shutil.copyfileobj(file.file, temp_file)
 
-        results = self.model(temp_file_path, save=True, save_dir="process_imgs", rect=True, save_txt=True)
+        results = self.model(temp_file_path, save=True, save_dir="process_imgs", rect=True, save_txt=True, imgsz=2048)
         # results[0].show()
 
         detections = []
-        for box in results[0].boxes:
+        for box in results[0].obb:
             cls = int(box.cls.item())
             conf = float(box.conf.item())
             label = self.model.names[cls]
-            x_center = box.xywh[0][0].item()
+            x_center = box.xywhr[0][0].item()
             detections.append((x_center, label, conf))
 
         detections.sort(key=lambda x: x[0])
@@ -44,15 +45,15 @@ class ProcessImage:
             price=0.0,
             original_file=db_save.save_file_to_db(temp_file_path, file.filename),
             file_name=file.filename,
-            label_file=db_save.save_file_to_db("runs/detect/predict/" + temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".jpg"),
+            label_file=db_save.save_file_to_db(DETECT_FOLDER + temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".jpg"),
                                                temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".jpg")),
             file_label_name=db_save.save_file_to_db(
-                "runs/detect/predict/labels/" + temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".txt"),
+                DETECT_FOLDER + "labels/" + temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".txt"),
                 temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".txt")))
 
         db_save.save_monthly_consumption_to_db(monthly_consumption)
 
-        cleanup(temp_file_path, "runs/detect/predict/")
+        cleanup(temp_file_path, DETECT_FOLDER)
 
         return monthly_consumption
 
