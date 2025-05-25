@@ -156,52 +156,42 @@ export default function LatestReading() {
   }
 
   return (
-    <div className="flex flex-col items-center text-center w-full">
-      {/* Display meter icon or labeled meter image */}
-      {labelImageUrl ? (
-        <div className="mb-6 w-full max-w-[240px] shadow rounded overflow-hidden">
+    <div className="max-w-xs mx-auto rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 flex flex-col items-center space-y-4">
+      {/* Icon or Image */}
+      <div className="w-24 h-24 rounded-lg overflow-hidden shadow bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+        {labelImageUrl ? (
           <img 
             src={labelImageUrl} 
             alt="Latest meter reading" 
-            className="w-full object-contain"
+            className="object-cover w-full h-full"
           />
-        </div>
-      ) : (
-        <div className="mb-6 w-full max-w-[240px] flex items-center justify-center h-[180px] bg-light rounded shadow-sm">
-          <MdOutlineElectricMeter className="text-primary w-24 h-24 opacity-50" />
-        </div>
-      )}
-      
-      <div className="flex items-center justify-center mb-4 bg-light rounded-full py-2 px-4 shadow-sm">
-        <MdArrowUpward className="text-primary mr-2 text-xl" />
-        <p className="text-3xl font-medium text-primary">
-          {latestReading.total_kwh_consumed.toFixed(2)}
-        </p>
+        ) : (
+          <MdOutlineElectricMeter className="text-primary w-16 h-16 opacity-60" />
+        )}
       </div>
-      
-      <p className="text-base text-muted mb-5 flex items-center justify-center">
-        <MdOutlineElectricMeter className="text-muted mr-1" /> kWh
-      </p>
-      
-      <div className="flex items-center justify-center mb-5 mt-2">
-        <div className="w-6 h-6 rounded-full bg-success text-white flex items-center justify-center mr-2">
-          <span className="text-white text-xs font-bold">{getCurrencySymbol(currency)}</span>
-        </div>
-        <p className="text-2xl font-medium text-primary">
-          {parseFloat(latestReading.price.toFixed(2)).toFixed(2)}
-        </p>
+
+      {/* Main Value */}
+      <div className="flex flex-col items-center">
+        <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">{latestReading.total_kwh_consumed.toFixed(2)}</span>
+        <span className="text-sm text-gray-500 dark:text-gray-400 flex items-center"><MdOutlineElectricMeter className="mr-1" />kWh</span>
       </div>
-      
-      <div className="flex flex-col gap-2 mt-2">
-        <p className="text-base text-muted flex items-center justify-center bg-light py-1 px-4 rounded-full shadow-sm">
-          <FaCalendarAlt className="text-muted mr-2" />
+
+      {/* Sub Value */}
+      <div className="flex items-center space-x-2">
+        <span className="w-6 h-6 rounded-full bg-success text-white flex items-center justify-center text-xs font-bold">{getCurrencySymbol(currency)}</span>
+        <span className="text-blue-600 dark:text-blue-400 font-semibold text-lg">{parseFloat(latestReading.price.toFixed(2)).toFixed(2)}</span>
+      </div>
+
+      {/* Date & Time Pills */}
+      <div className="flex flex-col items-center space-y-1">
+        <span className="flex items-center px-3 py-1 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 text-xs font-medium">
+          <FaCalendarAlt className="w-4 h-4 mr-1 text-gray-500 dark:text-gray-400" />
           {formatDate(latestReading.date)}
-        </p>
-        
-        <p className="text-base text-muted flex items-center justify-center bg-light py-1 px-4 rounded-full shadow-sm">
-          <FaClock className="text-muted mr-2" />
+        </span>
+        <span className="flex items-center px-3 py-1 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 text-xs font-medium">
+          <FaClock className="w-4 h-4 mr-1 text-gray-500 dark:text-gray-400" />
           09:35 PM
-        </p>
+        </span>
       </div>
     </div>
   )

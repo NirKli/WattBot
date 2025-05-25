@@ -19,7 +19,7 @@ class ProcessImage:
         with open(temp_file_path, "wb") as temp_file:
             shutil.copyfileobj(file.file, temp_file)
 
-        results = self.model(temp_file_path, save=True, save_dir="process_imgs", rect=True, save_txt=True, imgsz=2048)
+        results = self.model(temp_file_path, save=True, rect=True, save_txt=True, imgsz=2048, conf=0.45)
         # results[0].show()
 
         detections = []

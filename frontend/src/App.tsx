@@ -6,7 +6,7 @@ import PriceManagement from './components/PriceManagement'
 import Settings from './components/Settings'
 import Tabs, { Tab } from './components/Tabs'
 // Import icons
-import { MdElectricBolt, MdOutlineUploadFile, MdHistory, MdAttachMoney, MdDashboard, MdWbSunny, MdSettings } from "react-icons/md";
+import { MdElectricBolt, MdOutlineUploadFile, MdHistory, MdAttachMoney, MdDashboard, MdWbSunny, MdSettings, MdRestartAlt } from "react-icons/md";
 import './App.css'
 
 function App() {
@@ -39,24 +39,24 @@ function App() {
     }, []);
 
     return (
-        <div className="flex flex-col min-h-screen font-sans">
+        <div className="flex flex-col min-h-screen font-sans bg-white dark:bg-gray-900">
             {/* Modern header with gradient */}
-            <header className={`bg-gradient-to-r ${darkMode ? 'from-primary-dark to-primary' : 'from-primary-dark to-primary'} shadow-md`}>
+            <header className="bg-gray-900 shadow-md">
                 <div className="container mx-auto px-4 py-3 flex justify-between items-center">
                     <div className="flex items-center">
                         <div className="bg-white/10 backdrop-blur-sm rounded-lg mr-3 p-2 flex items-center justify-center">
                             <MdElectricBolt size={28} className="text-white" />
                         </div>
                         <div>
-                            <h1 className="font-bold text-2xl text-white">WattBot</h1>
-                            <p className="text-xs text-white/80">Electricity Meter Reading Assistant</p>
+                            <h1 className="font-bold text-2xl !text-white">WattBot</h1>
+                            <p className="text-xs text-white">Electricity Meter Reading Assistant</p>
                         </div>
                     </div>
                 </div>
             </header>
 
             {/* Main content area */}
-            <main className="flex-1 py-6 bg-light dark:bg-bg-light">
+            <main className="flex-1 py-6 bg-white dark:bg-gray-900">
                 <div className="container mx-auto px-4">
                     {/* App description banner */}
                     <div className={`bg-gradient-to-r from-primary to-primary-dark text-white rounded-lg mb-6 overflow-hidden shadow-md`}>
@@ -64,13 +64,13 @@ function App() {
                             <div className="flex items-center">
                                 <MdDashboard size={24} className="mr-3" />
                                 <div>
-                                    <h2 className="text-lg font-semibold">Electricity Management Dashboard</h2>
-                                    <p className="text-sm opacity-90">Track and manage your electricity consumption and prices</p>
+                                    <h2 className="text-lg font-semibold text-white dark:text-white">Electricity Management Dashboard</h2>
+                                    <p className="text-sm opacity-90 text-white dark:text-gray-200">Track and manage your electricity consumption and prices</p>
                                 </div>
                             </div>
                             <div className="hidden md:flex items-center bg-white/10 rounded-full px-3 py-1">
                                 <MdWbSunny className="mr-1 text-secondary-light" /> 
-                                <span className="text-sm">Energy Saver</span>
+                                <span className="text-sm text-white dark:text-gray-200">Energy Saver</span>
                             </div>
                         </div>
                     </div>
@@ -80,7 +80,7 @@ function App() {
                         <Tab label="Upload Reading" icon={<MdOutlineUploadFile />}>
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                 {/* Upload Card - Left Side */}
-                                <div className="card p-6 relative overflow-hidden">
+                                <div className="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 sm:p-6 flex flex-col items-center space-y-4">
                                     <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 dark:bg-primary/10 rounded-bl-full"></div>
                                     <div className="flex flex-col items-center relative z-10">
                                         {/* Electric Meter SVG Illustration */}

@@ -159,11 +159,11 @@ export default function ImageUpload() {
     <div className="text-center w-full">
       {!preview && !result ? (
         <>
-          <div className="bg-white shadow-sm rounded p-6 mb-4">
-            <p className="text-sm text-primary mb-1">
+          <div className="bg-white dark:bg-gray-800 shadow-sm rounded p-6 mb-4 border border-gray-200 dark:border-gray-700">
+            <p className="text-sm text-primary dark:text-blue-400 mb-1">
               Select an image to upload
             </p>
-            <p className="text-xs text-muted mb-4">
+            <p className="text-xs text-muted dark:text-gray-400 mb-4">
               PNG or JPG format
             </p>
             <button
@@ -181,7 +181,7 @@ export default function ImageUpload() {
               className="hidden"
             />
           </div>
-          <div className="text-xs text-muted italic">
+          <div className="text-xs text-muted dark:text-gray-400 italic">
             Supported meter types: Digital, Analog
           </div>
         </>
@@ -189,7 +189,7 @@ export default function ImageUpload() {
         <div className="w-full max-w-sm mx-auto">
           {preview && !result && (
             <div className="mb-6">
-              <div className="relative rounded overflow-hidden shadow">
+              <div className="relative rounded overflow-hidden shadow bg-gray-100 dark:bg-gray-700">
                 <img 
                   src={preview} 
                   alt="Preview" 
@@ -199,13 +199,13 @@ export default function ImageUpload() {
                   onClick={() => {
                     resetSelection();
                   }}
-                  className="absolute top-2 right-2 bg-white shadow text-danger rounded-full p-1.5 text-sm"
+                  className="absolute top-2 right-2 bg-white dark:bg-gray-800 shadow text-danger rounded-full p-1.5 text-sm border border-gray-200 dark:border-gray-700"
                 >
                   <MdClose size={16} />
                 </button>
               </div>
               {fileName && (
-                <p className="mt-3 text-center text-sm text-primary flex items-center justify-center bg-light py-2 px-4 rounded-full mx-auto w-fit">
+                <p className="mt-3 text-center text-sm text-primary dark:text-blue-400 flex items-center justify-center bg-gray-100 dark:bg-gray-700 py-2 px-4 rounded-full mx-auto w-fit">
                   <MdOutlineUploadFile className="mr-2" size={20} /> {fileName}
                 </p>
               )}
@@ -277,31 +277,31 @@ export default function ImageUpload() {
               </div>
               
               {/* New: Display response details */}
-              <div className="bg-white rounded-lg shadow-sm p-4 my-4">
-                <h3 className="text-primary font-medium mb-3 text-sm uppercase flex items-center justify-center">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 my-4 border border-gray-200 dark:border-gray-700">
+                <h3 className="text-primary dark:text-blue-400 font-medium mb-3 text-sm uppercase flex items-center justify-center">
                   <MdInfo className="mr-1" /> Reading Details
                 </h3>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600 flex items-center">
-                      <MdCalendarMonth className="mr-1.5 text-primary" /> Date
+                    <span className="text-gray-600 dark:text-gray-300 flex items-center">
+                      <MdCalendarMonth className="mr-1.5 text-primary dark:text-blue-400" /> Date
                     </span>
                     <span className="font-medium">{formatDate(result.date)}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600 flex items-center">
-                      <MdElectricalServices className="mr-1.5 text-primary" /> Consumption
+                    <span className="text-gray-600 dark:text-gray-300 flex items-center">
+                      <MdElectricalServices className="mr-1.5 text-primary dark:text-blue-400" /> Consumption
                     </span>
                     <span className="font-medium">{result.total_kwh_consumed} kWh</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600 flex items-center">
-                      <MdAttachMoney className="mr-1.5 text-primary" /> Cost
+                    <span className="text-gray-600 dark:text-gray-300 flex items-center">
+                      <MdAttachMoney className="mr-1.5 text-primary dark:text-blue-400" /> Cost
                     </span>
                     <span className="font-medium">{getCurrencySymbol(currency)}{result.price.toFixed(2)}</span>
                   </div>
                 </div>
-                <div className="mt-3 text-xs text-gray-500 text-center">
+                <div className="mt-3 text-xs text-gray-500 dark:text-gray-400 text-center">
                   Saved successfully to your consumption history
                 </div>
               </div>
