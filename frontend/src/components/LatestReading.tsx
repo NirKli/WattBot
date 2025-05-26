@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { API_URL } from '../config'
 // Import Material Design icons
-import { MdArrowUpward, MdOutlineElectricMeter } from "react-icons/md";
+import { MdOutlineElectricMeter } from "react-icons/md";
 import { FaCalendarAlt, FaClock } from "react-icons/fa";
 
 interface MonthlyConsumption {

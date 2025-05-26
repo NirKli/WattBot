@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import { useEffect } from 'react'
 import ImageUpload from './components/ImageUpload'
 import ConsumptionHistory from './components/ConsumptionHistory'
 import LatestReading from './components/LatestReading'
@@ -6,19 +6,17 @@ import PriceManagement from './components/PriceManagement'
 import Settings from './components/Settings'
 import Tabs, { Tab } from './components/Tabs'
 // Import icons
-import { MdElectricBolt, MdOutlineUploadFile, MdHistory, MdAttachMoney, MdDashboard, MdWbSunny, MdSettings, MdRestartAlt } from "react-icons/md";
+import { MdElectricBolt, MdOutlineUploadFile, MdHistory, MdAttachMoney, MdDashboard, MdWbSunny, MdSettings } from "react-icons/md";
 import './App.css'
 
 function App() {
     // Using 0 as default tab without the setter since we're not changing it
     const defaultTab = 0
-    const [darkMode, setDarkMode] = useState(false)
 
     // Check for dark mode
     useEffect(() => {
         const checkDarkMode = () => {
-            const isDarkMode = document.documentElement.classList.contains('dark');
-            setDarkMode(isDarkMode);
+            document.documentElement.classList.contains('dark');
         };
         
         // Check initial state
