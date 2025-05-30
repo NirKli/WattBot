@@ -1,104 +1,86 @@
-# Monthly Consumption Management System
+# ⚡️ WattBot – Electricity Meter Reading Assistant
 
-This project is a **Monthly Consumption Management System** built using Python, FastAPI, MongoDB, and React. It provides
-APIs for managing monthly electricity consumption data, electricity prices, and user settings. The system also supports
-file uploads and retrievals for consumption-related data.
-
-## Features
-
-- **Monthly Consumption Management**:
-    - Add, update, retrieve, and delete monthly consumption records.
-    - Calculate electricity prices based on consumption data.
-
-- **File Management**:
-    - Upload and retrieve files (e.g., images) associated with consumption records.
-
-- **Settings Management**:
-    - Manage user settings such as currency and dark mode preferences.
-
-- **Electricity Price Management**:
-    - Add, update, retrieve, and delete electricity price records.
-
-## Technologies Used
-
-- **Backend**:
-    - Python
-    - FastAPI
-    - MongoDB (with GridFS for file storage)
-    - Pydantic for data validation
-
-- **Frontend**:
-    - React
-    - TypeScript
-    - JavaScript
-
-- **Package Managers**:
-    - pip (for Python dependencies)
-    - npm (for JavaScript/TypeScript dependencies)
-
-
-## Project Overview
-
-This project includes a frontend and backend, both containerized using Docker Compose.
-
-### How to Run
-
-No manual setup is needed. Just run:
-
-```bash
-docker compose pull
-docker compose up -d
-```
-
-Once running, open your browser at:
-
-http://localhost
-
-(Port 80 is exposed by default)
-
-### API Endpoints
-
-#### Monthly Consumption
-
-- **POST** `/monthly-consumption`: Upload and process a file to create a new monthly consumption record.
-- **GET** `/monthly-consumption/{id}`: Retrieve a specific monthly consumption record by ID.
-- **PUT** `/monthly-consumption/{id}`: Update a specific monthly consumption record by ID.
-- **DELETE** `/monthly-consumption/{id}`: Delete a specific monthly consumption record by ID.
-- **GET** `/monthly-consumption`: Retrieve all monthly consumption records.
-- **GET** `/monthly-consumption/file/{file_id}`: Retrieve a file associated with a consumption record.
-
-#### Settings
-
-- **GET** `/settings`: Retrieve user settings.
-- **PUT** `/settings`: Update user settings.
-
-#### Electricity Prices
-
-- **GET** `/prices`: Retrieve all electricity prices.
-- **POST** `/prices`: Add a new electricity price.
-- **PUT** `/prices/{id}`: Update an electricity price by ID.
-- **DELETE** `/prices/{id}`: Delete an electricity price by ID.
+WattBot is a modern web application that allows you to upload images of digital electricity meters and automatically detect readings using machine learning. The project includes a Python FastAPI backend and a React frontend with support for dark mode, currency selection, and price tracking.
 
 ---
 
-### Project Structure
+## 🚀 Features
 
-```plaintext
-.
-├── api/
-│   ├── monthly_consumption_routes.py
-│   ├── settings_routes.py
-│   ├── electricity_price_routes.py
-├── services/
-│   ├── db_save.py
-│   ├── model/
-│   │   ├── MonthlyConsumption.py
-│   │   ├── Settings.py
-│   │   ├── ElectricityPrice.py
-│   ├── exception/
-│   │   ├── NoObjectHasFoundException.py
-├── frontend/
-│   ├── (React application files)
-├── requirements.txt
-├── main.py
+- 📸 Upload electricity meter images
+- 🔍 Detect digital readings using a trained YOLO model
+- 🌙 Dark mode support
+- 💰 Track electricity prices and consumption history
+- 🛠 Built with FastAPI (Python) and React + Tailwind CSS
+- 🐳 Easy deployment via Docker
+
+---
+
+## 🧠 Tech Stack
+
+- **Frontend:** React, Tailwind CSS, TypeScript
+- **Backend:** FastAPI, Python 3.13, Uvicorn, Pydantic
+- **Machine Learning:** YOLOv11x-obb via Ultralytics
+- **Database:** MongoDB
+- **Containerization:** Docker, Docker Compose
+- **CI/CD:** GitHub Actions
+
+---
+
+## 📦 Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/wattbot.git
+cd wattbot
 ```
+
+### 2. Run with Docker Compose
+
+```bash
+docker-compose up --build
+```
+
+> Make sure you have Docker and Docker Compose installed.
+
+---
+
+## 🖼 Sample
+
+| Upload | Consumption Overview                                 |
+|--------|-----------------------------------------|
+| ![Upload UI](screenshots/upload-ui.png) | ![Result UI](screenshots/history-consumption.png) |
+
+---
+
+## 🌐 Local Development
+
+### Backend
+
+```bash
+cd backend
+uvicorn main:app --reload
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+## 🔍 API Documentation
+
+FastAPI automatically generates interactive API docs:
+
+- [Swagger UI](http://localhost:8000/docs) – Try out endpoints directly from the browser
+- [ReDoc](http://localhost:8000/redoc) – Clean reference-style documentation
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License – see the [LICENSE](./LICENSE) file for details.
