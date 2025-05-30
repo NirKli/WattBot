@@ -28,17 +28,13 @@ WattBot is a modern web application that allows you to upload images of digital 
 
 ## 📦 Installation
 
-### 1. Clone the repository
+1. **Create a new folder** and save the contents of `docker-compose.yml` from this repo into a file named `docker-compose.yml`.
+
+2. **Open a terminal in that folder** and run:
 
 ```bash
-git clone https://github.com/yourusername/wattbot.git
-cd wattbot
-```
-
-### 2. Run with Docker Compose
-
-```bash
-docker-compose up --build
+docker compose pull
+docker compose up -d
 ```
 
 > Make sure you have Docker and Docker Compose installed.
