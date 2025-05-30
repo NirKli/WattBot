@@ -222,6 +222,7 @@ def save_setting_to_db(setting: Settings):
         "_id": 1,
         "currency": setting.currency,
         "dark_mode": setting.dark_mode,
+        "debug_mode": setting.debug_mode,
         "calculate_price": setting.calculate_price,
         "created_at": datetime.now(),
         "updated_at": datetime.now()
@@ -239,6 +240,7 @@ def get_setting_from_db():
             currency=result["currency"],
             dark_mode=result["dark_mode"],
             calculate_price=result["calculate_price"],
+            debug_mode=result["debug_mode"],
             created_at=result["created_at"],
             updated_at=result["updated_at"]
         )
@@ -247,6 +249,7 @@ def get_setting_from_db():
             _id=1,
             currency="usd",
             dark_mode=False,
+            debug_mode=False,
             calculate_price=True,
             created_at=datetime.now(),
             updated_at=datetime.now()
@@ -259,19 +262,17 @@ def get_setting_from_db():
 
 def update_setting_in_db(updated_setting: Settings):
     existing_setting = get_setting_from_db()
-    existing_setting.currency = updated_setting.currency
-    existing_setting.dark_mode = updated_setting.dark_mode
-    existing_setting.calculate_price = updated_setting.calculate_price
-    existing_setting.updated_at = datetime.now()
-
     collection = mongo_db["settings"]
+
     updated_setting_dict = {
-        "currency": existing_setting.currency,
-        "dark_mode": existing_setting.dark_mode,
-        "calculate_price": existing_setting.calculate_price,
+        "currency": updated_setting.currency,
+        "dark_mode": updated_setting.dark_mode,
+        "debug_mode": updated_setting.debug_mode,
+        "calculate_price": updated_setting.calculate_price,
         "created_at": existing_setting.created_at,
-        "updated_at": existing_setting.updated_at
+        "updated_at": datetime.now()
     }
+
     result = collection.update_one({"_id": 1}, {"$set": updated_setting_dict})
 
     if result.modified_count == 0:

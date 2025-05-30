@@ -1,25 +1,76 @@
-import { useRef, useState, useEffect } from 'react'
-import { MdAddPhotoAlternate, MdClose, MdOutlineUploadFile } from 'react-icons/md'
-import axios from 'axios'
-import { API_URL } from '../config'
+import React, { useRef, useState, useEffect } from 'react';
+import axios from 'axios';
+import { API_URL } from '../config';
+
+
+interface MonthlyConsumption {
+  modified_date: string;
+  date: string;
+  total_kwh_consumed: number;
+  price: number;
+  original_file: any;
+  file_name: string;
+  label_file: any;
+  file_label_name: any;
+}
 
 export default function ImageUpload() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [preview, setPreview] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [latestReading, setLatestReading] = useState<MonthlyConsumption | null>(null);
+  const [latestLoading, setLatestLoading] = useState(true);
+  const [labelImageUrl, setLabelImageUrl] = useState<string | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [settings, setSettings] = useState<{ currency: string; debug_mode: boolean }>({
+    currency: 'ils',
+    debug_mode: false,
+  });
+  const getCurrencySymbol = (code: string): string => {
+    switch (code.toLowerCase()) {
+      case 'usd': return '$';
+      case 'eur': return '€';
+      case 'ils': return '₪';
+      case 'gbp': return '£';
+      default: return code.toUpperCase();
+    }
+  };
+
+
 
   useEffect(() => {
-    // Clean up preview URL
-    return () => {
-      if (preview) {
-        URL.revokeObjectURL(preview)
-      }
-    }
-  }, [preview])
+    fetchLatestReading();
+  }, []);
 
-  // Handle file selection (from input or drop)
+  useEffect(() => {
+    if (latestReading?.label_file) {
+      setLabelImageUrl(`${API_URL}/monthly-consumption/file/${latestReading.label_file}`);
+    }
+  }, [latestReading]);
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsPreviewOpen(false);
+    };
+    document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, []);
+
+  useEffect(() => {
+    axios.get(`${API_URL}/settings`)
+        .then(response => {
+          setSettings({
+            currency: response.data.currency || 'ils',
+            debug_mode: response.data.debug_mode || false
+          });
+        })
+        .catch(() => {
+          console.warn('Failed to fetch currency setting');
+        });
+  }, []);
+
   const handleFile = (file: File) => {
     if (!file.type.startsWith('image/')) {
       setError('Only image files are allowed.');
@@ -30,130 +81,145 @@ export default function ImageUpload() {
     setError(null);
   };
 
-  // Handle file input change
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) handleFile(file);
   };
 
-  // Handle drag and drop
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFile(e.dataTransfer.files[0]);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
-
-  // Remove selected image
-  const removeImage = () => {
-    if (preview) URL.revokeObjectURL(preview)
-    setSelectedFile(null)
-    setPreview(null)
-    setError(null)
-    if (fileInputRef.current) fileInputRef.current.value = ''
-  }
-
-  // Upload image
   const handleUpload = async () => {
-    if (!selectedFile) return
-
-    setLoading(true)
-    setError(null)
-
-    const formData = new FormData()
-    formData.append('file', selectedFile)
+    if (!selectedFile) return;
+    setLoading(true);
+    setError(null);
+    const formData = new FormData();
+    formData.append('file', selectedFile);
 
     try {
-      console.log('Sending request to backend...')
-      const response = await axios.post(`${API_URL}/monthly-consumption`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      console.log('Response received:', response.data)
-      
-      // Backend now returns proper JSON
-      removeImage()
-    } catch (err) {
-      console.error('Upload error:', err)
-      setError('Failed to process image. Please try again.')
+      await axios.post(`${API_URL}/monthly-consumption`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      fetchLatestReading();
+      setSelectedFile(null);
+      setPreview(null);
+    } catch {
+      setError('Failed to process image. Please try again.');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
+
+  const fetchLatestReading = async () => {
+    setLatestLoading(true);
+    try {
+      const response = await axios.get(`${API_URL}/monthly-consumption`);
+      const readings = response.data;
+      if (readings.length > 0) {
+        const sorted = readings.sort((a: MonthlyConsumption, b: MonthlyConsumption) =>
+            new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+        setLatestReading(sorted[0]);
+      }
+    } catch {
+      setLatestReading(null);
+    } finally {
+      setLatestLoading(false);
+    }
+  };
+
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+  };
 
   return (
-    <div className="w-full flex flex-col items-center p-4">
-      {/* Upload Area */}
-      {!preview ? (
-        <div
-          className="w-full max-w-md h-72 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-2xl bg-white dark:bg-gray-800 cursor-pointer transition-shadow hover:shadow-lg hover:bg-primary/10 focus:outline-none"
-          onClick={() => fileInputRef.current?.click()}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          tabIndex={0}
-          style={{ minHeight: 288 }}
-        >
-          <MdAddPhotoAlternate size={128} className="text-primary mb-4 transform scale-150" />
-          <p className="text-primary font-medium mb-1 text-center">Select or drag an image to upload</p>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFileSelect}
-            className="hidden"
-          />
-        </div>
-      ) : (
-        <div className="w-full max-w-2xl flex flex-col items-center">
-          <div className="relative w-full flex flex-col items-center">
-            <img
-              src={preview}
-              alt="Preview"
-              className="rounded-xl object-cover w-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800"
-              style={{ height: '600px' }}
-            />
-            <button
-              onClick={removeImage}
-              className="absolute top-2 right-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-1.5 shadow text-danger"
-              aria-label="Remove image"
-            >
-              <MdClose size={18} />
-            </button>
-          </div>
-          <button
-            onClick={handleUpload}
-            disabled={!selectedFile || loading}
-            className={`mt-4 w-full py-3 rounded-full flex items-center justify-center text-white font-semibold transition-all ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary hover:bg-primary-dark'}`}
+      <div className="max-w-2xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-xl shadow text-center">
+        <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Upload Image</h2>
+
+        <div className="mb-6 border-2 border-dashed border-gray-300 dark:border-gray-700 p-4 rounded-lg cursor-pointer">
+          <label
+              htmlFor="fileInput"
+              className="block text-center cursor-pointer text-gray-600 dark:text-gray-300"
           >
-            {loading ? (
-              <span className="flex items-center">
-                <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Uploading...
-              </span>
-            ) : (
-              <span className="flex items-center">
-                <MdOutlineUploadFile className="mr-2" size={24} /> Upload Image
-              </span>
-            )}
-          </button>
+            <p className="mb-2">Drag & drop or click to upload</p>
+            <span className="text-blue-600 dark:text-blue-400 font-medium">Select Image</span>
+          </label>
+          <input
+              id="fileInput"
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileSelect}
+              className="hidden"
+          />
+          {preview && (
+              <div className="w-full flex justify-center mt-4">
+                <div className="max-w-[20rem] max-h-[20rem] overflow-hidden rounded shadow border">
+                  <img
+                      src={preview}
+                      alt="Preview"
+                      className="w-full h-auto object-contain"
+                  />
+                </div>
+              </div>
+          )}
+          {selectedFile && (
+              <button
+                  onClick={handleUpload}
+                  disabled={loading}
+                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                {loading ? 'Uploading...' : 'Upload'}
+              </button>
+          )}
         </div>
-      )}
-      {error && (
-        <div className="mt-3 text-danger text-sm text-center bg-danger/10 border border-danger/30 rounded p-2">
-          {error}
-        </div>
-      )}
-      <div className="text-xs text-muted dark:text-gray-400 italic mt-2 text-center">
-        Supported meter type: Digital only
+
+
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Latest Reading</h3>
+        {latestLoading ? (
+            <p className="text-gray-500 dark:text-gray-400">Loading...</p>
+        ) : latestReading && labelImageUrl ? (
+            <>
+              <div className="flex flex-col items-center space-y-1">
+                <button onClick={() => setIsPreviewOpen(true)} className="focus:outline-none">
+                  <img
+                      src={`${API_URL}/monthly-consumption/file/${settings.debug_mode ? latestReading.label_file : latestReading.original_file}`}
+                      alt="Detected"
+                      className="mx-auto rounded border border-gray-300 dark:border-gray-600 shadow hover:opacity-90 transition max-w-[8rem] max-h-32 object-contain"
+                  />
+                </button>
+                <div className="text-sm text-gray-700 dark:text-gray-300 mt-1">
+                  {latestReading.total_kwh_consumed.toFixed(2)} kWh
+                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  {formatDate(latestReading.date)}
+                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  Monthly Cost: {getCurrencySymbol(settings.currency)}{latestReading.price.toFixed(2)}
+                </div>
+              </div>
+              {isPreviewOpen && (
+                  <div
+                      className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center"
+                      onClick={() => setIsPreviewOpen(false)}
+                  >
+                    <img
+                        src={`${API_URL}/monthly-consumption/file/${settings.debug_mode ? latestReading.label_file : latestReading.original_file}`}
+                        alt="Full Preview"
+                        className="max-w-[90vw] max-h-[90vh] object-contain rounded shadow-lg"
+                        style={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                        }}
+                    />
+                  </div>
+              )}
+            </>
+        ) : (
+            <p className="text-gray-500 dark:text-gray-400">No reading available.</p>
+        )}
+        {error && <p className="mt-4 text-red-500">{error}</p>}
       </div>
-    </div>
-  )
-} 
+  );
+}

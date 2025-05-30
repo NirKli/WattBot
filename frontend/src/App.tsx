@@ -1,12 +1,10 @@
 import { useEffect } from 'react'
 import ImageUpload from './components/ImageUpload'
 import ConsumptionHistory from './components/ConsumptionHistory'
-import LatestReading from './components/LatestReading'
 import PriceManagement from './components/PriceManagement'
 import Settings from './components/Settings'
 import Tabs, { Tab } from './components/Tabs'
-// Import icons
-import { MdElectricBolt, MdOutlineUploadFile, MdHistory, MdAttachMoney, MdDashboard, MdWbSunny, MdSettings } from "react-icons/md";
+import { MdElectricBolt, MdOutlineUploadFile, MdHistory, MdAttachMoney, MdSettings } from "react-icons/md";
 import './App.css'
 
 function App() {
@@ -56,22 +54,6 @@ function App() {
             {/* Main content area */}
             <main className="flex-1 py-6 bg-white dark:bg-gray-900">
                 <div className="container mx-auto px-4">
-                    {/* App description banner */}
-                    <div className={`bg-gradient-to-r from-primary to-primary-dark text-white rounded-lg mb-6 overflow-hidden shadow-md`}>
-                        <div className="px-6 py-4 flex items-center justify-between">
-                            <div className="flex items-center">
-                                <MdDashboard size={24} className="mr-3" />
-                                <div>
-                                    <h2 className="text-lg font-semibold text-white dark:text-white">Electricity Management Dashboard</h2>
-                                    <p className="text-sm opacity-90 text-white dark:text-gray-200">Track and manage your electricity consumption and prices</p>
-                                </div>
-                            </div>
-                            <div className="hidden md:flex items-center bg-white/10 rounded-full px-3 py-1">
-                                <MdWbSunny className="mr-1 text-secondary-light" /> 
-                                <span className="text-sm text-white dark:text-gray-200">Energy Saver</span>
-                            </div>
-                        </div>
-                    </div>
                     
                     {/* Modern material design tabs with sliding indicator */}
                     <Tabs defaultTab={defaultTab} className="mb-6">
@@ -85,14 +67,6 @@ function App() {
                                         <div className="w-full h-auto mb-6 flex items-center justify-center">
                                             <ImageUpload />
                                         </div>
-                                    </div>
-                                </div>
-                                
-                                {/* Latest Reading Card - Right Side */}
-                                <div className="card p-6">
-                                    <div className="flex flex-col items-center">
-                                        <h2 className="text-xl font-bold mb-6 text-center text-primary dark:text-text-light">Latest Reading</h2>
-                                        <LatestReading />
                                     </div>
                                 </div>
                             </div>
@@ -114,19 +88,8 @@ function App() {
                 </div>
             </main>
 
-            {/* Footer */}
-            <footer className="bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200 dark:from-gray-900 dark:to-gray-800 dark:border-gray-800">
-                <div className="container mx-auto px-4">
-                    <div className="flex flex-col sm:flex-row justify-between items-center py-4 gap-2">
-                        <p className="text-sm text-text-muted text-center sm:text-left">
-                            © {new Date().getFullYear()} WattBot — Electricity Consumption Monitoring
-                        </p>
-                        <div className="flex items-center">
-                            <MdElectricBolt className="text-primary mr-1" size={16} />
-                            <span className="text-xs text-text-muted">Real-time electricity monitoring</span>
-                        </div>
-                    </div>
-                </div>
+            <footer className="text-center py-4 text-sm text-gray-400 dark:text-gray-600">
+                © {new Date().getFullYear()} WattBot
             </footer>
         </div>
     )
