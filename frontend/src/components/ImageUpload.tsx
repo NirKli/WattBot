@@ -28,6 +28,21 @@ export default function ImageUpload() {
     currency: 'ils',
     debug_mode: false,
   });
+
+  // Add drag and drop handlers
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  };
+
   const getCurrencySymbol = (code: string): string => {
     switch (code.toLowerCase()) {
       case 'usd': return '$';
@@ -132,94 +147,218 @@ export default function ImageUpload() {
   };
 
   return (
-      <div className="max-w-2xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-xl shadow text-center">
-        <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Upload Image</h2>
-
-        <div className="mb-6 border-2 border-dashed border-gray-300 dark:border-gray-700 p-4 rounded-lg cursor-pointer">
-          <label
-              htmlFor="fileInput"
-              className="block text-center cursor-pointer text-gray-600 dark:text-gray-300"
-          >
-            <p className="mb-2">Drag & drop or click to upload</p>
-            <span className="text-blue-600 dark:text-blue-400 font-medium">Select Image</span>
-          </label>
-          <input
-              id="fileInput"
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleFileSelect}
-              className="hidden"
-          />
-          {preview && (
-              <div className="w-full flex justify-center mt-4">
-                <div className="max-w-[20rem] max-h-[20rem] overflow-hidden rounded shadow border">
-                  <img
-                      src={preview}
-                      alt="Preview"
-                      className="w-full h-auto object-contain"
-                  />
-                </div>
-              </div>
-          )}
-          {selectedFile && (
-              <button
-                  onClick={handleUpload}
-                  disabled={loading}
-                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
-                {loading ? 'Uploading...' : 'Upload'}
-              </button>
+      <div className="max-w-3xl mx-auto p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Upload Meter Reading</h2>
+          {latestReading && (
+            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mt-1">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Last updated: {formatDate(latestReading.date)}
+            </div>
           )}
         </div>
 
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Upload Section */}
+          <div className="space-y-6">
+            <div 
+              className={`relative border-2 border-dashed rounded-xl transition-all duration-200 ${
+                selectedFile 
+                  ? 'border-primary/50 bg-primary/5 dark:bg-primary/10' 
+                  : 'border-gray-200 dark:border-gray-700 hover:border-primary/30'
+              }`}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+            >
+              <div className="p-8">
+                <div className="flex flex-col items-center justify-center space-y-4">
+                  <div className={`w-20 h-20 rounded-full flex items-center justify-center transition-colors ${
+                    selectedFile 
+                      ? 'bg-primary/20 dark:bg-primary/30' 
+                      : 'bg-gray-100 dark:bg-gray-800'
+                  }`}>
+                    <svg className={`w-10 h-10 ${selectedFile ? 'text-primary' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  
+                  <div className="text-center">
+                    <p className="text-lg font-medium text-gray-700 dark:text-gray-300">
+                      {selectedFile ? 'Image Selected' : 'Drop your image here'}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      {selectedFile ? selectedFile.name : 'or click to browse'}
+                    </p>
+                  </div>
 
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Latest Reading</h3>
-        {latestLoading ? (
-            <p className="text-gray-500 dark:text-gray-400">Loading...</p>
-        ) : latestReading && labelImageUrl ? (
-            <>
-              <div className="flex flex-col items-center space-y-1">
-                <button onClick={() => setIsPreviewOpen(true)} className="focus:outline-none">
-                  <img
-                      src={`${API_URL}/monthly-consumption/file/${settings.debug_mode ? latestReading.label_file : latestReading.original_file}`}
-                      alt="Detected"
-                      className="mx-auto rounded border border-gray-300 dark:border-gray-600 shadow hover:opacity-90 transition max-w-[8rem] max-h-32 object-contain"
+                  <label
+                    htmlFor="fileInput"
+                    className="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-700 text-white rounded-lg text-sm font-medium hover:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Select Image
+                  </label>
+                  <input
+                    id="fileInput"
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    className="hidden"
                   />
-                </button>
-                <div className="text-sm text-gray-700 dark:text-gray-300 mt-1">
-                  {latestReading.total_kwh_consumed.toFixed(2)} kWh
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">
-                  {formatDate(latestReading.date)}
-                </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">
-                  Monthly Cost: {getCurrencySymbol(settings.currency)}{latestReading.price.toFixed(2)}
+
+                {preview && (
+                  <div className="mt-6">
+                    <div className="relative max-w-[20rem] mx-auto rounded-lg overflow-hidden shadow-lg">
+                      <img
+                        src={preview}
+                        alt="Preview"
+                        className="w-full h-auto object-contain"
+                      />
+                      <button
+                        onClick={() => {
+                          setSelectedFile(null);
+                          setPreview(null);
+                        }}
+                        className="absolute top-2 right-2 p-1.5 bg-white/90 dark:bg-gray-800/90 rounded-full shadow hover:bg-white dark:hover:bg-gray-800 transition-colors"
+                        aria-label="Remove image"
+                      >
+                        <svg className="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    
+                    <button
+                      onClick={handleUpload}
+                      disabled={loading}
+                      className="mt-4 w-full inline-flex items-center justify-center px-6 py-3 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {loading ? (
+                        <>
+                          <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                          </svg>
+                          Upload Reading
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Latest Reading Section */}
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Latest Reading</h3>
+            {latestLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <svg className="animate-spin h-8 w-8 text-primary" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+              </div>
+            ) : latestReading && labelImageUrl ? (
+              <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6">
+                <div className="flex flex-col items-center space-y-6">
+                  <button onClick={() => setIsPreviewOpen(true)} className="group">
+                    <div className="relative">
+                      <img
+                        src={`${API_URL}/monthly-consumption/file/${settings.debug_mode ? latestReading.label_file : latestReading.original_file}`}
+                        alt="Detected"
+                        className="rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 max-w-[16rem] max-h-64 object-contain group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-lg" />
+                    </div>
+                  </button>
+
+                  <div className="w-full space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+                        <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Consumption</div>
+                        <div className="text-2xl font-bold text-primary">
+                          {latestReading.total_kwh_consumed.toFixed(2)} kWh
+                        </div>
+                      </div>
+                      <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+                        <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Cost</div>
+                        <div className="text-2xl font-bold text-primary">
+                          {getCurrencySymbol(settings.currency)}{latestReading.price.toFixed(2)}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              {isPreviewOpen && (
-                  <div
-                      className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center"
-                      onClick={() => setIsPreviewOpen(false)}
-                  >
-                    <img
-                        src={`${API_URL}/monthly-consumption/file/${settings.debug_mode ? latestReading.label_file : latestReading.original_file}`}
-                        alt="Full Preview"
-                        className="max-w-[90vw] max-h-[90vh] object-contain rounded shadow-lg"
-                        style={{
-                          position: 'absolute',
-                          top: '50%',
-                          left: '50%',
-                          transform: 'translate(-50%, -50%)',
-                        }}
-                    />
-                  </div>
-              )}
-            </>
-        ) : (
-            <p className="text-gray-500 dark:text-gray-400">No reading available.</p>
+            ) : (
+              <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-8 text-center">
+                <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <p className="text-gray-500 dark:text-gray-400 text-lg mb-2">No reading available</p>
+                <p className="text-sm text-gray-400 dark:text-gray-500">Upload your first meter reading to get started</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {error && (
+          <div className="mt-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 flex items-center justify-center gap-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {error}
+          </div>
         )}
-        {error && <p className="mt-4 text-red-500">{error}</p>}
+
+        {isPreviewOpen && (
+          <div
+            className="fixed inset-0 z-50 bg-black/90"
+            onClick={() => setIsPreviewOpen(false)}
+          >
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div 
+                className="relative max-w-[90vw] max-h-[90vh]"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                <img
+                  src={`${API_URL}/monthly-consumption/file/${settings.debug_mode ? latestReading?.label_file : latestReading?.original_file}`}
+                  alt="Full Preview"
+                  className="w-full h-full object-contain rounded-xl shadow-2xl"
+                />
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsPreviewOpen(false);
+                  }}
+                  className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+                >
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
   );
 }

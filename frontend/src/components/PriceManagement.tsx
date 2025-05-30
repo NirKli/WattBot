@@ -112,15 +112,18 @@ export default function PriceManagement() {
       setError(null)
       
       const response = await axios.get(`${API_URL}/electricity-prices`)
-      setElectricityPrices(response.data)
+      
+      // Sort prices by date in descending order (newest first)
+      const sortedPrices = response.data.sort((a: ElectricityPrice, b: ElectricityPrice) => 
+        new Date(b.date).getTime() - new Date(a.date).getTime()
+      )
+      
+      setElectricityPrices(sortedPrices)
       
       // Find current price (most recent date that's not in the future)
       const now = new Date()
-      const validPrices = response.data
+      const validPrices = sortedPrices
         .filter((price: ElectricityPrice) => new Date(price.date) <= now)
-        .sort((a: ElectricityPrice, b: ElectricityPrice) => 
-          new Date(b.date).getTime() - new Date(a.date).getTime()
-        )
       
       if (validPrices.length > 0) {
         setCurrentPrice(validPrices[0].price)
@@ -385,7 +388,7 @@ export default function PriceManagement() {
           </div>
           <div className="mt-auto pt-4 text-xs text-gray-500 flex items-center">
             <FaRegClock className="mr-1" /> 
-            Last updated: {electricityPrices.length > 0 ? formatDate(electricityPrices[0].date) : 'N/A'}
+            Most recent price change: {electricityPrices.length > 0 ? formatDate(electricityPrices[0].date) : 'N/A'}
           </div>
         </div>
         
@@ -431,21 +434,15 @@ export default function PriceManagement() {
                 setShowAddForm(true)
                 setEditId(null)
               }}
-              className="btn-primary py-2 px-4 rounded-lg text-sm flex items-center justify-center"
+              className="btn-primary py-3 px-6 rounded-lg text-sm flex items-center justify-center gap-2 hover:bg-primary-dark transition-colors shadow-sm"
               disabled={isSubmitting}
             >
-              <MdAdd className="mr-1.5" /> Add New Price
-            </button>
-            <button
-              onClick={() => window.print()}
-              className="btn-outline py-2 px-4 rounded-lg text-sm flex items-center justify-center"
-            >
-              Export Price History
+              <MdAdd size={20} /> Add New Price
             </button>
           </div>
           <div className="mt-auto pt-4 text-xs text-gray-500 flex items-center">
             <MdInfo className="mr-1" /> 
-            Manage all electricity prices
+            Click to add a new electricity price
           </div>
         </div>
       </div>

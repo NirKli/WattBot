@@ -307,9 +307,26 @@ export default function ConsumptionHistory() {
     )
   }
 
-  // Calculate total energy usage
-  const totalKwh = readings.reduce((acc, reading) => acc + reading.total_kwh_consumed, 0);
-  const averageKwh = totalKwh / readings.length;
+  // Create a copy of readings in ascending order (oldest first) for calculations
+  const sortedReadings = [...readings].reverse();
+  
+  // Calculate average monthly consumption by looking at differences between consecutive readings
+  let totalMonthlyConsumption = 0;
+  let validDifferences = 0;
+  
+  for (let i = 1; i < sortedReadings.length; i++) {
+    const currentReading = sortedReadings[i].total_kwh_consumed;
+    const previousReading = sortedReadings[i-1].total_kwh_consumed;
+    const difference = currentReading - previousReading;
+    
+    // Only count positive differences (meter readings should increase)
+    if (difference > 0) {
+      totalMonthlyConsumption += difference;
+      validDifferences++;
+    }
+  }
+  
+  const averageKwh = validDifferences > 0 ? totalMonthlyConsumption / validDifferences : 0;
   
   // Calculate total spending
   const totalSpending = readings.reduce((acc, reading) => acc + reading.price, 0);
@@ -425,7 +442,7 @@ export default function ConsumptionHistory() {
                       <span className="text-muted text-sm ml-1">kWh</span>
                     </td>
                     <td className="py-4 px-6 font-medium text-primary" data-label="Price">
-                      {getCurrencySymbol(currency)}{reading.price.toFixed(4)}
+                      {getCurrencySymbol(currency)}{reading.price.toFixed(2)}
                     </td>
                     <td className="py-4 px-6" data-label="Actions">
                       <div className="flex gap-2 action-buttons">
@@ -522,7 +539,7 @@ export default function ConsumptionHistory() {
                                 <h5 className="text-sm font-medium text-gray-500 mb-1">Price</h5>
                                 <p className="flex items-center text-dark">
                                   <span className="text-primary mr-2">{getCurrencySymbol(currency)}</span>
-                                  {reading.price.toFixed(4)}
+                                  {reading.price.toFixed(2)}
                                 </p>
                               </div>
                               
