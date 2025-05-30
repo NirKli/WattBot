@@ -181,5 +181,5 @@ runs/
 *.iml
 
 *.ini
-process_imgs/
+digits-detection/
 yolo11x-obb.pt

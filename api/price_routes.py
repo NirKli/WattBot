@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
 
+from services.crud.crud_electricity_price import get_all_prices_from_db, get_price_from_db, save_price_to_db, \
+    update_price_in_db, delete_price_from_db
 from services.exception.NoObjectHasFoundException import NoObjectHasFoundException
-from services.db_save import get_all_prices_from_db, get_price_from_db, save_price_to_db, update_price_in_db, \
-    delete_price_from_db
 from services.model.ElectricityPrice import ElectricityPrice
 
 router = APIRouter()

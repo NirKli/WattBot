@@ -1,8 +1,9 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, Response
 
-from services.exception.NoObjectHasFoundException import NoObjectHasFoundException
-from services.db_save import get_monthly_consumption_from_db, get_file_from_db, get_all_monthly_consumption_from_db, \
+from services.crud.crud_files import get_file_from_db
+from services.crud.crud_monthly_consumption import get_monthly_consumption_from_db, get_all_monthly_consumption_from_db, \
     update_monthly_consumption_in_db, delete_monthly_consumption_from_db
+from services.exception.NoObjectHasFoundException import NoObjectHasFoundException
 from services.model.MonthlyConsumption import MonthlyConsumption
 from services.process_image import ProcessImage
 

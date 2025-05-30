@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from services.db_save import get_setting_from_db, update_setting_in_db
+from services.crud.crud_settings import get_setting_from_db, update_setting_in_db
 from services.model.Settings import Settings
 
 router = APIRouter()

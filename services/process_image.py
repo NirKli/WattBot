@@ -5,10 +5,11 @@ from datetime import datetime
 from starlette.datastructures import UploadFile
 from ultralytics import YOLO
 
-from services import db_save
+from services.crud import crud_monthly_consumption, crud_files
 from services.model.MonthlyConsumption import MonthlyConsumption
 
 DETECT_FOLDER = "runs/obb/predict/"
+
 
 class ProcessImage:
     model = YOLO("models/best.pt")
@@ -43,19 +44,20 @@ class ProcessImage:
             date=datetime.now(),
             total_kwh_consumed=float(output),
             price=0.0,
-            original_file=db_save.save_file_to_db(temp_file_path, file.filename),
+            original_file=crud_files.save_file_to_db(temp_file_path, file.filename),
             file_name=file.filename,
-            label_file=db_save.save_file_to_db(DETECT_FOLDER + temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".jpg"),
-                                               temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".jpg")),
-            file_label_name=db_save.save_file_to_db(
+            label_file=crud_files.save_file_to_db(
+                DETECT_FOLDER + temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".jpg"),
+                temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".jpg")),
+            file_label_name=crud_files.save_file_to_db(
                 DETECT_FOLDER + "labels/" + temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".txt"),
                 temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".txt")))
 
-        monthly_consumption_id = db_save.save_monthly_consumption_to_db(monthly_consumption)
+        monthly_consumption_id = crud_monthly_consumption.save_monthly_consumption_to_db(monthly_consumption)
 
         cleanup(temp_file_path, DETECT_FOLDER)
 
-        return db_save.get_monthly_consumption_from_db(monthly_consumption_id)
+        return crud_monthly_consumption.get_monthly_consumption_from_db(monthly_consumption_id)
 
 
 def extract_file_name_type(file_name):
