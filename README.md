@@ -19,7 +19,7 @@ WattBot is a modern web application that allows you to upload images of digital 
 
 - **Frontend:** React, Tailwind CSS, TypeScript
 - **Backend:** FastAPI, Python 3.13, Uvicorn, Pydantic
-- **Machine Learning:** YOLOv11x-obb via Ultralytics
+- **Machine Learning:** YOLOv11s-obb via Ultralytics
 - **Database:** MongoDB
 - **Containerization:** Docker, Docker Compose
 - **CI/CD:** GitHub Actions
