@@ -1,6 +1,7 @@
 # ⚡️ WattBot – Electricity Meter Reading Assistant
 
-WattBot is a modern web application that allows you to upload images of digital electricity meters and automatically detect readings using machine learning. The project includes a Python FastAPI backend and a React frontend with support for dark mode, currency selection, and price tracking.
+WattBot is a full-stack web application that lets you upload images of electricity meters and automatically extract readings using a custom-trained YOLO model.  
+The project includes a Python FastAPI backend and a React frontend with support for dark mode, currency selection, and price tracking.
 
 ---
 
@@ -19,7 +20,7 @@ WattBot is a modern web application that allows you to upload images of digital 
 
 - **Frontend:** React, Tailwind CSS, TypeScript
 - **Backend:** FastAPI, Python 3.13, Uvicorn, Pydantic
-- **Machine Learning:** YOLOv11s-obb via Ultralytics
+- **Machine Learning:** YOLOv11s-obb (custom-trained on real electricity meter data)
 - **Database:** MongoDB
 - **Containerization:** Docker, Docker Compose
 - **CI/CD:** GitHub Actions
