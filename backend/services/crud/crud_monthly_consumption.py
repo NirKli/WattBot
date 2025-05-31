@@ -3,10 +3,10 @@ from datetime import datetime
 import pymongo
 from bson.objectid import ObjectId
 
-from services.crud.crud_settings import get_setting_from_db
-from services.db_client import mongo_db, save_imgs_db
-from services.exception.NoObjectHasFoundException import NoObjectHasFoundException
-from services.model.MonthlyConsumption import MonthlyConsumption
+from backend.services.crud.crud_settings import get_setting_from_db
+from backend.services.db_client import mongo_db, save_imgs_db
+from backend.services.exception.NoObjectHasFoundException import NoObjectHasFoundException
+from backend.services.model.MonthlyConsumption import MonthlyConsumption
 
 
 def save_monthly_consumption_to_db(monthly_consumption):

@@ -2,9 +2,9 @@ from datetime import datetime
 
 from bson.objectid import ObjectId
 
-from services.db_client import mongo_db
-from services.exception.NoObjectHasFoundException import NoObjectHasFoundException
-from services.model.ElectricityPrice import ElectricityPrice
+from backend.services.db_client import mongo_db
+from backend.services.exception.NoObjectHasFoundException import NoObjectHasFoundException
+from backend.services.model.ElectricityPrice import ElectricityPrice
 
 
 def get_price_from_db(price_id):

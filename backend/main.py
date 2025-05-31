@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api import monthly_consumption_routes
-from api import price_routes
-from api import settings_routes
+from backend.api import monthly_consumption_routes
+from backend.api import price_routes
+from backend.api import settings_routes
 
 app = FastAPI()
 

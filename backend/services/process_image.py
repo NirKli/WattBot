@@ -5,8 +5,8 @@ from datetime import datetime
 from starlette.datastructures import UploadFile
 from ultralytics import YOLO
 
-from services.crud import crud_monthly_consumption, crud_files
-from services.model.MonthlyConsumption import MonthlyConsumption
+from backend.services.crud import crud_files, crud_monthly_consumption
+from backend.services.model.MonthlyConsumption import MonthlyConsumption
 
 DETECT_FOLDER = "runs/obb/predict/"
 

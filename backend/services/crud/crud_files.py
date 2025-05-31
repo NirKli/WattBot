@@ -1,7 +1,7 @@
 from bson.objectid import ObjectId
 
-from services.db_client import save_imgs_db
-from services.exception.NoObjectHasFoundException import NoObjectHasFoundException
+from backend.services.db_client import save_imgs_db
+from backend.services.exception.NoObjectHasFoundException import NoObjectHasFoundException
 
 
 def get_file_from_db(file_id):

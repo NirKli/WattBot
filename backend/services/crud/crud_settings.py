@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from services.db_client import mongo_db
-from services.exception.NoObjectHasFoundException import NoObjectHasFoundException
-from services.model.Settings import Settings
+from backend.services.db_client import mongo_db
+from backend.services.exception.NoObjectHasFoundException import NoObjectHasFoundException
+from backend.services.model.Settings import Settings
 
 
 def save_setting_to_db(setting: Settings):

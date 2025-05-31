@@ -4,8 +4,8 @@ import cv2
 import albumentations as A
 import numpy as np
 
-input_folder = "lcd-detection/images/original_imgs"
-output_folder = "lcd-detection/images/train_augmented"
+input_folder = "digits-detection/images/train1"
+output_folder = "digits-detection/images/train_augmented"
 
 os.makedirs(output_folder, exist_ok=True)
 
