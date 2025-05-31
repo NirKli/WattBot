@@ -16,7 +16,7 @@
     "zustand": "^5.0.4"
   },
   "devDependencies": {
-    "@eslint/js": "^9.26.0",
+    "@eslint/js": "^9.28.0",
     "@headlessui/react": "^2.2.2",
     "@heroicons/react": "^2.2.0",
     "@tailwindcss/postcss": "^4.1.6",
