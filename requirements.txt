@@ -9,7 +9,7 @@ torchaudio==2.7.0+cpu
 albumentations==2.0.8
 fastapi==0.115.12
 pydantic==2.11.4
-pydantic_core==2.33.2
+pydantic_core==2.34.1
 pymongo==4.13.0
 starlette==0.46.2
 ultralytics==8.3.144
