@@ -33,11 +33,16 @@ export default function ConsumptionHistory() {
   useEffect(() => {
     fetchReadings()
     
-    // Get initial currency from localStorage
-    const savedCurrency = localStorage.getItem('currency');
-    if (savedCurrency) {
-      setCurrency(savedCurrency);
-    }
+    // Get initial currency from settings API
+    axios.get(`${API_URL}/settings`)
+      .then(res => {
+        if (res.data && res.data.currency) {
+          setCurrency(res.data.currency);
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching settings:', err);
+      });
     
     // Listen for currency changes
     const handleCurrencyChange = (e: CustomEvent) => {

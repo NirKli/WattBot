@@ -41,7 +41,11 @@ export default function Settings() {
 
   useEffect(() => {
     axios.get(`${API_URL}/settings`)
-        .then(res => setSettings(res.data))
+        .then(res => {
+          setSettings(res.data);
+          // Dispatch currency change event when settings are loaded
+          window.dispatchEvent(new CustomEvent('currencyChange', { detail: { currency: res.data.currency } }));
+        })
         .catch(() => {})
         .finally(() => setLoading(false));
   }, []);
@@ -52,13 +56,16 @@ export default function Settings() {
 
   const applySettings = () => {
     axios.put(`${API_URL}/settings`, settings)
-        .then(() => showToast('✅ Settings saved!'))
+        .then(() => {
+          showToast('✅ Settings saved!');
+          // Dispatch currency change event when settings are saved
+          window.dispatchEvent(new CustomEvent('currencyChange', { detail: { currency: settings.currency } }));
+        })
         .catch(() => alert('Failed to save settings.'));
 
     document.documentElement.classList.toggle('dark', settings.dark_mode);
-    localStorage.setItem('darkMode', settings.dark_mode.toString()); // <-- add this line
+    localStorage.setItem('darkMode', settings.dark_mode.toString());
   };
-
 
   if (loading) return <p className="text-center text-gray-500 dark:text-gray-400">Loading settings...</p>;
 
@@ -137,9 +144,7 @@ export default function Settings() {
           </div>
         </div>
 
-
         <Toast />
       </div>
-
   );
 }

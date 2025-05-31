@@ -2,6 +2,9 @@ import os
 import pymongo
 import gridfs
 
-mongo_client = pymongo.MongoClient("mongodb://" + os.environ["MONGODB_URL"])
-mongo_db = mongo_client["monthly-consumption"]
-save_imgs_db = gridfs.GridFSBucket(mongo_db)
+
+def get_db():
+    return pymongo.MongoClient("mongodb://" + os.environ["MONGODB_URL"])["monthly-consumption"]
+
+def get_fs_bucket():
+    return gridfs.GridFSBucket(get_db())

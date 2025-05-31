@@ -2,13 +2,13 @@ from datetime import datetime
 
 from bson.objectid import ObjectId
 
-from backend.services.db_client import mongo_db
+from backend.services.db_client import get_db
 from backend.services.exception.NoObjectHasFoundException import NoObjectHasFoundException
 from backend.services.model.ElectricityPrice import ElectricityPrice
 
 
 def get_price_from_db(price_id):
-    collection = mongo_db["electricity-prices"]
+    collection = get_db()["electricity-prices"]
     result = collection.find_one({"_id": ObjectId(price_id)})
     if result:
         return ElectricityPrice(
@@ -24,7 +24,7 @@ def get_price_from_db(price_id):
 
 
 def save_price_to_db(electricity_price: ElectricityPrice):
-    collection = mongo_db["electricity-prices"]
+    collection = get_db()["electricity-prices"]
     price_dict = {
         "price": electricity_price.price,
         "date": electricity_price.date,
@@ -44,7 +44,7 @@ def update_price_in_db(electricity_price_id: str, updated_electricity_price: Ele
     existing_price.updated_at = datetime.now()
     existing_price.is_default = updated_electricity_price.is_default
 
-    collection = mongo_db["electricity-prices"]
+    collection = get_db()["electricity-prices"]
     updated_price_dict = {
         "price": existing_price.price,
         "date": existing_price.date,
@@ -59,7 +59,7 @@ def update_price_in_db(electricity_price_id: str, updated_electricity_price: Ele
 
 
 def get_all_prices_from_db():
-    collection = mongo_db["electricity-prices"]
+    collection = get_db()["electricity-prices"]
     results = collection.find()
     prices = []
     for doc in results:
@@ -75,7 +75,7 @@ def get_all_prices_from_db():
 
 
 def delete_price_from_db(price_id: str):
-    collection = mongo_db["electricity-prices"]
+    collection = get_db()["electricity-prices"]
     result = collection.delete_one({"_id": ObjectId(price_id)})
     if result.deleted_count == 0:
         raise NoObjectHasFoundException()

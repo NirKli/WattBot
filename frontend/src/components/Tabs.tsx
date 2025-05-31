@@ -17,7 +17,11 @@ interface TabsProps {
 }
 
 const Tabs: React.FC<TabsProps> = ({ children, defaultTab = 0, className = '' }) => {
-  const [activeTab, setActiveTab] = useState(defaultTab);
+  const tabStorageKey = 'wattbot-active-tab';
+  const [activeTab, setActiveTab] = useState(() => {
+    const saved = localStorage.getItem(tabStorageKey);
+    return saved !== null ? parseInt(saved, 10) : defaultTab;
+  });
   const [indicatorStyle, setIndicatorStyle] = useState({ left: '0px', width: '0px' });
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
@@ -39,23 +43,20 @@ const Tabs: React.FC<TabsProps> = ({ children, defaultTab = 0, className = '' })
     }
   };
   
-  // Update indicator on tab change
+  // Update indicator on tab change and persist active tab
   useEffect(() => {
     updateIndicator();
-    
+    localStorage.setItem(tabStorageKey, String(activeTab));
     // Scroll active tab into view on mobile
     if (isMobile && tabsContainerRef.current && tabsRef.current[activeTab]) {
       const container = tabsContainerRef.current;
       const activeTabElement = tabsRef.current[activeTab];
-      
       if (activeTabElement) {
         const tabLeft = activeTabElement.offsetLeft;
         const tabWidth = activeTabElement.offsetWidth;
         const containerWidth = container.offsetWidth;
-        
         // Center the tab in the container
         const targetScrollLeft = tabLeft - (containerWidth / 2) + (tabWidth / 2);
-        
         // Smooth scroll to the tab
         container.scrollTo({
           left: targetScrollLeft,
@@ -80,6 +81,17 @@ const Tabs: React.FC<TabsProps> = ({ children, defaultTab = 0, className = '' })
   useEffect(() => {
     updateIndicator();
   }, [tabs.length]);
+  
+  // Update indicator on tab bar scroll (fixes mobile marker bug)
+  useEffect(() => {
+    const container = tabsContainerRef.current;
+    if (!container) return;
+    const handleScroll = () => {
+      updateIndicator();
+    };
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [activeTab, isMobile]);
   
   return (
     <div className={`tabs-container ${className}`}>

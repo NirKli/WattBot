@@ -1,12 +1,12 @@
 from datetime import datetime
 
-from backend.services.db_client import mongo_db
+from backend.services.db_client import get_db
 from backend.services.exception.NoObjectHasFoundException import NoObjectHasFoundException
 from backend.services.model.Settings import Settings
 
 
 def save_setting_to_db(setting: Settings):
-    collection = mongo_db["settings"]
+    collection = get_db()["settings"]
     setting_dict = {
         "_id": 1,
         "currency": setting.currency,
@@ -21,7 +21,7 @@ def save_setting_to_db(setting: Settings):
 
 
 def get_setting_from_db():
-    collection = mongo_db["settings"]
+    collection = get_db()["settings"]
     result = collection.find_one({"_id": 1})
     if result:
         return Settings(
@@ -51,7 +51,7 @@ def get_setting_from_db():
 
 def update_setting_in_db(updated_setting: Settings):
     existing_setting = get_setting_from_db()
-    collection = mongo_db["settings"]
+    collection = get_db()["settings"]
 
     updated_setting_dict = {
         "currency": updated_setting.currency,

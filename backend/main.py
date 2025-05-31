@@ -14,6 +14,8 @@ origins = [
     "http://127.0.0.1:5173",  # Alternative localhost
     "http://127.0.0.1:80",    # Alternative production
     "http://127.0.0.1",       # Alternative localhost without port
+    "http://wattbot-ui",      # Docker service name
+    "http://wattbot-ui:80",   # Docker service name with port
 ]
 
 app.add_middleware(

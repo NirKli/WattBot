@@ -4,13 +4,13 @@ import pymongo
 from bson.objectid import ObjectId
 
 from backend.services.crud.crud_settings import get_setting_from_db
-from backend.services.db_client import mongo_db, save_imgs_db
+from backend.services.db_client import get_db, get_fs_bucket
 from backend.services.exception.NoObjectHasFoundException import NoObjectHasFoundException
 from backend.services.model.MonthlyConsumption import MonthlyConsumption
 
 
 def save_monthly_consumption_to_db(monthly_consumption):
-    collection = mongo_db["monthly_consumptions"]
+    collection = get_db()["monthly_consumptions"]
     monthly_consumption_dict = {
         "modified_date": monthly_consumption.modified_date,
         "date": monthly_consumption.date,
@@ -26,7 +26,7 @@ def save_monthly_consumption_to_db(monthly_consumption):
 
 
 def get_monthly_consumption_from_db(monthly_consumption_id):
-    collection = mongo_db["monthly_consumptions"]
+    collection = get_db()["monthly_consumptions"]
     result = collection.find_one({"_id": ObjectId(monthly_consumption_id)})
     if result:
         return MonthlyConsumption(
@@ -48,7 +48,7 @@ def get_monthly_consumption_from_db(monthly_consumption_id):
 
 
 def get_all_monthly_consumption_from_db():
-    collection = mongo_db["monthly_consumptions"]
+    collection = get_db()["monthly_consumptions"]
     results = collection.find()
     monthly_consumptions = []
     for doc in results:
@@ -75,7 +75,7 @@ def update_monthly_consumption_in_db(monthly_consumption_id: str, updated_monthl
     existing_consumption.modified_date = datetime.now()
     existing_consumption.date = updated_monthly_consumption.date
 
-    collection = mongo_db["monthly_consumptions"]
+    collection = get_db()["monthly_consumptions"]
     updated_monthly_consumption = {
         "modified_date": existing_consumption.modified_date,
         "date": existing_consumption.date,
@@ -93,14 +93,14 @@ def update_monthly_consumption_in_db(monthly_consumption_id: str, updated_monthl
 
 
 def delete_monthly_consumption_from_db(monthly_consumption_id: str):
-    collection = mongo_db["monthly_consumptions"]
+    collection = get_db()["monthly_consumptions"]
     existing_consumption = get_monthly_consumption_from_db(monthly_consumption_id)
     if existing_consumption.original_file:
-        save_imgs_db.delete(ObjectId(existing_consumption.original_file))
+        get_fs_bucket().delete(ObjectId(existing_consumption.original_file))
     if existing_consumption.label_file:
-        save_imgs_db.delete(ObjectId(existing_consumption.label_file))
+        get_fs_bucket().delete(ObjectId(existing_consumption.label_file))
     if existing_consumption.file_label_name:
-        save_imgs_db.delete(ObjectId(existing_consumption.file_label_name))
+        get_fs_bucket().delete(ObjectId(existing_consumption.file_label_name))
     result = collection.delete_one({"_id": ObjectId(monthly_consumption_id)})
     if result.deleted_count == 0:
         raise NoObjectHasFoundException()
@@ -110,10 +110,10 @@ def calculate_price_from_current_consumption_from_last_month(current_total_kwh_c
     settings = get_setting_from_db()
     if not settings.calculate_price:
         return 0.0
-    collection = mongo_db["monthly_consumptions"]
+    collection = get_db()["monthly_consumptions"]
     last_month_consumption = list(collection.find().sort("date", pymongo.DESCENDING).limit(1))
     if last_month_consumption:
-        collection = mongo_db["electricity-prices"]
+        collection = get_db()["electricity-prices"]
         electricity_price = list(collection.find().sort("date", pymongo.DESCENDING).limit(1))
         if electricity_price:
             return electricity_price[0]["price"] * (
@@ -121,7 +121,7 @@ def calculate_price_from_current_consumption_from_last_month(current_total_kwh_c
         else:
             raise NoObjectHasFoundException()
     else:
-        collection = mongo_db["electricity-prices"]
+        collection = get_db()["electricity-prices"]
         electricity_price = list(collection.find().sort("date", pymongo.DESCENDING).limit(1))
         if electricity_price:
             return electricity_price[0]["price"] * current_total_kwh_consumed
