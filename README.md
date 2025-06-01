@@ -40,6 +40,13 @@ docker compose up -d
 
 > Make sure you have Docker and Docker Compose installed.
 
+3. **Navigate to the app:**
+
+- Frontend UI: [http://localhost:5173](http://localhost:5173)
+- Backend API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+If you're deploying on a remote server, replace `localhost` with your server's IP (e.g., http://123.123.123.123:5173).
+
 ---
 
 ## 🖼 Sample
@@ -52,14 +59,29 @@ docker compose up -d
 
 ## 🌐 Local Development
 
-### Backend
+### 🔧 Prerequisites
+
+Make sure you have the following installed on your machine:
+
+- [Python 3.11+](https://www.python.org/downloads/)
+- [Node.js 18+](https://nodejs.org/)
+- [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
+
+### 🧠 Backend (API)
+
+Runs on [http://localhost:8000](http://localhost:8000)
 
 ```bash
 cd backend
+pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-### Frontend
+Swagger UI available at: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+### 🌍 Frontend (React)
+
+Runs on [http://localhost:5173](http://localhost:5173)
 
 ```bash
 cd frontend
