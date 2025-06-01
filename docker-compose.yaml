@@ -1,6 +1,6 @@
 services:
   wattbot:
-    image: nirkli/wattbot:1.0.0
+    image: nirkli/wattbot:latest
     restart: always
     ports:
       - "8000:8000"
@@ -8,7 +8,7 @@ services:
       MONGODB_URL: "host.docker.internal:27017"
 
   wattbot-ui:
-    image: nirkli/wattbot-ui:1.0.0
+    image: nirkli/wattbot-ui:latest
     restart: always
     ports:
       - "80:80"

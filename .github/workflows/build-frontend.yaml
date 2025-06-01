@@ -42,3 +42,4 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/wattbot-ui:${{ env.VERSION }} ./frontend
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/wattbot-ui:${{ env.VERSION }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/wattbot-ui:latest
