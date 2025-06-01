@@ -39,7 +39,9 @@ jobs:
           cd ..
 
       - name: Build and push frontend Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/wattbot-ui:${{ env.VERSION }} ./frontend
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/wattbot-ui:${{ env.VERSION }}
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/wattbot-ui:latest
+        uses: docker/build-push-action@v6.18.0
+        with:
+          context: ./frontend
+          platforms: linux/arm64,linux/amd64
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/wattbot-ui:${{ env.VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/wattbot-ui:latest
