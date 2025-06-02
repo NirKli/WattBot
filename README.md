@@ -1,7 +1,9 @@
 # ⚡️ WattBot – Electricity Meter Reading Assistant
 
-WattBot is a full-stack web application that lets you upload images of electricity meters and automatically extract readings using a custom-trained YOLO model.  
-The project includes a Python FastAPI backend and a React frontend with support for dark mode, currency selection, and price tracking.
+WattBot is a full-stack web application that lets you upload images of electricity meters and automatically extract
+readings using a custom-trained YOLO model.  
+The project includes a Python FastAPI backend and a React frontend with support for dark mode, currency selection, and
+price tracking.
 
 ---
 
@@ -29,7 +31,13 @@ The project includes a Python FastAPI backend and a React frontend with support 
 
 ## 📦 Installation
 
-1. **Create a new folder** and save the contents of `docker-compose.yml` from this repo into a file named `docker-compose.yml`.
+### 🔧 Prerequisites
+- [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/install/)
+
+### 🛠️ Steps
+
+1. **Create a new folder** and save the contents of `docker-compose.yml` from this repo into a file named
+   `docker-compose.yml`.
 
 2. **Open a terminal in that folder** and run:
 
@@ -38,11 +46,9 @@ docker compose pull
 docker compose up -d
 ```
 
-> Make sure you have Docker and Docker Compose installed.
-
 3. **Navigate to the app:**
 
-- Frontend UI: [http://localhost:5173](http://localhost:5173)
+- Frontend UI: [http://localhost:80](http://localhost:80)
 - Backend API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 If you're deploying on a remote server, replace `localhost` with your server's IP (e.g., http://123.123.123.123:5173).
@@ -51,8 +57,8 @@ If you're deploying on a remote server, replace `localhost` with your server's I
 
 ## 🖼 Sample
 
-| Upload | Consumption Overview                                 |
-|--------|-----------------------------------------|
+| Upload                                  | Consumption Overview                              |
+|-----------------------------------------|---------------------------------------------------|
 | ![Upload UI](screenshots/upload-ui.png) | ![Result UI](screenshots/history-consumption.png) |
 
 ---
