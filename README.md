@@ -63,6 +63,13 @@ If you're deploying on a remote server, replace `localhost` with your server's I
 
 ---
 
+## ⚠️ Model Accuracy Note
+
+The YOLO model was trained on a limited dataset of real electricity meters. If your meter's layout or font style is significantly different, the reading might be misinterpreted.  
+If you encounter inaccuracies and want to improve precision for your meter type, feel free to [open an issue](https://github.com/NirKli/WattBot/issues) contributions are welcome!
+
+---
+
 ## 🌐 Local Development
 
 ### 🔧 Prerequisites
