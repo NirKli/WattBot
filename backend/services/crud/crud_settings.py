@@ -10,7 +10,7 @@ def save_setting_to_db(setting: Settings):
     setting_dict = {
         "_id": 1,
         "currency": setting.currency,
-        "dark_mode": setting.dark_mode,
+        "dark_mode_preference": setting.dark_mode_preference,
         "debug_mode": setting.debug_mode,
         "calculate_price": setting.calculate_price,
         "created_at": datetime.now(),
@@ -27,7 +27,7 @@ def get_setting_from_db():
         return Settings(
             _id=1,
             currency=result["currency"],
-            dark_mode=result["dark_mode"],
+            dark_mode_preference=result.get("dark_mode_preference", "auto"),
             calculate_price=result["calculate_price"],
             debug_mode=result["debug_mode"],
             created_at=result["created_at"],
@@ -37,7 +37,7 @@ def get_setting_from_db():
         settings = Settings(
             _id=1,
             currency="usd",
-            dark_mode=False,
+            dark_mode_preference="auto",
             debug_mode=False,
             calculate_price=True,
             created_at=datetime.now(),
@@ -55,7 +55,7 @@ def update_setting_in_db(updated_setting: Settings):
 
     updated_setting_dict = {
         "currency": updated_setting.currency,
-        "dark_mode": updated_setting.dark_mode,
+        "dark_mode_preference": updated_setting.dark_mode_preference,
         "debug_mode": updated_setting.debug_mode,
         "calculate_price": updated_setting.calculate_price,
         "created_at": existing_setting.created_at,
