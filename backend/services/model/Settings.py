@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Literal
 
 from bson import ObjectId
 from pydantic import BaseModel
@@ -8,7 +8,7 @@ from pydantic import BaseModel
 class Settings(BaseModel):
     _id: Optional[int] = 1
     currency: Optional[str] = "usd"
-    dark_mode: Optional[bool] = False
+    dark_mode_preference: Optional[Literal['auto', 'on', 'off']] = 'auto'
     debug_mode: Optional[bool] = False
     calculate_price: Optional[bool] = True
     created_at: Optional[datetime] = None

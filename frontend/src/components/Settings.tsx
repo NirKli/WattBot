@@ -22,7 +22,7 @@ function useToast() {
 }
 
 interface SettingsData {
-  dark_mode: boolean;
+  dark_mode_preference: 'auto' | 'on' | 'off';
   currency: string;
   calculate_price: boolean;
   debug_mode: boolean;
@@ -30,7 +30,7 @@ interface SettingsData {
 
 export default function Settings() {
   const [settings, setSettings] = useState<SettingsData>({
-    dark_mode: false,
+    dark_mode_preference: 'auto',
     currency: 'USD',
     calculate_price: true,
     debug_mode: false
@@ -42,7 +42,10 @@ export default function Settings() {
   useEffect(() => {
     axios.get(`${API_URL}/settings`)
         .then(res => {
-          setSettings(res.data);
+          setSettings({
+            ...res.data,
+            dark_mode_preference: res.data.dark_mode_preference || 'auto'
+          });
           // Dispatch currency change event when settings are loaded
           window.dispatchEvent(new CustomEvent('currencyChange', { detail: { currency: res.data.currency } }));
         })
@@ -60,11 +63,16 @@ export default function Settings() {
           showToast('✅ Settings saved!');
           // Dispatch currency change event when settings are saved
           window.dispatchEvent(new CustomEvent('currencyChange', { detail: { currency: settings.currency } }));
+          
+          // Apply dark mode based on preference
+          const isDarkMode = settings.dark_mode_preference === 'on' || 
+            (settings.dark_mode_preference === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          
+          document.documentElement.classList.toggle('dark', isDarkMode);
+          localStorage.setItem('darkMode', isDarkMode.toString());
+          localStorage.setItem('darkModePreference', settings.dark_mode_preference);
         })
         .catch(() => alert('Failed to save settings.'));
-
-    document.documentElement.classList.toggle('dark', settings.dark_mode);
-    localStorage.setItem('darkMode', settings.dark_mode.toString());
   };
 
   if (loading) return <p className="text-center text-gray-500 dark:text-gray-400">Loading settings...</p>;
@@ -75,17 +83,46 @@ export default function Settings() {
 
         <div className="space-y-6">
           {/* Appearance */}
-          <div className="flex justify-between items-center p-4 border rounded-lg bg-gray-50 dark:bg-gray-700">
-            <div>
+          <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-700">
+            <div className="mb-4">
               <p className="font-semibold text-gray-700 dark:text-gray-300">🌙 Appearance</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Enable dark mode UI</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Choose your preferred theme mode</p>
             </div>
-            <input
-                type="checkbox"
-                checked={settings.dark_mode}
-                onChange={() => handleUpdate({ dark_mode: !settings.dark_mode })}
-                className="w-5 h-5 accent-blue-600"
-            />
+            <div className="space-y-3">
+              <label className="flex items-center space-x-3">
+                <input
+                    type="radio"
+                    name="darkMode"
+                    value="auto"
+                    checked={settings.dark_mode_preference === 'auto'}
+                    onChange={() => handleUpdate({ dark_mode_preference: 'auto' })}
+                    className="w-4 h-4 accent-blue-600"
+                />
+                <span className="text-gray-700 dark:text-gray-300">Automatic (Follow system)</span>
+              </label>
+              <label className="flex items-center space-x-3">
+                <input
+                    type="radio"
+                    name="darkMode"
+                    value="on"
+                    checked={settings.dark_mode_preference === 'on'}
+                    onChange={() => handleUpdate({ dark_mode_preference: 'on' })}
+                    className="w-4 h-4 accent-blue-600"
+                />
+                <span className="text-gray-700 dark:text-gray-300">Always Dark</span>
+              </label>
+              <label className="flex items-center space-x-3">
+                <input
+                    type="radio"
+                    name="darkMode"
+                    value="off"
+                    checked={settings.dark_mode_preference === 'off'}
+                    onChange={() => handleUpdate({ dark_mode_preference: 'off' })}
+                    className="w-4 h-4 accent-blue-600"
+                />
+                <span className="text-gray-700 dark:text-gray-300">Always Light</span>
+              </label>
+            </div>
           </div>
 
           {/* Currency */}
