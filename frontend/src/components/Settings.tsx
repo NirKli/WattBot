@@ -1,187 +1,249 @@
-import  { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import axios from 'axios';
-import { API_URL } from '../config';
+import {API_URL} from '../config';
+import Container from '@mui/material/Container';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
+import Box from '@mui/material/Box';
 
-// Optional: Move this to a separate file if reused
-function useToast() {
-  const [message, setMessage] = useState<string | null>(null);
-
-  const showToast = (msg: string, duration = 3000) => {
-    setMessage(msg);
-    setTimeout(() => setMessage(null), duration);
-  };
-
-  const Toast = () =>
-      message ? (
-          <div className="fixed top-4 right-4 z-50 bg-green-600 text-white px-4 py-2 rounded shadow-lg animate-fade-in-out">
-            {message}
-          </div>
-      ) : null;
-
-  return { showToast, Toast };
-}
 
 interface SettingsData {
-  dark_mode_preference: 'auto' | 'on' | 'off';
-  currency: string;
-  calculate_price: boolean;
-  debug_mode: boolean;
+    dark_mode_preference: 'auto' | 'on' | 'off';
+    currency: string;
+    calculate_price: boolean;
+    debug_mode: boolean;
 }
 
 export default function Settings() {
-  const [settings, setSettings] = useState<SettingsData>({
-    dark_mode_preference: 'auto',
-    currency: 'USD',
-    calculate_price: true,
-    debug_mode: false
-  });
+    const [settings, setSettings] = useState<SettingsData>({
+        dark_mode_preference: 'auto',
+        currency: 'USD',
+        calculate_price: true,
+        debug_mode: false
+    });
+    const [loading, setLoading] = useState(true);
+    const [snackbar, setSnackbar] = useState<string | null>(null);
 
-  const [loading, setLoading] = useState(true);
-  const { showToast, Toast } = useToast();
+    useEffect(() => {
+        axios.get(`${API_URL}/settings`)
+            .then(res => {
+                setSettings({
+                    ...res.data,
+                    dark_mode_preference: res.data.dark_mode_preference || 'auto'
+                });
+                window.dispatchEvent(new CustomEvent('currencyChange', {detail: {currency: res.data.currency}}));
+            })
+            .catch(() => {
+            })
+            .finally(() => setLoading(false));
+    }, []);
 
-  useEffect(() => {
-    axios.get(`${API_URL}/settings`)
-        .then(res => {
-          setSettings({
-            ...res.data,
-            dark_mode_preference: res.data.dark_mode_preference || 'auto'
-          });
-          // Dispatch currency change event when settings are loaded
-          window.dispatchEvent(new CustomEvent('currencyChange', { detail: { currency: res.data.currency } }));
-        })
-        .catch(() => {})
-        .finally(() => setLoading(false));
-  }, []);
+    const handleUpdate = (partial: Partial<SettingsData>) => {
+        setSettings(prev => ({...prev, ...partial}));
+    };
 
-  const handleUpdate = (partial: Partial<SettingsData>) => {
-    setSettings(prev => ({ ...prev, ...partial }));
-  };
+    const applySettings = () => {
+        axios.put(`${API_URL}/settings`, settings)
+            .then(() => {
+                setSnackbar('✅ Settings saved!');
+                window.dispatchEvent(new CustomEvent('currencyChange', {detail: {currency: settings.currency}}));
+                const isDarkMode = settings.dark_mode_preference === 'on' ||
+                    (settings.dark_mode_preference === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.classList.toggle('dark', isDarkMode);
+                localStorage.setItem('darkMode', isDarkMode.toString());
+                localStorage.setItem('darkModePreference', settings.dark_mode_preference);
+                window.dispatchEvent(new CustomEvent('themeChange', {detail: {preference: settings.dark_mode_preference}}));
+            })
+            .catch(() => setSnackbar('Failed to save settings.'));
+    };
 
-  const applySettings = () => {
-    axios.put(`${API_URL}/settings`, settings)
-        .then(() => {
-          showToast('✅ Settings saved!');
-          // Dispatch currency change event when settings are saved
-          window.dispatchEvent(new CustomEvent('currencyChange', { detail: { currency: settings.currency } }));
-          
-          // Apply dark mode based on preference
-          const isDarkMode = settings.dark_mode_preference === 'on' || 
-            (settings.dark_mode_preference === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-          
-          document.documentElement.classList.toggle('dark', isDarkMode);
-          localStorage.setItem('darkMode', isDarkMode.toString());
-          localStorage.setItem('darkModePreference', settings.dark_mode_preference);
-        })
-        .catch(() => alert('Failed to save settings.'));
-  };
+    if (loading) return <Typography align="center" color="text.secondary">Loading settings...</Typography>;
 
-  if (loading) return <p className="text-center text-gray-500 dark:text-gray-400">Loading settings...</p>;
+    return (
+        <Container maxWidth="sm" sx={{mt: 6}}>
+            <Paper elevation={3} sx={{p: {xs: 2, sm: 4}, borderRadius: 3}}>
+                <Typography variant="h5" align="center" fontWeight={700} gutterBottom>
+                    ⚙️ Settings
+                </Typography>
+                <Box component="form" sx={{display: 'flex', flexDirection: 'column', gap: 3}}>
+                    {/* Appearance */}
+                    <Box sx={{
+                        p: 2,
+                        bgcolor: 'background.paper',
+                        borderRadius: 2,
+                        border: 1,
+                        borderColor: 'divider',
+                        mb: 1
+                    }}>
+                        <Typography variant="subtitle1" sx={{
+                            fontWeight: 600,
+                            color: 'text.primary',
+                            mb: 1,
+                            display: 'flex',
+                            alignItems: 'center',
+                            fontSize: '1.15rem'
+                        }}>
+                            <span style={{marginRight: 8, fontSize: '1.3em'}}>🌙</span> Appearance
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{mb: 1}}>
+                            Choose your preferred theme mode
+                        </Typography>
+                        <RadioGroup
+                            row
+                            value={settings.dark_mode_preference}
+                            onChange={e => handleUpdate({dark_mode_preference: e.target.value as SettingsData['dark_mode_preference']})}
+                        >
+                            <FormControlLabel value="auto" control={<Radio color="primary"/>}
+                                              label="Automatic (Follow system)"/>
+                            <FormControlLabel value="on" control={<Radio color="primary"/>} label="Always Dark"/>
+                            <FormControlLabel value="off" control={<Radio color="primary"/>} label="Always Light"/>
+                        </RadioGroup>
+                    </Box>
 
-  return (
-      <div className="max-w-xl mx-auto mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
-        <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">⚙️ Settings</h2>
+                    {/* Currency */}
+                    <Box sx={{
+                        p: 2,
+                        bgcolor: 'background.paper',
+                        borderRadius: 2,
+                        border: 1,
+                        borderColor: 'divider',
+                        mb: 1
+                    }}>
+                        <Typography variant="subtitle1" sx={{
+                            fontWeight: 600,
+                            color: 'text.primary',
+                            mb: 1,
+                            display: 'flex',
+                            alignItems: 'center',
+                            fontSize: '1.15rem'
+                        }}>
+                            <span style={{marginRight: 8, fontSize: '1.3em'}}>💱</span> Currency
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{mb: 1}}>
+                            Select preferred currency
+                        </Typography>
+                        <Select
+                            value={settings.currency}
+                            onChange={e => handleUpdate({currency: e.target.value})}
+                            size="small"
+                        >
+                            <MenuItem value="USD">USD ($)</MenuItem>
+                            <MenuItem value="ILS">ILS (₪)</MenuItem>
+                            <MenuItem value="EUR">EUR (€)</MenuItem>
+                        </Select>
+                    </Box>
 
-        <div className="space-y-6">
-          {/* Appearance */}
-          <div className="p-4 border rounded-lg bg-gray-50 dark:bg-gray-700">
-            <div className="mb-4">
-              <p className="font-semibold text-gray-700 dark:text-gray-300">🌙 Appearance</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Choose your preferred theme mode</p>
-            </div>
-            <div className="space-y-3">
-              <label className="flex items-center space-x-3">
-                <input
-                    type="radio"
-                    name="darkMode"
-                    value="auto"
-                    checked={settings.dark_mode_preference === 'auto'}
-                    onChange={() => handleUpdate({ dark_mode_preference: 'auto' })}
-                    className="w-4 h-4 accent-blue-600"
+                    {/* Auto Calculate */}
+                    <Box sx={{
+                        p: 2,
+                        bgcolor: 'background.paper',
+                        borderRadius: 2,
+                        border: 1,
+                        borderColor: 'divider',
+                        mb: 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
+                    }}>
+                        <Box>
+                            <Typography variant="subtitle1" sx={{
+                                fontWeight: 600,
+                                color: 'text.primary',
+                                mb: 1,
+                                display: 'flex',
+                                alignItems: 'center',
+                                fontSize: '1.15rem'
+                            }}>
+                                <span style={{marginRight: 8, fontSize: '1.3em'}}>🧮</span> Auto-calculate
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                Enable automatic price calculation
+                            </Typography>
+                        </Box>
+                        <Switch
+                            checked={settings.calculate_price}
+                            onChange={() => handleUpdate({calculate_price: !settings.calculate_price})}
+                            color="primary"
+                        />
+                    </Box>
+
+                    {/* Debug Mode */}
+                    <Box sx={{
+                        p: 2,
+                        bgcolor: 'background.paper',
+                        borderRadius: 2,
+                        border: 1,
+                        borderColor: 'divider',
+                        mb: 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
+                    }}>
+                        <Box>
+                            <Typography variant="subtitle1" sx={{
+                                fontWeight: 600,
+                                color: 'text.primary',
+                                mb: 1,
+                                display: 'flex',
+                                alignItems: 'center',
+                                fontSize: '1.15rem'
+                            }}>
+                                <span style={{marginRight: 8, fontSize: '1.3em'}}>🛠️</span> Debug Mode
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                Use raw label output for debugging
+                            </Typography>
+                        </Box>
+                        <Switch
+                            checked={settings.debug_mode}
+                            onChange={() => handleUpdate({debug_mode: !settings.debug_mode})}
+                            color="primary"
+                        />
+                    </Box>
+
+                    {/* Save button */}
+                    <Button
+                        onClick={applySettings}
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        sx={{alignSelf: 'center', minWidth: 180, mt: 2}}
+                        startIcon={<span role="img" aria-label="save">💾</span>}
+                    >
+                        Apply Settings
+                    </Button>
+                </Box>
+                <Snackbar
+                    open={!!snackbar}
+                    autoHideDuration={3000}
+                    onClose={() => setSnackbar(null)}
+                    message={snackbar}
+                    anchorOrigin={{vertical: 'top', horizontal: 'center'}}
                 />
-                <span className="text-gray-700 dark:text-gray-300">Automatic (Follow system)</span>
-              </label>
-              <label className="flex items-center space-x-3">
-                <input
-                    type="radio"
-                    name="darkMode"
-                    value="on"
-                    checked={settings.dark_mode_preference === 'on'}
-                    onChange={() => handleUpdate({ dark_mode_preference: 'on' })}
-                    className="w-4 h-4 accent-blue-600"
-                />
-                <span className="text-gray-700 dark:text-gray-300">Always Dark</span>
-              </label>
-              <label className="flex items-center space-x-3">
-                <input
-                    type="radio"
-                    name="darkMode"
-                    value="off"
-                    checked={settings.dark_mode_preference === 'off'}
-                    onChange={() => handleUpdate({ dark_mode_preference: 'off' })}
-                    className="w-4 h-4 accent-blue-600"
-                />
-                <span className="text-gray-700 dark:text-gray-300">Always Light</span>
-              </label>
-            </div>
-          </div>
-
-          {/* Currency */}
-          <div className="flex justify-between items-center p-4 border rounded-lg bg-gray-50 dark:bg-gray-700">
-            <div>
-              <p className="font-semibold text-gray-700 dark:text-gray-300">💱 Currency</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Select preferred currency</p>
-            </div>
-            <select
-                value={settings.currency}
-                onChange={e => handleUpdate({ currency: e.target.value })}
-                className="bg-gray-100 dark:bg-gray-600 text-sm rounded border px-3 py-1"
-            >
-              <option value="USD">USD ($)</option>
-              <option value="ILS">ILS (₪)</option>
-              <option value="EUR">EUR (€)</option>
-            </select>
-          </div>
-
-          {/* Auto Calculate */}
-          <div className="flex justify-between items-center p-4 border rounded-lg bg-gray-50 dark:bg-gray-700">
-            <div>
-              <p className="font-semibold text-gray-700 dark:text-gray-300">🧮 Auto-calculate</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Enable automatic price calculation</p>
-            </div>
-            <input
-                type="checkbox"
-                checked={settings.calculate_price}
-                onChange={() => handleUpdate({ calculate_price: !settings.calculate_price })}
-                className="w-5 h-5 accent-blue-600"
-            />
-          </div>
-
-          {/* Debug Mode */}
-          <div className="flex justify-between items-center p-4 border rounded-lg bg-gray-50 dark:bg-gray-700">
-            <div>
-              <p className="font-semibold text-gray-700 dark:text-gray-300">🛠️ Debug Mode</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Use raw label output for debugging</p>
-            </div>
-            <input
-                type="checkbox"
-                checked={settings.debug_mode}
-                onChange={() => handleUpdate({ debug_mode: !settings.debug_mode })}
-                className="w-5 h-5 accent-blue-600"
-            />
-          </div>
-
-          {/* Save button */}
-          <div className="text-center">
-            <button
-                onClick={applySettings}
-                className="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              💾 Apply Settings
-            </button>
-          </div>
-        </div>
-
-        <Toast />
-      </div>
-  );
+                <Box sx={{mt: 4, textAlign: 'center', color: 'text.secondary'}}>
+                    <Typography variant="body2" sx={{mb: 0.5}}>
+                        Version: {import.meta.env.VITE_APP_VERSION || '1.0.0'}
+                    </Typography>
+                    <Typography variant="body2">
+                        <a
+                            href="https://github.com/NirKli/WattBot"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{color: '#3f51b5', textDecoration: 'underline'}}
+                        >
+                            GitHub Repository
+                        </a>
+                    </Typography>
+                </Box>
+            </Paper>
+        </Container>
+    );
 }

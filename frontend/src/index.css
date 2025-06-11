@@ -143,7 +143,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-size: 17px;
   
-  /* Updated color palette for 2024-2025 trends */
+
   --color-primary: #2563eb;        /* Royal blue - trustworthy and reliable */
   --color-primary-light: #93c5fd;  /* Lighter blue for accents */
   --color-primary-dark: #1e40af;   /* Darker blue for depth */
@@ -268,7 +268,7 @@ button {
 
 .tab {
   flex: 1;
-  padding: 1rem 0.75rem;
+  padding: 2rem 0.75rem;
   background: none;
   border: none;
   font-size: 0.875rem;
@@ -305,7 +305,7 @@ button {
 }
 
 .tab-content {
-  padding: 1rem 0;
+  padding: 1.5rem;
   animation: fadeIn 0.3s ease-in-out;
 }
 
