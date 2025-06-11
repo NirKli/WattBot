@@ -1,98 +1,123 @@
-import { useEffect } from 'react'
-import ImageUpload from './components/ImageUpload'
-import ConsumptionHistory from './components/ConsumptionHistory'
-import PriceManagement from './components/PriceManagement'
-import Settings from './components/Settings'
-import Tabs, { Tab } from './components/Tabs'
-import { MdElectricBolt, MdOutlineUploadFile, MdHistory, MdAttachMoney, MdSettings } from "react-icons/md";
-import './App.css'
+import {useEffect, useState} from 'react';
+import {
+    AppBar,
+    Box,
+    Container,
+    CssBaseline,
+    IconButton,
+    ThemeProvider,
+    Toolbar,
+    Typography,
+    useMediaQuery
+} from '@mui/material';
+import {darkTheme, lightTheme} from './theme';
+import ImageUpload from './components/ImageUpload';
+import ConsumptionHistory from './components/ConsumptionHistory';
+import PriceManagement from './components/PriceManagement';
+import Settings from './components/Settings';
+import {Brightness4, Brightness7, ElectricBolt} from '@mui/icons-material';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 
 function App() {
-    // Using 0 as default tab without the setter since we're not changing it
-    const defaultTab = 0
+    const [currentTab, setCurrentTab] = useState(0);
+    const [isDarkMode, setIsDarkMode] = useState(false);
+    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
-    // Check for dark mode
     useEffect(() => {
-        const checkDarkMode = () => {
-            document.documentElement.classList.contains('dark');
+        const storedPreference = localStorage.getItem('darkModePreference');
+        if (storedPreference === 'on') {
+            setIsDarkMode(true);
+            document.documentElement.classList.add('dark');
+        } else if (storedPreference === 'off') {
+            setIsDarkMode(false);
+            document.documentElement.classList.remove('dark');
+        } else {
+            setIsDarkMode(prefersDarkMode);
+            document.documentElement.classList.toggle('dark', prefersDarkMode);
+        }
+        // Listen for themeChange event
+        const handleThemeChange = () => {
+            const pref = localStorage.getItem('darkModePreference');
+            if (pref === 'on') {
+                setIsDarkMode(true);
+                document.documentElement.classList.add('dark');
+            } else if (pref === 'off') {
+                setIsDarkMode(false);
+                document.documentElement.classList.remove('dark');
+            } else {
+                setIsDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.classList.toggle('dark', window.matchMedia('(prefers-color-scheme: dark)').matches);
+            }
         };
-        
-        // Check initial state
-        checkDarkMode();
-        
-        // Create mutation observer to detect class changes on html element
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.attributeName === 'class') {
-                    checkDarkMode();
-                }
-            });
-        });
-        
-        observer.observe(document.documentElement, { attributes: true });
-        
-        return () => observer.disconnect();
-    }, []);
+        window.addEventListener('themeChange', handleThemeChange);
+        return () => window.removeEventListener('themeChange', handleThemeChange);
+    }, [prefersDarkMode]);
+
+    const handleThemeToggle = () => {
+        const newMode = !isDarkMode;
+        setIsDarkMode(newMode);
+        localStorage.setItem('darkModePreference', newMode ? 'on' : 'off');
+        document.documentElement.classList.toggle('dark', newMode);
+    };
+
+    const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
+        setCurrentTab(newValue);
+    };
 
     return (
-        <div className="flex flex-col min-h-screen font-sans bg-white dark:bg-gray-900">
-            {/* Modern header with gradient */}
-            <header className="bg-gray-900 shadow-md">
-                <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-                    <div className="flex items-center">
-                        <div className="bg-white/10 backdrop-blur-sm rounded-lg mr-3 p-2 flex items-center justify-center">
-                            <MdElectricBolt size={28} className="text-white" />
-                        </div>
-                        <div>
-                            <h1 className="font-bold text-2xl !text-white">WattBot</h1>
-                            <p className="text-xs text-white">Electricity Meter Reading Assistant</p>
-                        </div>
-                    </div>
-                </div>
-            </header>
+        <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+            <CssBaseline/>
+            <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: '100vh',
+                bgcolor: 'background.default',
+                color: 'text.primary'
+            }}>
+                <AppBar position="static" elevation={0} color="default">
+                    <Toolbar>
+                        <Box sx={{display: 'flex', alignItems: 'center', flexGrow: 1}}>
+                            <ElectricBolt sx={{mr: 1}}/>
+                            <Typography variant="h6" component="div" sx={{fontWeight: 600}}>
+                                WattBot
+                            </Typography>
+                            <Typography variant="subtitle2" sx={{ml: 1, opacity: 0.7}}>
+                                Electricity Meter Reading Assistant
+                            </Typography>
+                        </Box>
+                        <IconButton onClick={handleThemeToggle} color="inherit">
+                            {isDarkMode ? <Brightness7/> : <Brightness4/>}
+                        </IconButton>
+                    </Toolbar>
+                </AppBar>
 
-            {/* Main content area */}
-            <main className="flex-1 py-6 bg-white dark:bg-gray-900">
-                <div className="container mx-auto px-4">
-                    
-                    {/* Modern material design tabs with sliding indicator */}
-                    <Tabs defaultTab={defaultTab} className="mb-6">
-                        <Tab label="Upload Reading" icon={<MdOutlineUploadFile />}>
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                {/* Upload Card - Left Side */}
-                                <div className="w-full max-w-xs mx-auto rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 sm:p-6 flex flex-col items-center space-y-4">
-                                    <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 dark:bg-primary/10 rounded-bl-full"></div>
-                                    <div className="flex flex-col items-center relative z-10">
-                                        {/* Electric Meter SVG Illustration */}
-                                        <div className="w-full h-auto mb-6 flex items-center justify-center">
-                                            <ImageUpload />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Tab>
-                        <Tab label="Consumption History" icon={<MdHistory />}>
-                            <div className="card p-6">
-                                <ConsumptionHistory />
-                            </div>
-                        </Tab>
-                        <Tab label="Prices" icon={<MdAttachMoney />}>
-                            <div className="card p-6">
-                                <PriceManagement />
-                            </div>
-                        </Tab>
-                        <Tab label="Settings" icon={<MdSettings />}>
-                            <Settings />
-                        </Tab>
-                    </Tabs>
-                </div>
-            </main>
+                <Box sx={{borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper'}}>
+                    <Container maxWidth="lg" sx={{px: {xs: 0, sm: 2}}}>
+                        <Tabs
+                            value={currentTab}
+                            onChange={handleTabChange}
+                            variant="scrollable"
+                            scrollButtons="auto"
+                            allowScrollButtonsMobile
+                        >
+                            <Tab label="Upload Reading"/>
+                            <Tab label="Consumption History"/>
+                            <Tab label="Prices"/>
+                            <Tab label="Settings"/>
+                        </Tabs>
+                    </Container>
+                </Box>
 
-            <footer className="text-center py-4 text-sm text-gray-400 dark:text-gray-600">
-                © {new Date().getFullYear()} WattBot
-            </footer>
-        </div>
-    )
+                <Container maxWidth="lg" sx={{py: 4, flex: 1}}>
+                    {currentTab === 0 && <ImageUpload/>}
+                    {currentTab === 1 && <ConsumptionHistory/>}
+                    {currentTab === 2 && <PriceManagement/>}
+                    {currentTab === 3 && <Settings/>}
+                </Container>
+            </Box>
+        </ThemeProvider>
+    );
 }
 
-export default App
+export default App;
