@@ -48,6 +48,7 @@ jobs:
           else
             branch=$(echo "${GITHUB_REF#refs/heads/}" | tr '/' '-')
             echo "tag=branch-${branch}" >> $GITHUB_OUTPUT
+          fi
 
       - name: Build and push backend Docker image
         uses: docker/build-push-action@v6.18.0
