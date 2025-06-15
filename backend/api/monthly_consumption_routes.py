@@ -2,7 +2,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException, Response
 
 from backend.services.crud.crud_files import get_file_from_db
 from backend.services.crud.crud_monthly_consumption import get_monthly_consumption_from_db, get_all_monthly_consumption_from_db, \
-    update_monthly_consumption_in_db, delete_monthly_consumption_from_db
+    update_monthly_consumption_in_db, delete_monthly_consumption_from_db, get_latest_monthly_consumption_from_db
 from backend.services.exception.NoObjectHasFoundException import NoObjectHasFoundException
 from backend.services.model.MonthlyConsumption import MonthlyConsumption
 from backend.services.process_image import ProcessImage
@@ -20,6 +20,15 @@ async def process_image(file: UploadFile = File(...)) -> MonthlyConsumption:
 
     return monthly_consumption
 
+
+@router.get("/monthly-consumption/latest", response_model=MonthlyConsumption)
+async def get_latest_monthly_consumption() -> MonthlyConsumption:
+    try:
+        print("Fetching latest monthly consumption from the database")
+        monthly_consumption = get_latest_monthly_consumption_from_db()
+        return monthly_consumption
+    except NoObjectHasFoundException:
+        raise HTTPException(status_code=404, detail="No object found with the given ID.")
 
 @router.get("/monthly-consumption/{monthly_consumption_id}", response_model=MonthlyConsumption)
 async def get_monthly_consumption(monthly_consumption_id: str) -> MonthlyConsumption:

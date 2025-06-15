@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Global icon size override */
 svg {
   width: 16px !important;
@@ -752,4 +748,12 @@ tbody td {
     90% { opacity: 1; }
     100% { opacity: 0; transform: translateY(-10px); }
   }
+}
+
+.dark .MuiPaper-root, 
+.dark .MuiCard-root, 
+.dark .card {
+  border: 1.5px solid #3a3a3a !important;   /* neutral gray border */
+  background-color: #18181b !important;     /* deep neutral background */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.45) !important;
 }

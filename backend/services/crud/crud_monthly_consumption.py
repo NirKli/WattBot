@@ -46,6 +46,27 @@ def get_monthly_consumption_from_db(monthly_consumption_id):
     else:
         raise NoObjectHasFoundException()
 
+def get_latest_monthly_consumption_from_db():
+    collection = get_db()["monthly_consumptions"]
+    result = collection.find().sort("date", pymongo.DESCENDING).limit(1)
+    monthly_consumption = list(result)
+    if monthly_consumption:
+        doc = monthly_consumption[0]
+        return MonthlyConsumption(
+            _id=doc["_id"],
+            modified_date=doc["modified_date"],
+            date=doc["date"],
+            total_kwh_consumed=doc["total_kwh_consumed"],
+            price=doc["price"],
+            original_file=str(doc["original_file"]) if isinstance(doc["original_file"], ObjectId) else doc[
+                "original_file"],
+            file_name=doc["file_name"],
+            label_file=str(doc["label_file"]) if isinstance(doc["label_file"], ObjectId) else doc["label_file"],
+            file_label_name=str(doc["file_label_name"]) if isinstance(doc["file_label_name"], ObjectId) else doc[
+                "file_label_name"]
+        )
+    else:
+        raise NoObjectHasFoundException()
 
 def get_all_monthly_consumption_from_db():
     collection = get_db()["monthly_consumptions"]

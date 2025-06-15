@@ -4,7 +4,6 @@ import {
     Box,
     Container,
     CssBaseline,
-    IconButton,
     ThemeProvider,
     Toolbar,
     Typography,
@@ -15,9 +14,11 @@ import ImageUpload from './components/ImageUpload';
 import ConsumptionHistory from './components/ConsumptionHistory';
 import PriceManagement from './components/PriceManagement';
 import Settings from './components/Settings';
-import {Brightness4, Brightness7, ElectricBolt} from '@mui/icons-material';
+import {ElectricBolt} from '@mui/icons-material';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import axios from 'axios';
+import {API_URL} from './config';
 
 function App() {
     const [currentTab, setCurrentTab] = useState(0);
@@ -25,41 +26,66 @@ function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
     useEffect(() => {
-        const storedPreference = localStorage.getItem('darkModePreference');
-        if (storedPreference === 'on') {
-            setIsDarkMode(true);
-            document.documentElement.classList.add('dark');
-        } else if (storedPreference === 'off') {
-            setIsDarkMode(false);
-            document.documentElement.classList.remove('dark');
-        } else {
-            setIsDarkMode(prefersDarkMode);
-            document.documentElement.classList.toggle('dark', prefersDarkMode);
-        }
-        // Listen for themeChange event
-        const handleThemeChange = () => {
-            const pref = localStorage.getItem('darkModePreference');
-            if (pref === 'on') {
+        const fetchSettings = async () => {
+            try {
+                const response = await axios.get(`${API_URL}/settings`);
+                const darkModePreference = response.data.dark_mode_preference;
+                
+                if (darkModePreference === 'on') {
+                    setIsDarkMode(true);
+                    document.documentElement.classList.add('dark');
+                } else if (darkModePreference === 'off') {
+                    setIsDarkMode(false);
+                    document.documentElement.classList.remove('dark');
+                } else {
+                    // 'auto' mode
+                    setIsDarkMode(prefersDarkMode);
+                    document.documentElement.classList.toggle('dark', prefersDarkMode);
+                }
+            } catch (error) {
+                console.error('Failed to fetch settings:', error);
+                // Fallback to system preference
+                setIsDarkMode(prefersDarkMode);
+                document.documentElement.classList.toggle('dark', prefersDarkMode);
+            }
+        };
+
+        fetchSettings();
+
+        // Listen for system preference changes
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const handleChange = (e: MediaQueryListEvent) => {
+            const storedPreference = localStorage.getItem('darkModePreference');
+            if (storedPreference === 'auto') {
+                setIsDarkMode(e.matches);
+                document.documentElement.classList.toggle('dark', e.matches);
+            }
+        };
+
+        // Listen for theme changes from settings
+        const handleThemeChange = (e: CustomEvent) => {
+            const { darkModePreference } = e.detail;
+            if (darkModePreference === 'on') {
                 setIsDarkMode(true);
                 document.documentElement.classList.add('dark');
-            } else if (pref === 'off') {
+            } else if (darkModePreference === 'off') {
                 setIsDarkMode(false);
                 document.documentElement.classList.remove('dark');
             } else {
-                setIsDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
-                document.documentElement.classList.toggle('dark', window.matchMedia('(prefers-color-scheme: dark)').matches);
+                // 'auto' mode
+                setIsDarkMode(prefersDarkMode);
+                document.documentElement.classList.toggle('dark', prefersDarkMode);
             }
         };
-        window.addEventListener('themeChange', handleThemeChange);
-        return () => window.removeEventListener('themeChange', handleThemeChange);
-    }, [prefersDarkMode]);
 
-    const handleThemeToggle = () => {
-        const newMode = !isDarkMode;
-        setIsDarkMode(newMode);
-        localStorage.setItem('darkModePreference', newMode ? 'on' : 'off');
-        document.documentElement.classList.toggle('dark', newMode);
-    };
+        mediaQuery.addEventListener('change', handleChange);
+        window.addEventListener('themeChange', handleThemeChange as EventListener);
+        
+        return () => {
+            mediaQuery.removeEventListener('change', handleChange);
+            window.removeEventListener('themeChange', handleThemeChange as EventListener);
+        };
+    }, [prefersDarkMode]);
 
     const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
         setCurrentTab(newValue);
@@ -82,13 +108,7 @@ function App() {
                             <Typography variant="h6" component="div" sx={{fontWeight: 600}}>
                                 WattBot
                             </Typography>
-                            <Typography variant="subtitle2" sx={{ml: 1, opacity: 0.7}}>
-                                Electricity Meter Reading Assistant
-                            </Typography>
                         </Box>
-                        <IconButton onClick={handleThemeToggle} color="inherit">
-                            {isDarkMode ? <Brightness7/> : <Brightness4/>}
-                        </IconButton>
                     </Toolbar>
                 </AppBar>
 
