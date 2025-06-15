@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "node scripts/copy-version.js && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -23,7 +23,6 @@
     "@eslint/js": "^9.28.0",
     "@headlessui/react": "^2.2.4",
     "@heroicons/react": "^2.2.0",
-    "@tailwindcss/postcss": "^4.1.8",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.5",
     "@vitejs/plugin-react": "^4.5.0",
@@ -33,8 +32,6 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
     "postcss": "^8.5.4",
-    "tailwind-merge": "^3.3.0",
-    "tailwindcss": "^4.1.8",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.33.0",
     "vite": "^6.3.5"

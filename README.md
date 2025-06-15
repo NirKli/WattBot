@@ -13,14 +13,14 @@ price tracking.
 - 🔍 Detect digital readings using a trained YOLO model
 - 🌙 Dark mode support
 - 💰 Track electricity prices and consumption history
-- 🛠 Built with FastAPI (Python) and React + Tailwind CSS
+- 🛠 Built with FastAPI (Python) and React + Material UI
 - 🐳 Easy deployment via Docker
 
 ---
 
 ## 🧠 Tech Stack
 
-- **Frontend:** React, Tailwind CSS, TypeScript
+- **Frontend:** React, Material UI, TypeScript
 - **Backend:** FastAPI, Python 3.13, Uvicorn, Pydantic
 - **Machine Learning:** YOLOv11s-obb (custom-trained on real electricity meter data)
 - **Database:** MongoDB

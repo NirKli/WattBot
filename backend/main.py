@@ -12,6 +12,8 @@ origins = [
     "http://localhost:80",    # Production
     "http://localhost",       # Production without port
     "http://127.0.0.1:5173",  # Alternative localhost
+    "http://192.168.1.154:5173",  # Alternative localhost
+    "http://100.96.72.9:5173",  # Alternative localhost
     "http://127.0.0.1:80",    # Alternative production
     "http://127.0.0.1",       # Alternative localhost without port
     "http://wattbot-ui",      # Docker service name
