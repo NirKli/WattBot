@@ -54,7 +54,6 @@ jobs:
         uses: docker/build-push-action@v6.18.0
         with:
           context: ./backend
-          file: backend/Dockerfile
           platforms: linux/arm64,linux/amd64
           push: true
           tags: ${{ env.IMAGE }}:${{ steps.docker_tag.outputs.tag }}
