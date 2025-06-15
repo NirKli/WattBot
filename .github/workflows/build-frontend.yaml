@@ -41,6 +41,9 @@ jobs:
           npm run build
           cd ..
 
+      - name: Copy VERSION into frontend
+        run: cp VERSION frontend/
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
