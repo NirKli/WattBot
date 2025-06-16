@@ -1,3 +1,12 @@
+# Changelog
+
+## unreleased
+
+## [1.1.1] - 16-06-2025
+
+### Improvements
+- Split components into separate files for better organization and maintainability.
+
 ## [1.1.0] - 11-06-2025
 
 ### Improvements
@@ -12,4 +21,5 @@
 ## [1.0.0] - 02-06-2025
 
 
-[1.0.1]: https://github.com/NirKli/WattBot/compare/v1.0.0...v1.0.1
+[1.1.1]: https://github.com/NirKli/WattBot/compare/v1.0.0...v1.1.1
+[1.1.0]: https://github.com/NirKli/WattBot/compare/v1.0.0...v1.1.0
