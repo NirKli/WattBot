@@ -4,7 +4,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-COPY ../VERSION ./
+COPY VERSION ../VERSION
+RUN echo "VITE_APP_VERSION=$(cat ../VERSION)" > .env
+
 COPY . .
 RUN npm run build
 
