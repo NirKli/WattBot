@@ -4,13 +4,27 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 env:
   FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/wattbot-ui
   BACKEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/wattbot
 
 jobs:
+  strip-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.set-version.outputs.VERSION }}
+    steps:
+      - name: Extract version without 'v'
+        id: set-version
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG#v}"
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+
   build-backend:
+    needs: strip-version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,7 +48,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ env.BACKEND_IMAGE }}:${{ github.ref_name }}
+            ${{ env.BACKEND_IMAGE }}:${{ needs.strip-version.outputs.version }}
             ${{ env.BACKEND_IMAGE }}:latest
 
   build-frontend:
@@ -64,5 +78,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ env.FRONTEND_IMAGE }}:${{ github.ref_name }}
+            ${{ env.FRONTEND_IMAGE }}:${{ needs.strip-version.outputs.version }}
             ${{ env.FRONTEND_IMAGE }}:latest
