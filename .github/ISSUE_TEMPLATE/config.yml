@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation
+    url: https://github.com/NirKli/WattBot#readme
+    about: Please check the README and project documentation first.
+
+  - name: 💬 Ask a question
+    url: https://github.com/NirKli/WattBot/discussions
+    about: If you’re not sure it’s a bug, ask here instead.

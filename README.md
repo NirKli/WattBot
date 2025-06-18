@@ -1,5 +1,7 @@
 # ⚡️ WattBot – Electricity Meter Reading Assistant
 
+![Upload UI](screenshots/upload-ui.png)
+
 WattBot is a full-stack web application that lets you upload images of electricity meters and automatically extract
 readings using a custom-trained YOLO model.  
 The project includes a Python FastAPI backend and a React frontend with support for dark mode, currency selection, and
@@ -53,15 +55,6 @@ docker compose up -d
 
 If you're deploying on a remote server, replace `localhost` with your server's IP (e.g., http://123.123.123.123:5173).
 
----
-
-## 🖼 Sample
-
-| Upload                                  | Consumption Overview                              |
-|-----------------------------------------|---------------------------------------------------|
-| ![Upload UI](screenshots/upload-ui.png) | ![Result UI](screenshots/history-consumption.png) |
-
----
 
 ## ⚠️ Model Accuracy Note
 

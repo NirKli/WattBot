@@ -2,6 +2,9 @@
 
 ## unreleased
 
+### Improvements
+- Added a new cropper component to allow users to crop images, improving the accuracy of meter reading detection.
+
 ## [1.1.1] - 16-06-2025
 
 ### Improvements

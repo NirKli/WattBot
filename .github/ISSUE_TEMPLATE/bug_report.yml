@@ -1,0 +1,86 @@
+name: "🐛 Bug Report"
+description: "Report an issue with WattBot or its OCR/YOLO LCD detection"
+title: "[Bug]: "
+labels: ["bug", "help wanted"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        👋 Thanks for reporting a bug in WattBot!
+
+        Please fill out all required sections so we can help you faster.
+
+  - type: input
+    id: title
+    attributes:
+      label: Short Summary
+      description: Provide a brief, one-line summary of the issue.
+      placeholder: "e.g. YOLO fails to detect 7-segment display"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the issue in detail. Include screenshots, logs, or model outputs if possible.
+      placeholder: |
+        - What were you trying to do?
+        - What did you expect to happen?
+        - What actually happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: How to Reproduce
+      description: Provide detailed steps so we can reproduce the issue.
+      placeholder: |
+        1. Upload an image of the meter
+        2. Click detect
+        3. Output is incorrect or empty
+    validations:
+      required: false
+
+  - type: input
+    id: image-name
+    attributes:
+      label: Image or Video Filename (if applicable)
+      description: Mention the filename of the uploaded image or video where the bug appeared
+      placeholder: "aug1_img32.png"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component
+      options:
+        - Frontend (React)
+        - Backend (FastAPI)
+        - YOLO Model
+        - MongoDB/Storage
+        - CI/CD or Deployment
+      multiple: true
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: What version/commit of WattBot are you using?
+      placeholder: "e.g. v1.2.0, commit 843bd23"
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other relevant context, configs, screenshots, or logs
+    validations:
+      required: false
