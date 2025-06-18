@@ -6,6 +6,7 @@ from starlette.datastructures import UploadFile
 from ultralytics import YOLO
 
 from backend.services.crud import crud_files, crud_monthly_consumption
+from backend.services.exception.ResultIsNotFoundException import ResultIsNotFoundException
 from backend.services.model.MonthlyConsumption import MonthlyConsumption
 
 DETECT_FOLDER = "runs/obb/predict/"
@@ -35,6 +36,11 @@ class ProcessImage:
 
         output = ''.join([lbl for _, lbl, _ in detections])
         with_conf = ' '.join([f"{lbl}:{conf:.2f}" for _, lbl, conf in detections])
+
+        try:
+            output = float(output)
+        except ValueError:
+            raise ResultIsNotFoundException()
 
         print("Predicted Number:", float(output))
         print("Digits with Confidence:", with_conf)

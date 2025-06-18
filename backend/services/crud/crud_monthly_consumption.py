@@ -46,6 +46,7 @@ def get_monthly_consumption_from_db(monthly_consumption_id):
     else:
         raise NoObjectHasFoundException()
 
+
 def get_latest_monthly_consumption_from_db():
     collection = get_db()["monthly_consumptions"]
     result = collection.find().sort("date", pymongo.DESCENDING).limit(1)
@@ -67,6 +68,7 @@ def get_latest_monthly_consumption_from_db():
         )
     else:
         raise NoObjectHasFoundException()
+
 
 def get_all_monthly_consumption_from_db():
     collection = get_db()["monthly_consumptions"]
@@ -138,7 +140,7 @@ def calculate_price_from_current_consumption_from_last_month(current_total_kwh_c
         electricity_price = list(collection.find().sort("date", pymongo.DESCENDING).limit(1))
         if electricity_price:
             return electricity_price[0]["price"] * (
-                        current_total_kwh_consumed - last_month_consumption[0]["total_kwh_consumed"])
+                    current_total_kwh_consumed - last_month_consumption[0]["total_kwh_consumed"])
         else:
             raise NoObjectHasFoundException()
     else:

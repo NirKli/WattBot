@@ -3,6 +3,7 @@ import { TrendingUp, AccessTime, CloudUpload, Numbers } from '@mui/icons-materia
 import { useImageUpload } from './useImageUpload';
 import UploadForm from './UploadForm';
 import LatestReading from './LatestReading';
+import CropImageDialog from './CropImageDialog';
 
 export default function ImageUpload() {
     const {
@@ -16,11 +17,22 @@ export default function ImageUpload() {
         handleDrop,
         handleUpload,
         formatDate,
-        getCurrencySymbol
+        getCurrencySymbol,
+        cropDialogOpen,
+        imageToCrop,
+        handleCropComplete,
+        handleCropDialogClose
     } = useImageUpload();
 
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
+            {/* Crop dialog overlays everything when open */}
+            <CropImageDialog
+                open={cropDialogOpen}
+                imageSrc={imageToCrop || ''}
+                onClose={handleCropDialogClose}
+                onCropComplete={handleCropComplete}
+            />
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4 }}>
                 {/* Left side - Upload Form */}
                 <Box sx={{ flex: 1 }}>

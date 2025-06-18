@@ -8,6 +8,8 @@ export function useImageUpload() {
     const [isUploading, setIsUploading] = useState(false);
     const [latestReading, setLatestReading] = useState<MonthlyConsumption | null>(null);
     const [currency, setCurrency] = useState('USD');
+    const [cropDialogOpen, setCropDialogOpen] = useState(false);
+    const [imageToCrop, setImageToCrop] = useState<string | null>(null);
 
     useEffect(() => {
         fetchSettings();
@@ -78,6 +80,15 @@ export function useImageUpload() {
                 body: formData,
             });
 
+            if (response.status === 422) {
+                // Open crop dialog with preview image
+                if (previewUrl) {
+                    setImageToCrop(previewUrl);
+                    setCropDialogOpen(true);
+                }
+                throw new Error('422: Meter not detected. Please crop the meter area.');
+            }
+
             if (!response.ok) {
                 throw new Error('Upload failed');
             }
@@ -90,6 +101,52 @@ export function useImageUpload() {
         } finally {
             setIsUploading(false);
         }
+    };
+
+    // Handler for when cropping is complete
+    const handleCropComplete = async (croppedBlob: Blob) => {
+        setCropDialogOpen(false);
+        
+        // Use the original filename or a default one
+        const fileName = file?.name || 'cropped.jpg';
+        
+        // Update state
+        setFile(null); // Clear file, since we're uploading directly
+        
+        // Create preview
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setPreviewUrl(reader.result as string);
+        };
+        reader.readAsDataURL(croppedBlob);
+
+        // Upload the cropped blob as a file
+        setIsUploading(true);
+        const formData = new FormData();
+        formData.append('file', croppedBlob, fileName);
+        console.log('Uploading cropped blob as file:', croppedBlob, 'with name:', fileName);
+        try {
+            const response = await fetch(`${API_URL}/monthly-consumption`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error('Upload failed after cropping');
+            }
+
+            setFile(null);
+            setPreviewUrl(null);
+            fetchLatestReading();
+        } catch (error) {
+            console.error('Error uploading cropped file:', error);
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    const handleCropDialogClose = () => {
+        setCropDialogOpen(false);
     };
 
     const fetchLatestReading = async () => {
@@ -139,6 +196,11 @@ export function useImageUpload() {
         handleDrop,
         handleUpload,
         formatDate,
-        getCurrencySymbol
+        getCurrencySymbol,
+        // Cropping
+        cropDialogOpen,
+        imageToCrop,
+        handleCropComplete,
+        handleCropDialogClose
     };
 } 
