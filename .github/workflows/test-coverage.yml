@@ -42,8 +42,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           file: backend/coverage/lcov.info
-          base-path: backend
-          flag-name: backend
 
   frontend:
     if: false  # Disabled until frontend tests are added
