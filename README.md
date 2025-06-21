@@ -2,6 +2,8 @@
 
 ![Upload UI](screenshots/upload-ui.png)
 
+[![Coverage Status](https://coveralls.io/repos/github/NirKli/WattBot/badge.svg?branch=main)](https://coveralls.io/github/NirKli/WattBot?branch=main)
+
 WattBot is a full-stack web application that lets you upload images of electricity meters and automatically extract
 readings using a custom-trained YOLO model.  
 The project includes a Python FastAPI backend and a React frontend with support for dark mode, currency selection, and
