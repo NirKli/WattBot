@@ -13,7 +13,8 @@ DETECT_FOLDER = "runs/obb/predict/"
 
 
 class ProcessImage:
-    model = YOLO("models/best.pt")
+    def __init__(self):
+        self.model = YOLO("models/best.pt")
 
     def process_image(self, file: UploadFile):
         cleanup("", DETECT_FOLDER)

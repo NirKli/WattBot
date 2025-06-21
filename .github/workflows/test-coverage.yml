@@ -1,0 +1,58 @@
+name: CI with Coverage
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+
+env:
+  COVERALLS_PARALLEL: true
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: |
+          cd frontend
+          npm ci
+          npm run test:coverage
+      - name: Upload frontend coverage
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: frontend/coverage/lcov.info
+          flag-name: frontend
+
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: |
+          pip install pytest coverage pytest-cov coveralls
+          pytest --cov=backend --cov-report=lcov:backend/coverage/lcov.info
+      - name: Upload backend coverage
+        uses: coverallsapp/github-action@v2.3.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: backend/coverage/lcov.info
+          flag-name: backend
+
+  coveralls-finalize:
+    needs: [frontend, backend]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Finalize parallel coverage
+        uses: coverallsapp/github-action@v2.3.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
+          carryforward: frontend,backend

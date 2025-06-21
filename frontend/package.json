@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "node scripts/copy-version.js && tsc -b && vite build",
+    "test:coverage": "jest --coverage --coverageReporters=lcov",
     "lint": "eslint .",
     "preview": "vite preview"
   },

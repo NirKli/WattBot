@@ -10,12 +10,13 @@ from backend.services.model.MonthlyConsumption import MonthlyConsumption
 from backend.services.process_image import ProcessImage
 
 router = APIRouter()
-image_processor = ProcessImage()
+
 
 
 @router.post("/monthly-consumption", response_model=MonthlyConsumption)
 async def process_image(file: UploadFile = File(...)) -> MonthlyConsumption:
     try:
+        image_processor = ProcessImage()
         monthly_consumption = image_processor.process_image(file)
         monthly_consumption.original_file = str(monthly_consumption.original_file)
         monthly_consumption.label_file = str(monthly_consumption.label_file)

@@ -5,6 +5,10 @@
 ### Improvements
 - Added a new cropper component to allow users to crop images, improving the accuracy of meter reading detection.
 
+#### Build, Dependencies, GitHub Actions
+- Added code coverage reporting to the project with coveralls for better code quality tracking.
+- Added tests for the backend `routes` code
+
 ## [1.1.1] - 16-06-2025
 
 ### Improvements
