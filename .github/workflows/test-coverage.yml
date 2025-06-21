@@ -1,41 +1,66 @@
-name: CI with Coverage
+name: Test & Coverage
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-  workflow_dispatch:
-
 
 env:
   COVERALLS_PARALLEL: true
 
 jobs:
-
   backend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
-      - run: |
-          pip install pytest coverage pytest-cov coveralls
-          pytest --cov=backend --cov-report=lcov:backend/coverage/lcov.info
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          pip install fastapi pymongo pytest pytest-cov coveralls
+
+      - name: Run backend tests with coverage
+        run: |
+          pytest backend \
+                 --cov=backend \
+                 --cov-report=lcov:backend/coverage/lcov.info
+
       - name: Upload backend coverage
-        uses: coverallsapp/github-action@v2.3.6
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          file: backend/coverage/lcov.info
+          path-to-lcov: backend/coverage/lcov.info
+          base-path: backend
           flag-name: backend
 
-  coveralls-finalize:
-    needs: [backend]
+  frontend:
+    if: false  # Disabled until frontend tests are added
     runs-on: ubuntu-latest
     steps:
-      - name: Finalize parallel coverage
-        uses: coverallsapp/github-action@v2.3.6
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install dependencies including dev
+        working-directory: frontend
+        run: npm ci
+      - name: Run frontend tests with coverage
+        working-directory: frontend
+        run: npm run test:coverage
+      - name: Upload frontend coverage
+        uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          parallel-finished: true
-          carryforward: backend
+          path-to-lcov: frontend/coverage/lcov.info
+          base-path: frontend
+          flag-name: frontend
