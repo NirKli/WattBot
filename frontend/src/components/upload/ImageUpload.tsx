@@ -4,6 +4,7 @@ import { useImageUpload } from './useImageUpload';
 import UploadForm from './UploadForm';
 import LatestReading from './LatestReading';
 import CropImageDialog from './CropImageDialog';
+import UploadFailedDialog from './UploadFailedDialog';
 
 export default function ImageUpload() {
     const {
@@ -21,7 +22,9 @@ export default function ImageUpload() {
         cropDialogOpen,
         imageToCrop,
         handleCropComplete,
-        handleCropDialogClose
+        handleCropDialogClose,
+        showFinalErrorDialog,
+        handleFinalErrorDialogClose,
     } = useImageUpload();
 
     return (
@@ -32,6 +35,11 @@ export default function ImageUpload() {
                 imageSrc={imageToCrop || ''}
                 onClose={handleCropDialogClose}
                 onCropComplete={handleCropComplete}
+            />
+            {/* Final error dialog */}
+            <UploadFailedDialog
+                open={showFinalErrorDialog}
+                onClose={handleFinalErrorDialogClose}
             />
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4 }}>
                 {/* Left side - Upload Form */}

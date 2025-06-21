@@ -10,6 +10,7 @@ export function useImageUpload() {
     const [currency, setCurrency] = useState('USD');
     const [cropDialogOpen, setCropDialogOpen] = useState(false);
     const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+    const [showFinalErrorDialog, setShowFinalErrorDialog] = useState(false);
 
     useEffect(() => {
         fetchSettings();
@@ -131,8 +132,19 @@ export function useImageUpload() {
                 body: formData,
             });
 
+            if (response.status === 422) {
+                // It failed again. Show the final error dialog.
+                setShowFinalErrorDialog(true);
+                setFile(null);
+                setPreviewUrl(null);
+                return;
+            }
+
             if (!response.ok) {
-                throw new Error('Upload failed after cropping');
+                // For other errors, you might want a generic error message
+                setShowFinalErrorDialog(true);
+                console.error('Upload failed after cropping with status:', response.status);
+                return;
             }
 
             setFile(null);
@@ -140,6 +152,7 @@ export function useImageUpload() {
             fetchLatestReading();
         } catch (error) {
             console.error('Error uploading cropped file:', error);
+            setShowFinalErrorDialog(true);
         } finally {
             setIsUploading(false);
         }
@@ -147,6 +160,10 @@ export function useImageUpload() {
 
     const handleCropDialogClose = () => {
         setCropDialogOpen(false);
+    };
+
+    const handleFinalErrorDialogClose = () => {
+        setShowFinalErrorDialog(false);
     };
 
     const fetchLatestReading = async () => {
@@ -201,6 +218,9 @@ export function useImageUpload() {
         cropDialogOpen,
         imageToCrop,
         handleCropComplete,
-        handleCropDialogClose
+        handleCropDialogClose,
+        // Final Error
+        showFinalErrorDialog,
+        handleFinalErrorDialogClose,
     };
 } 
