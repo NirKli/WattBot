@@ -2,7 +2,14 @@
 
 ![Upload UI](screenshots/upload-ui.png)
 
+[![Build Backend](https://img.shields.io/github/actions/workflow/status/NirKli/WattBot/build-backend.yml?branch=main&label=Backend%20Build&style=flat-square)](https://github.com/NirKli/WattBot/actions/workflows/build-backend.yml)
+[![Build Frontend](https://img.shields.io/github/actions/workflow/status/NirKli/WattBot/build-frontend.yml?branch=main&label=Frontend%20Build&style=flat-square)](https://github.com/NirKli/WattBot/actions/workflows/build-frontend.yml)
 [![Coverage Status](https://coveralls.io/repos/github/NirKli/WattBot/badge.svg?branch=main)](https://coveralls.io/github/NirKli/WattBot?branch=main)
+![License](https://img.shields.io/github/license/NirKli/WattBot?style=flat-square)
+![Release](https://img.shields.io/github/v/release/NirKli/WattBot?style=flat-square)
+[![WattBot Pulls](https://img.shields.io/docker/pulls/nirkli/wattbot?label=WattBot%20Pulls&style=flat-square)](https://hub.docker.com/r/nirkli/wattbot)
+[![WattBot UI Pulls](https://img.shields.io/docker/pulls/nirkli/wattbot-ui?label=WattBot%20UI%20Pulls&style=flat-square)](https://hub.docker.com/r/nirkli/wattbot-ui)
+
 
 WattBot is a full-stack web application that lets you upload images of electricity meters and automatically extract
 readings using a custom-trained YOLO model.  

@@ -4,10 +4,12 @@
 
 ### Improvements
 - Added a new cropper component to allow users to crop images, improving the accuracy of meter reading detection.
+- Added a popup when the retry has failed, asking the user to open an issue on GitHub for assistance.
 
 #### Build, Dependencies, GitHub Actions
 - Added code coverage reporting to the project with coveralls for better code quality tracking.
 - Added tests for the backend `routes` code
+- Added badges in `README.md`
 
 ## [1.1.1] - 16-06-2025
 
