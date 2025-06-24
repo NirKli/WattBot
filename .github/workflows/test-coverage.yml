@@ -32,7 +32,7 @@ jobs:
       - name: Run backend tests with coverage
         working-directory: ${{ github.workspace }}
         run: |
-          pytest tests/backend/api \
+          pytest tests/backend \
             --cov=backend \
             --cov-report=lcov:backend/coverage/lcov.info
       
