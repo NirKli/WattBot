@@ -1,5 +1,5 @@
 import { Box, Paper, Typography, Container } from '@mui/material';
-import { TrendingUp, AccessTime, CloudUpload, Numbers } from '@mui/icons-material';
+import { TrendingUp, AccessTime, Numbers } from '@mui/icons-material';
 import { useImageUpload } from './useImageUpload';
 import UploadForm from './UploadForm';
 import LatestReading from './LatestReading';
