@@ -25,7 +25,14 @@ export default function ImageUpload() {
         handleCropDialogClose,
         showFinalErrorDialog,
         handleFinalErrorDialogClose,
+        setFile,
+        setPreviewUrl
     } = useImageUpload();
+
+    const handleRemoveFile = () => {
+        setFile(null);
+        setPreviewUrl(null);
+    };
 
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -58,7 +65,6 @@ export default function ImageUpload() {
                         }}
                     >
                         <Box sx={{ mb: 2, textAlign: 'center' }}>
-                            <CloudUpload sx={{ fontSize: 36, color: 'primary.main', mb: 1 }} />
                             <Typography variant="h6" gutterBottom color="primary">
                                 Upload Meter Reading
                             </Typography>
@@ -74,6 +80,7 @@ export default function ImageUpload() {
                             onUpload={handleUpload}
                             isUploading={isUploading}
                             previewUrl={previewUrl}
+                            handleRemoveFile={handleRemoveFile}
                         />
                     </Paper>
 

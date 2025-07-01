@@ -222,5 +222,7 @@ export function useImageUpload() {
         // Final Error
         showFinalErrorDialog,
         handleFinalErrorDialogClose,
+        setFile,
+        setPreviewUrl,
     };
 } 

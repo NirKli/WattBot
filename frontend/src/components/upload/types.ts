@@ -29,4 +29,5 @@ export interface UploadFormProps {
     onUpload: () => void;
     isUploading: boolean;
     previewUrl: string | null;
+    handleRemoveFile?: () => void;
 } 
