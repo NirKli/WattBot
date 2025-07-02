@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import {darkTheme, lightTheme} from './theme';
 import ImageUpload from './components/ImageUpload';
-import ConsumptionHistory from './components/ConsumptionHistory';
+import ConsumptionHistory from './components/history/ConsumptionHistory';
 import PriceManagement from './components/PriceManagement';
 import Settings from './components/Settings';
 import {ElectricBolt} from '@mui/icons-material';

@@ -31,6 +31,9 @@ export interface ConsumptionStatsProps {
     stats: ConsumptionStats;
     currency: string;
     getCurrencySymbol: (currencyCode: string) => string;
+    formatDate: (dateString: string | undefined) => string;
+    formatTimestamp: (dateString: string | undefined) => string;
+    isMobile: boolean;
 }
 
 export interface ReadingCardProps {

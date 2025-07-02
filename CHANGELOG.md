@@ -6,6 +6,7 @@
 - Added a new cropper component to allow users to crop images, improving the accuracy of meter reading detection.
 - Added a popup when the retry has failed, asking the user to open an issue on GitHub for assistance.
 - Added file removal functionality to image upload component
+- Refactor ConsumptionHistory component to improve readability and functionality, update imports, enhance mobile view.
 
 #### Build, Dependencies, GitHub Actions
 - Added code coverage reporting to the project with coveralls for better code quality tracking.

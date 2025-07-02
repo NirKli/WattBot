@@ -1,6 +1,7 @@
 import {Paper, Box, TextField, Button} from '@mui/material';
 import {Save} from '@mui/icons-material';
 import type {MonthlyConsumption} from './types';
+import React from "react";
 
 interface EditReadingFormProps {
     reading: MonthlyConsumption;
@@ -26,9 +27,11 @@ export default function EditReadingForm({
                     <TextField
                         label="Date"
                         type="date"
-                        value={reading.date}
+                        value={reading.date ? reading.date.split('T')[0] : ''}
                         onChange={e => onEditFormChange('date', e.target.value)}
-                        InputLabelProps={{shrink: true}}
+                        slotProps={{
+                            inputLabel: { shrink: true }
+                        }}
                         required
                         fullWidth
                     />
@@ -39,9 +42,13 @@ export default function EditReadingForm({
                         onChange={e => onEditFormChange('total_kwh_consumed', e.target.value)}
                         sx={{flex: 1, minWidth: 120}}
                         size="small"
-                        inputProps={{
-                            min: 0,
-                            step: 0.01,
+                        slotProps={{
+                            input: {
+                                inputProps: {
+                                    min: 0,
+                                    step: 0.01,
+                                },
+                            },
                         }}
                     />
                     <TextField
@@ -51,9 +58,13 @@ export default function EditReadingForm({
                         onChange={e => onEditFormChange('price', e.target.value)}
                         sx={{flex: 1, minWidth: 120}}
                         size="small"
-                        inputProps={{
-                            min: 0,
-                            step: 0.0001
+                        slotProps={{
+                            input: {
+                                inputProps: {
+                                    min: 0,
+                                    step: 0.0001,
+                                },
+                            },
                         }}
                     />
                 </Box>
