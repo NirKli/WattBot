@@ -6,7 +6,7 @@ import ReadingCard from './ReadingCard';
 import ReadingDetails from './ReadingDetails';
 import EditReadingForm from './EditReadingForm';
 import DeleteReadingDialog from './DeleteReadingDialog';
-import type {ImageTab, MonthlyConsumption} from './types';
+import type {ImageTab} from './types';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -27,7 +27,6 @@ export default function ConsumptionHistory() {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [expandedId, setExpandedId] = useState<string | null>(null);
-    const [editingId, setEditingId] = useState<string | null>(null);
     const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
     const [activeImageTab, setActiveImageTab] = useState<ImageTab>('original');
     const [actionMenuAnchor, setActionMenuAnchor] = useState<null | HTMLElement>(null);
@@ -44,23 +43,17 @@ export default function ConsumptionHistory() {
         handleEditFormChange,
         handleEditSubmit,
         handleDelete,
+        editedReading,
+        handleEdit,
+        handleEditCancel,
+        editingId,
     } = useConsumptionHistory();
 
     // Find the reading being edited or deleted
-    const editingReading = readings.find(r => r._id === editingId) || null;
     const deleteReading = readings.find(r => r._id === deleteConfirmId) || null;
     const expandedReading = readings.find(r => r._id === expandedId) || null;
 
-    // Ensure editedReading has all required properties
-    const hasRequiredProperties = (reading: Partial<MonthlyConsumption> | null): reading is MonthlyConsumption => {
-        if (!reading) return false;
-        return (
-            typeof reading._id === 'string' &&
-            typeof reading.date === 'string' &&
-            typeof reading.total_kwh_consumed === 'number' &&
-            typeof reading.price === 'number'
-        );
-    };
+
 
     return (
         <Container maxWidth="lg">
@@ -82,7 +75,7 @@ export default function ConsumptionHistory() {
                             <ReadingCard
                                 key={reading._id}
                                 reading={reading}
-                                onEditClick={setEditingId}
+                                onEditClick={handleEdit}
                                 onDetailClick={id => setExpandedId(expandedId === id ? null : id)}
                                 onDeleteClick={setDeleteConfirmId}
                                 actionMenuAnchor={actionMenuAnchor}
@@ -106,12 +99,12 @@ export default function ConsumptionHistory() {
                                     isMobile={isMobile}
                                 />
                             )}
-                            {editingId === reading._id && (
+                            {editingId === reading._id && editedReading && (
                                 <EditReadingForm
-                                    reading={reading}
+                                    reading={editedReading}
                                     onEditFormChange={handleEditFormChange}
                                     onSubmit={handleEditSubmit}
-                                    onCancel={() => setEditingId(null)}
+                                    onCancel={handleEditCancel}
                                     currency={currency}
                                     getCurrencySymbol={getCurrencySymbol}
                                 />
@@ -193,7 +186,7 @@ export default function ConsumptionHistory() {
                                                             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                                                         >
                                                             <MenuItem onClick={() => {
-                                                                setEditingId(reading._id);
+                                                                handleEdit(reading._id);
                                                                 setActionMenuAnchor(null);
                                                                 setActionMenuId(null);
                                                             }}>
@@ -217,7 +210,7 @@ export default function ConsumptionHistory() {
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <IconButton onClick={() => setEditingId(reading._id)} color="primary" size="small"><EditIcon fontSize="small"/></IconButton>
+                                                        <IconButton onClick={() => handleEdit(reading._id)} color="primary" size="small"><EditIcon fontSize="small"/></IconButton>
                                                         <IconButton onClick={() => setExpandedId(expandedId === reading._id ? null : reading._id)} color="info" size="small"><InfoIcon fontSize="small"/></IconButton>
                                                         <IconButton onClick={() => setDeleteConfirmId(reading._id)} color="error" size="small"><DeleteIcon fontSize="small"/></IconButton>
                                                     </>
@@ -241,14 +234,14 @@ export default function ConsumptionHistory() {
                                                 </TableCell>
                                             </TableRow>
                                         )}
-                                        {editingId === reading._id && editingReading && hasRequiredProperties(editingReading) && (
+                                        {editingId === reading._id && editedReading && (
                                             <TableRow>
                                                 <TableCell colSpan={4}>
                                                     <EditReadingForm
-                                                        reading={editingReading}
+                                                        reading={editedReading}
                                                         onEditFormChange={handleEditFormChange}
                                                         onSubmit={handleEditSubmit}
-                                                        onCancel={() => setEditingId(null)}
+                                                        onCancel={handleEditCancel}
                                                         currency={currency}
                                                         getCurrencySymbol={getCurrencySymbol}
                                                     />

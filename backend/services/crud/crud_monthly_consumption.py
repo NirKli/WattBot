@@ -103,7 +103,7 @@ def update_monthly_consumption_in_db(monthly_consumption_id: str, updated_monthl
         "modified_date": existing_consumption.modified_date,
         "date": existing_consumption.date,
         "total_kwh_consumed": existing_consumption.total_kwh_consumed,
-        "price": existing_consumption.price,
+        "price": calculate_price_for_custom_date(existing_consumption.date, existing_consumption.total_kwh_consumed),
         "original_file": existing_consumption.original_file,
         "file_name": existing_consumption.file_name,
         "label_file": existing_consumption.label_file,
@@ -119,11 +119,11 @@ def delete_monthly_consumption_from_db(monthly_consumption_id: str):
     collection = get_db()["monthly_consumptions"]
     existing_consumption = get_monthly_consumption_from_db(monthly_consumption_id)
     if existing_consumption.original_file:
-        get_fs_bucket().delete(ObjectId(existing_consumption.original_file))
+        get_fs_bucket().delete(ObjectId(str(existing_consumption.original_file)))
     if existing_consumption.label_file:
-        get_fs_bucket().delete(ObjectId(existing_consumption.label_file))
+        get_fs_bucket().delete(ObjectId(str(existing_consumption.label_file)))
     if existing_consumption.file_label_name:
-        get_fs_bucket().delete(ObjectId(existing_consumption.file_label_name))
+        get_fs_bucket().delete(ObjectId(str(existing_consumption.file_label_name)))
     result = collection.delete_one({"_id": ObjectId(monthly_consumption_id)})
     if result.deleted_count == 0:
         raise NoObjectHasFoundException()
@@ -133,20 +133,47 @@ def calculate_price_from_current_consumption_from_last_month(current_total_kwh_c
     settings = get_setting_from_db()
     if not settings.calculate_price:
         return 0.0
-    collection = get_db()["monthly_consumptions"]
-    last_month_consumption = list(collection.find().sort("date", pymongo.DESCENDING).limit(1))
-    if last_month_consumption:
-        collection = get_db()["electricity-prices"]
-        electricity_price = list(collection.find().sort("date", pymongo.DESCENDING).limit(1))
-        if electricity_price:
-            return electricity_price[0]["price"] * (
-                    current_total_kwh_consumed - last_month_consumption[0]["total_kwh_consumed"])
-        else:
-            raise NoObjectHasFoundException()
+
+    db = get_db()
+    consumption_collection = db["monthly_consumptions"]
+    price_collection = db["electricity-prices"]
+
+    last_month_doc = consumption_collection.find_one(sort=[("date", pymongo.DESCENDING)])
+    price_doc = price_collection.find_one(sort=[("date", pymongo.DESCENDING)])
+
+    if not price_doc:
+        raise NoObjectHasFoundException("No electricity price found")
+
+    price_per_kwh = price_doc["price"]
+
+    if last_month_doc:
+        kwh_diff = current_total_kwh_consumed - last_month_doc["total_kwh_consumed"]
     else:
-        collection = get_db()["electricity-prices"]
-        electricity_price = list(collection.find().sort("date", pymongo.DESCENDING).limit(1))
-        if electricity_price:
-            return electricity_price[0]["price"] * current_total_kwh_consumed
-        else:
-            raise NoObjectHasFoundException()
+        kwh_diff = current_total_kwh_consumed
+
+    return round(kwh_diff * price_per_kwh, 2)
+
+
+def calculate_price_for_custom_date(selected_date: datetime, total_kwh: float) -> float:
+    db = get_db()
+    settings = get_setting_from_db()
+    if not settings.calculate_price:
+        return 0.0
+
+    previous_consumption = db["monthly_consumptions"].find_one(
+        {"date": {"$lt": selected_date}},
+        sort=[("date", pymongo.DESCENDING)]
+    )
+
+    price_doc = db["electricity-prices"].find_one(
+        {"date": {"$lte": selected_date.strftime('%Y/%m/%d')}},
+        sort=[("date", pymongo.DESCENDING)]
+    )
+
+    if not price_doc:
+        raise NoObjectHasFoundException("No price found for the selected date")
+
+    previous_kwh = previous_consumption["total_kwh_consumed"] if previous_consumption else 0
+    delta_kwh = total_kwh - previous_kwh
+
+    return round(delta_kwh * price_doc["price"], 2)

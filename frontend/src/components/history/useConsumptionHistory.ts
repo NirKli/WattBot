@@ -114,7 +114,8 @@ export function useConsumptionHistory() {
         });
     };
 
-    const handleEditSubmit = async () => {
+    const handleEditSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
         if (!editingId || !editedReading) return;
 
         try {
