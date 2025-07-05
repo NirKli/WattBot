@@ -135,18 +135,16 @@ def calculate_price_from_current_consumption_from_last_month(current_total_kwh_c
         return 0.0
 
     db = get_db()
-    consumption_collection = db["monthly_consumptions"]
-    price_collection = db["electricity-prices"]
 
-    last_month_doc = consumption_collection.find_one(sort=[("date", pymongo.DESCENDING)])
-    price_doc = price_collection.find_one(sort=[("date", pymongo.DESCENDING)])
+    last_month_doc = db["monthly_consumptions"].find_one(sort=[("date", pymongo.DESCENDING)])
+    price_doc = db["electricity-prices"].find_one(sort=[("date", pymongo.DESCENDING)])
 
     if not price_doc:
         raise NoObjectHasFoundException("No electricity price found")
 
     price_per_kwh = price_doc["price"]
 
-    if last_month_doc:
+    if last_month_doc is not None:
         kwh_diff = current_total_kwh_consumed - last_month_doc["total_kwh_consumed"]
     else:
         kwh_diff = current_total_kwh_consumed
