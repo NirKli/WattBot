@@ -7,10 +7,11 @@
 - Added a popup when the retry has failed, asking the user to open an issue on GitHub for assistance.
 - Added file removal functionality to image upload component
 - Refactor ConsumptionHistory component to improve readability and functionality, update imports, enhance mobile view.
+- Added ability to recalculate price when changing the date of the consumption
 
 #### Build, Dependencies, GitHub Actions
 - Added code coverage reporting to the project with coveralls for better code quality tracking.
-- Added tests for the backend `routes` code
+- Added tests for the backend `api` and `crud` code
 - Added badges in `README.md`
 
 ## [1.1.1] - 16-06-2025

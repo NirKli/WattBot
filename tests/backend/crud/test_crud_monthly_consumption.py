@@ -67,8 +67,18 @@ def test_saves_monthly_consumption_to_db_and_returns_id(mock_mc_get_db, mock_set
     assert result is not None
 
 
+@patch("backend.services.crud.crud_settings.get_db")
 @patch("backend.services.crud.crud_monthly_consumption.get_db")
-def test_updates_existing_monthly_consumption_in_db(mock_get_db):
+def test_updates_existing_monthly_consumption_in_db(mock_get_db, mock_settings_get_db):
+    mock_settings_get_db.return_value["settings"].find_one.return_value = {
+        "currency": "usd",
+        "debug_mode": False,
+        "dark_mode_preference": "auto",
+        "calculate_price": True,
+        "created_at": datetime.now(),
+        "updated_at": datetime.now()
+    }
+
     mock_collection = mock_get_db.return_value["monthly_consumptions"]
     mock_collection.find_one.return_value = {
         "_id": ObjectId(),
@@ -95,8 +105,18 @@ def test_updates_existing_monthly_consumption_in_db(mock_get_db):
     ))
 
 
+@patch("backend.services.crud.crud_settings.get_db")
 @patch("backend.services.crud.crud_monthly_consumption.get_db")
-def test_raises_exception_when_updating_nonexistent_monthly_consumption(mock_get_db):
+def test_raises_exception_when_updating_nonexistent_monthly_consumption(mock_get_db, mock_settings_get_db):
+    mock_settings_get_db.return_value["settings"].find_one.return_value = {
+        "currency": "usd",
+        "debug_mode": False,
+        "dark_mode_preference": "auto",
+        "calculate_price": True,
+        "created_at": datetime.now(),
+        "updated_at": datetime.now()
+    }
+
     mock_collection = mock_get_db.return_value["monthly_consumptions"]
     mock_collection.find_one.return_value = {
         "_id": ObjectId("682d6f4ef62c1c14eae9f015"),
@@ -202,6 +222,7 @@ import pytest
 @patch("backend.services.crud.crud_monthly_consumption.get_db")
 def test_calculate_price_from_last_month_with_previous_consumption(mock_mc_get_db, mock_settings_get_db):
     from backend.services.crud.crud_monthly_consumption import calculate_price_from_current_consumption_from_last_month
+    from datetime import datetime
 
     mock_settings_get_db.return_value["settings"].find_one.return_value = {
         "currency": "usd",
@@ -212,29 +233,16 @@ def test_calculate_price_from_last_month_with_previous_consumption(mock_mc_get_d
         "updated_at": datetime.now()
     }
 
-    mock_db = MagicMock()
-    mock_mc_get_db.return_value = mock_db
+    mock_monthly_collection = MagicMock()
+    mock_monthly_collection.find_one.return_value = {"total_kwh_consumed": 100}
 
-    monthly_find = MagicMock()
-    monthly_find.sort.return_value.limit.return_value = [{
-        "total_kwh_consumed": 100
-    }]
-    mock_db.__getitem__.return_value.find.side_effect = lambda: monthly_find if mock_db.__getitem__.call_args[0][
-                                                                                    0] == "monthly_consumptions" else None
+    mock_price_collection = MagicMock()
+    mock_price_collection.find_one.return_value = {"price": 0.5}
 
-    price_find = MagicMock()
-    price_find.sort.return_value.limit.return_value = [{
-        "price": 0.5
-    }]
-
-    def get_collection(name):
-        if name == "monthly_consumptions":
-            return MagicMock(find=lambda: monthly_find)
-        if name == "electricity-prices":
-            return MagicMock(find=lambda: price_find)
-        return MagicMock()
-
-    mock_db.__getitem__.side_effect = get_collection
+    mock_mc_get_db.return_value.__getitem__.side_effect = lambda name: {
+        "monthly_consumptions": mock_monthly_collection,
+        "electricity-prices": mock_price_collection
+    }[name]
 
     result = calculate_price_from_current_consumption_from_last_month(120)
     assert result == 10.0
@@ -254,21 +262,17 @@ def test_calculate_price_from_last_month_without_previous_consumption(mock_mc_ge
         "updated_at": datetime.now()
     }
 
-    # Simulate no previous month consumption
-    monthly_find = MagicMock()
-    monthly_find.sort.return_value.limit.return_value = []
+    mock_monthly_collection = MagicMock()
+    mock_monthly_collection.find_one.return_value = None
 
-    # Simulate electricity price available
-    price_find = MagicMock()
-    price_find.sort.return_value.limit.return_value = [{
-        "price": 0.5
-    }]
+    mock_price_collection = MagicMock()
+    mock_price_collection.find_one.return_value = {"price": 0.5}
 
     def get_collection(name):
         if name == "monthly_consumptions":
-            return MagicMock(find=lambda: monthly_find)
+            return mock_monthly_collection
         if name == "electricity-prices":
-            return MagicMock(find=lambda: price_find)
+            return mock_price_collection
         return MagicMock()
 
     mock_mc_get_db.return_value.__getitem__.side_effect = get_collection
@@ -292,7 +296,7 @@ def test_calculate_price_raises_when_no_price_set(mock_mc_get_db, mock_settings_
     }
 
     mock_mc_get_db.return_value["monthly_consumptions"].find.return_value.sort.return_value.limit.return_value = []
-    mock_mc_get_db.return_value["electricity-prices"].find.return_value.sort.return_value.limit.return_value = []
+    mock_mc_get_db.return_value["electricity-prices"].find_one.return_value = None
 
     with pytest.raises(NoObjectHasFoundException):
         calculate_price_from_current_consumption_from_last_month(50)
