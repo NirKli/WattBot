@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## [1.2.0] - 07-07-2025
+
 ### Improvements
 - Added a new cropper component to allow users to crop images, improving the accuracy of meter reading detection.
 - Added a popup when the retry has failed, asking the user to open an issue on GitHub for assistance.
@@ -32,6 +34,6 @@
 
 ## [1.0.0] - 02-06-2025
 
-
-[1.1.1]: https://github.com/NirKli/WattBot/compare/v1.0.0...v1.1.1
+[1.2.0]: https://github.com/NirKli/WattBot/compare/v1.1.1...v1.2.0
+[1.1.1]: https://github.com/NirKli/WattBot/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/NirKli/WattBot/compare/v1.0.0...v1.1.0
