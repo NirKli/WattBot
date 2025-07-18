@@ -2,6 +2,11 @@
 
 ## unreleased
 
+### Improvements
+
+#### Build, Dependencies, GitHub Actions
+- Update Nginx base image to version 1.29 in Dockerfile
+
 ## [1.2.0] - 07-07-2025
 
 ### Improvements
