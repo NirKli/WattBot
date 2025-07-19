@@ -3,8 +3,8 @@ torchvision==0.22.1+cpu
 torchaudio==2.7.1+cpu
 --extra-index-url https://download.pytorch.org/whl/cpu
 #torch==2.7.0
-#torchvision==0.22.1+cpu
-#torchaudio==2.7.1+cpu
+#torchvision==0.22.0
+#torchaudio==2.7.0
 
 albumentations==2.0.8
 fastapi==0.116.1
