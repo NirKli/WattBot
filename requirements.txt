@@ -10,13 +10,13 @@ albumentations==2.0.8
 fastapi==0.115.12
 pydantic==2.11.5
 pydantic_core==2.33.2
-pymongo==4.13.0
+pymongo==4.13.2
 starlette==0.46.2
 ultralytics==8.3.146
-uvicorn==0.34.3
+uvicorn==0.35.0
 python-multipart==0.0.20
 opencv-python==4.11.0.86
 pytest==8.4.1
-pytest-asyncio==1.0.0
+pytest-asyncio==1.1.0
 httpx==0.28.1
 pytest-cov==6.2.1
