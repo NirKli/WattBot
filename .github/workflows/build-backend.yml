@@ -7,6 +7,10 @@ on:
       - '**'
     paths:
       - 'backend/**'
+      - 'requirements.txt'
+      - '.github/workflows/build-backend.yml'
+      - 'Dockerfile'
+      - 'tests/backend/**'
   workflow_dispatch:
 
 
