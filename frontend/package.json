@@ -14,13 +14,13 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.1.1",
-    "react": "^19.1.0",
+    "react": "^19.1.1",
     "react-dom": "^19.1.0",
     "react-easy-crop": "^5.4.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
-    "@types/react": "^19.1.6",
+    "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.5",
     "@vitejs/plugin-react": "^4.7.0",
     "axios": "^1.9.0",
