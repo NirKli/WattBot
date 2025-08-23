@@ -15,7 +15,7 @@
 - build(deps): Bump fastapi from 0.115.12 to 0.116.1
 - build(deps): Bump starlette from 0.46.2 to 0.47.2
 - build(deps): Bump opencv-python from 4.11.0.86 to 4.12.0.88
-- build(deps): Bump torch-stack group from 2.7.0+cpu to 2.7.1+cpu
+- build(deps): Bump torch-stack group from 2.7.0+cpu to 2.8.0+cpu
 - build(deps): Bump @eslint/js from 9.28.0 to 9.32.0 in /frontend
 - build(deps): Bump @vitejs/plugin-react from 4.5.2 to 4.7.0 in /frontend
 - build(deps): Bump @mui/icons-material from 7.1.1 to 7.2.0 in /frontend
