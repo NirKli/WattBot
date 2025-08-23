@@ -11,6 +11,8 @@ export function useImageUpload() {
     const [cropDialogOpen, setCropDialogOpen] = useState(false);
     const [imageToCrop, setImageToCrop] = useState<string | null>(null);
     const [showFinalErrorDialog, setShowFinalErrorDialog] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     useEffect(() => {
         fetchSettings();
@@ -72,6 +74,10 @@ export function useImageUpload() {
         if (!file) return;
 
         setIsUploading(true);
+        // Clear any previous errors
+        setErrorMessage(null);
+        setShowErrorAlert(false);
+        
         const formData = new FormData();
         formData.append('file', file);
 
@@ -90,6 +96,15 @@ export function useImageUpload() {
                 throw new Error('422: Meter not detected. Please crop the meter area.');
             }
 
+            if (response.status === 409) {
+                // Handle conflict - reading already exists
+                const errorData = await response.json().catch(() => ({}));
+                const message = errorData.detail || 'A reading for this month already exists. Check the History tab to view or edit your existing reading.';
+                setErrorMessage(message);
+                setShowErrorAlert(true);
+                return;
+            }
+
             if (!response.ok) {
                 throw new Error('Upload failed');
             }
@@ -99,6 +114,11 @@ export function useImageUpload() {
             fetchLatestReading();
         } catch (error) {
             console.error('Error uploading file:', error);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            if (!errorMessage.includes('422:') && !errorMessage.includes('409:')) {
+                setErrorMessage('An unexpected error occurred during upload. Please try again.');
+                setShowErrorAlert(true);
+            }
         } finally {
             setIsUploading(false);
         }
@@ -123,6 +143,10 @@ export function useImageUpload() {
 
         // Upload the cropped blob as a file
         setIsUploading(true);
+        // Clear any previous errors
+        setErrorMessage(null);
+        setShowErrorAlert(false);
+        
         const formData = new FormData();
         formData.append('file', croppedBlob, fileName);
         console.log('Uploading cropped blob as file:', croppedBlob, 'with name:', fileName);
@@ -135,6 +159,17 @@ export function useImageUpload() {
             if (response.status === 422) {
                 // It failed again. Show the final error dialog.
                 setShowFinalErrorDialog(true);
+                setFile(null);
+                setPreviewUrl(null);
+                return;
+            }
+
+            if (response.status === 409) {
+                // Handle conflict - reading already exists
+                const errorData = await response.json().catch(() => ({}));
+                const message = errorData.detail || 'A reading for this month already exists. Check the History tab to view or edit your existing reading.';
+                setErrorMessage(message);
+                setShowErrorAlert(true);
                 setFile(null);
                 setPreviewUrl(null);
                 return;
@@ -164,6 +199,11 @@ export function useImageUpload() {
 
     const handleFinalErrorDialogClose = () => {
         setShowFinalErrorDialog(false);
+    };
+
+    const handleErrorAlertClose = () => {
+        setShowErrorAlert(false);
+        setErrorMessage(null);
     };
 
     const fetchLatestReading = async () => {
@@ -222,6 +262,10 @@ export function useImageUpload() {
         // Final Error
         showFinalErrorDialog,
         handleFinalErrorDialogClose,
+        // Error Alert
+        errorMessage,
+        showErrorAlert,
+        handleErrorAlertClose,
         setFile,
         setPreviewUrl,
     };

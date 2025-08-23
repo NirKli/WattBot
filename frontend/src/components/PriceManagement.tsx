@@ -3,7 +3,6 @@ import PriceTable from './prices/PriceTable';
 import AddPriceForm from './prices/AddPriceForm';
 import DeletePriceDialog from './prices/DeletePriceDialog';
 import {usePriceManagement} from './prices/usePriceManagement';
-import VersionDisplay from './settings/VersionDisplay';
 
 export default function PriceManagement() {
     const {
@@ -73,8 +72,6 @@ export default function PriceManagement() {
                     message={successMessage}
                     anchorOrigin={{vertical: 'top', horizontal: 'center'}}
                 />
-
-                <VersionDisplay />
             </Paper>
         </Container>
     );

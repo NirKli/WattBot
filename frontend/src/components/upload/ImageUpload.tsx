@@ -1,4 +1,4 @@
-import { Box, Paper, Typography, Container } from '@mui/material';
+import { Box, Paper, Typography, Container, Alert, Snackbar } from '@mui/material';
 import { TrendingUp, AccessTime, Numbers } from '@mui/icons-material';
 import { useImageUpload } from './useImageUpload';
 import UploadForm from './UploadForm';
@@ -25,6 +25,9 @@ export default function ImageUpload() {
         handleCropDialogClose,
         showFinalErrorDialog,
         handleFinalErrorDialogClose,
+        errorMessage,
+        showErrorAlert,
+        handleErrorAlertClose,
         setFile,
         setPreviewUrl
     } = useImageUpload();
@@ -48,6 +51,39 @@ export default function ImageUpload() {
                 open={showFinalErrorDialog}
                 onClose={handleFinalErrorDialogClose}
             />
+            
+            {/* Error Alert Snackbar */}
+            <Snackbar
+                open={showErrorAlert}
+                autoHideDuration={6000}
+                onClose={handleErrorAlertClose}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                                 <Alert 
+                     variant="filled" 
+                     severity="error" 
+                     onClose={handleErrorAlertClose}
+                     sx={{
+                         '&.MuiAlert-filledError': {
+                             backgroundColor: '#d32f2f !important',
+                             color: '#ffffff !important',
+                             border: 'none !important',
+                         },
+                         '& .MuiAlert-icon': {
+                             color: '#ffffff !important'
+                         },
+                         '& .MuiIconButton-root': {
+                             color: '#ffffff !important'
+                         },
+                         '& .MuiIconButton-root:hover': {
+                             backgroundColor: 'rgba(255, 255, 255, 0.1) !important'
+                         }
+                     }}
+                 >
+                     {errorMessage}
+                 </Alert>
+            </Snackbar>
+            
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4 }}>
                 {/* Left side - Upload Form */}
                 <Box sx={{ flex: 1 }}>

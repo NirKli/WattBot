@@ -6,6 +6,7 @@ from bson.objectid import ObjectId
 from backend.services.crud.crud_settings import get_setting_from_db
 from backend.services.db_client import get_db, get_fs_bucket
 from backend.services.exception.NoObjectHasFoundException import NoObjectHasFoundException
+from backend.services.exception.ResultIsAlreadyExistsException import ResultIsAlreadyExistsException
 from backend.services.model.MonthlyConsumption import MonthlyConsumption
 
 
@@ -145,6 +146,8 @@ def calculate_price_from_current_consumption_from_last_month(current_total_kwh_c
     price_per_kwh = price_doc["price"]
 
     if last_month_doc is not None:
+        if last_month_doc["total_kwh_consumed"] >= current_total_kwh_consumed:
+            raise ResultIsAlreadyExistsException("Monthly consumption for this month already exists. Please check the history.")
         kwh_diff = current_total_kwh_consumed - last_month_doc["total_kwh_consumed"]
     else:
         kwh_diff = current_total_kwh_consumed

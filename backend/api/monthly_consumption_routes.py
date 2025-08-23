@@ -6,6 +6,7 @@ from backend.services.crud.crud_monthly_consumption import get_monthly_consumpti
     update_monthly_consumption_in_db, delete_monthly_consumption_from_db, get_latest_monthly_consumption_from_db
 from backend.services.exception import ResultIsNotFoundException
 from backend.services.exception.NoObjectHasFoundException import NoObjectHasFoundException
+from backend.services.exception.ResultIsAlreadyExistsException import ResultIsAlreadyExistsException
 from backend.services.model.MonthlyConsumption import MonthlyConsumption
 from backend.services.process_image import ProcessImage
 
@@ -25,6 +26,9 @@ async def process_image(file: UploadFile = File(...)) -> MonthlyConsumption:
     except ResultIsNotFoundException.ResultIsNotFoundException:
         raise HTTPException(status_code=422,
                             detail="No number has been found in the image. Please try again with a clearer image.")
+    except ResultIsAlreadyExistsException:
+        raise HTTPException(status_code=409,
+                            detail="A reading for this month already exists. Check your history to view or edit it.")
 
 
 @router.get("/monthly-consumption/latest", response_model=MonthlyConsumption)

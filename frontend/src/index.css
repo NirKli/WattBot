@@ -757,3 +757,29 @@ tbody td {
   background-color: #18181b !important;     /* deep neutral background */
   box-shadow: 0 2px 8px rgba(0,0,0,0.45) !important;
 }
+
+/* Exception for MUI Alert components - preserve their semantic colors */
+.dark .MuiAlert-root {
+  border: none !important;
+  background-color: unset !important;
+}
+
+.dark .MuiAlert-filledError {
+  background-color: #d32f2f !important;
+  color: #ffffff !important;
+}
+
+.dark .MuiAlert-filledWarning {
+  background-color: #ff9800 !important;
+  color: #ffffff !important;
+}
+
+.dark .MuiAlert-filledInfo {
+  background-color: #2196f3 !important;
+  color: #ffffff !important;
+}
+
+.dark .MuiAlert-filledSuccess {
+  background-color: #4caf50 !important;
+  color: #ffffff !important;
+}
