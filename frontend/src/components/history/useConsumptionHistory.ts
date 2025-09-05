@@ -237,6 +237,18 @@ export function useConsumptionHistory() {
             };
         }
 
+        // Calculate consumption deltas (differences between consecutive readings)
+        const consumptionDeltas: number[] = [];
+        for (let i = 1; i < readings.length; i++) {
+            const current = readings[i - 1].total_kwh_consumed; // More recent reading
+            const previous = readings[i].total_kwh_consumed; // Older reading
+            const delta = current - previous;
+            if (delta >= 0) { // Only include positive deltas (meter readings should increase)
+                consumptionDeltas.push(delta);
+            }
+        }
+
+        // Calculate statistics
         const totalConsumption = readings.reduce((sum, reading) => sum + reading.total_kwh_consumed, 0);
         const totalSpending = readings.reduce((sum, reading) => sum + reading.price, 0);
         const highestConsumption = Math.max(...readings.map(r => r.total_kwh_consumed));
@@ -244,10 +256,15 @@ export function useConsumptionHistory() {
         const highestCost = Math.max(...readings.map(r => r.price));
         const lowestCost = Math.min(...readings.map(r => r.price));
 
+        // Calculate average consumption from deltas
+        const averageConsumption = consumptionDeltas.length > 0 
+            ? consumptionDeltas.reduce((sum, delta) => sum + delta, 0) / consumptionDeltas.length
+            : 0;
+
         return {
             totalReadings: readings.length,
             lastReadingDate: readings[0].date,
-            averageConsumption: totalConsumption / readings.length,
+            averageConsumption,
             totalSpending,
             averageMonthlySpending: totalSpending / readings.length,
             totalConsumption,

@@ -30,8 +30,8 @@ export default function ReadingDetails({
             <Typography variant="subtitle1" color="primary" fontWeight={600} mb={2}>
                 <Info sx={{mr: 1}}/> Reading Details
             </Typography>
-            <Grid container spacing={2}>
-                <Grid>
+            <Grid container spacing={2} sx={{flexDirection: {xs: 'column', md: 'row'}}}>
+                <Grid sx={{flex: 1}}>
                     <Typography variant="body2" color="text.secondary">Reading Date</Typography>
                     <Typography>{formatDate(reading.date)}</Typography>
                     <Typography variant="body2" color="text.secondary">Consumption</Typography>
@@ -45,7 +45,7 @@ export default function ReadingDetails({
                 </Grid>
 
                 {(reading.original_file || reading.label_file) && (
-                    <Grid>
+                    <Grid sx={{flex: 1, mt: {xs: 0, md: -6}}}>
                         <Tabs
                             value={activeImageTab}
                             onChange={(_, v) => onImageTabChange(v)}
@@ -83,14 +83,26 @@ export default function ReadingDetails({
                                 <img
                                     src={getFileUrl(reading.original_file)}
                                     alt="Original reading"
-                                    style={{maxWidth: '100%', maxHeight: 300}}
+                                    style={{
+                                        maxWidth: '100%', 
+                                        maxHeight: isMobile ? 300 : 500,
+                                        width: 'auto',
+                                        height: 'auto',
+                                        objectFit: 'contain'
+                                    }}
                                 />
                             )}
                             {activeImageTab === 'labeled' && reading.label_file && (
                                 <img
                                     src={getFileUrl(reading.label_file)}
                                     alt="Labeled reading"
-                                    style={{maxWidth: '100%', maxHeight: 300}}
+                                    style={{
+                                        maxWidth: '100%', 
+                                        maxHeight: isMobile ? 300 : 500,
+                                        width: 'auto',
+                                        height: 'auto',
+                                        objectFit: 'contain'
+                                    }}
                                 />
                             )}
                         </Box>

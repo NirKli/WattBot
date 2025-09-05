@@ -182,4 +182,5 @@ runs/
 
 *.ini
 digits-detection/
-yolo11x-obb.pt
+yolo11s-obb.pt
+yolo11n.pt

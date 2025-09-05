@@ -209,10 +209,19 @@ export function useImageUpload() {
     const fetchLatestReading = async () => {
         try {
             const response = await fetch(`${API_URL}/monthly-consumption/latest`);
+            if (response.status === 404) {
+                // No readings available yet
+                setLatestReading(null);
+                return;
+            }
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             const data = await response.json();
             setLatestReading(data);
         } catch (error) {
             console.error('Error fetching latest reading:', error);
+            setLatestReading(null);
         }
     };
 
