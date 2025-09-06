@@ -18,7 +18,7 @@
 - build(deps): Bump pytest-asyncio from 1.0.0 to 1.1.0
 - build(deps): Bump pymongo from 4.13.0 to 4.14.1
 - build(deps): Bump uvicorn from 0.34.3 to 0.35.0
-- build(deps): Bump ultralytics from 8.3.146 to 8.3.191
+- build(deps): Bump ultralytics from 8.3.146 to 8.3.194
 - build(deps): Bump fastapi from 0.115.12 to 0.116.1
 - build(deps): Bump starlette from 0.46.2 to 0.47.3
 - build(deps): Bump opencv-python from 4.11.0.86 to 4.12.0.88
