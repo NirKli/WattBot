@@ -1,4 +1,4 @@
-import {Box, Grid, Paper, Typography, Tooltip} from '@mui/material';
+import {Box, Paper, Typography, Tooltip} from '@mui/material';
 import {BarChart, ElectricBolt, TrendingUp, TrendingDown, TrendingFlat, InfoOutlined} from '@mui/icons-material';
 import type {ConsumptionStatsProps} from './types';
 
@@ -37,65 +37,129 @@ export default function ConsumptionStats({stats, currency, getCurrencySymbol, fo
 
     const usageTrend = getUsageTrend();
 
+    // Check if any numbers are too long and need smaller fonts (mobile only)
+    const checkForLongNumbers = () => {
+        if (!isMobile) return false; // Only apply on mobile
+        
+        const totalSpendingText = `${getCurrencySymbol(currency)}${stats.totalSpending.toFixed(2)}`;
+        const averageSpendingText = `${getCurrencySymbol(currency)}${stats.averageMonthlySpending.toFixed(2)}`;
+        const consumptionText = `${stats.averageConsumption.toFixed(1)}`;
+        
+        // If any number is longer than 8 characters, use smaller fonts on mobile
+        return totalSpendingText.length > 8 || averageSpendingText.length > 8 || consumptionText.length > 8;
+    };
+
+    const needsSmallerFonts = checkForLongNumbers();
+
     return (
-        <Grid container spacing={3} sx={{mb: 3, flexWrap: 'nowrap'}}>
-            <Grid sx={{width: {xs: '100%', md: '25%'}}}>
-                <Paper elevation={1} sx={{p: 2, height: '100%'}}>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>Total Readings</Typography>
-                    <Box display="flex" alignItems="center" gap={1} mb={1}>
-                        <BarChart color="primary"/>
-                        <Typography variant="h4" color="primary.main" fontWeight={700}>{stats.totalReadings}</Typography>
-                    </Box>
-                    <Typography variant="body2" color="text.secondary">energy consumption records</Typography>
-                    <Typography variant="caption" color="text.secondary">
-                        Last reading: {stats.lastReadingDate ? (isMobile ? formatShortTimestamp(stats.lastReadingDate) : formatTimestamp(stats.lastReadingDate)) : 'N/A'}
+        <Box sx={{ 
+            display: 'grid',
+            gridTemplateColumns: { 
+                xs: 'repeat(2, 1fr)', 
+                sm: 'repeat(2, 1fr)', 
+                md: 'repeat(4, 1fr)' 
+            },
+            gap: 2,
+            mb: 3
+        }}>
+            <Paper elevation={1} sx={{p: 2, height: '100%', display: 'flex', flexDirection: 'column'}}>
+                <Typography variant="subtitle2" color="text.secondary" gutterBottom>Total Readings</Typography>
+                <Box display="flex" alignItems="center" gap={1} mb={1}>
+                    <BarChart color="primary"/>
+                    <Typography 
+                        variant="h4" 
+                        color="primary.main" 
+                        fontWeight={700}
+                        sx={{ 
+                            fontSize: needsSmallerFonts ? '1.2rem' : { xs: '1.5rem', sm: '2rem' }
+                        }}
+                    >
+                        {stats.totalReadings}
                     </Typography>
-                </Paper>
-            </Grid>
-            <Grid sx={{width: {xs: '100%', md: '25%'}}}>
-                <Paper elevation={1} sx={{p: 2, height: '100%'}}>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>Avg. Consumption</Typography>
-                    <Box display="flex" alignItems="center" gap={1} mb={1}>
-                        <ElectricBolt color="primary"/>
-                        <Typography variant="h4" color="primary.main" fontWeight={700}>{stats.averageConsumption.toFixed(1)}</Typography>
-                    </Box>
-                    <Typography variant="body2" color="text.secondary">kWh per reading</Typography>
-                    <Typography variant="caption" color="text.secondary">Based on {stats.totalReadings} readings</Typography>
-                </Paper>
-            </Grid>
-            <Grid sx={{width: {xs: '100%', md: '25%'}}}>
-                <Paper elevation={1} sx={{p: 2, height: '100%'}}>
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>Total Spending</Typography>
-                    <Box display="flex" alignItems="center" gap={1} mb={1}>
-                        <TrendingUp color="primary"/>
-                        <Typography variant="h4" color="primary.main" fontWeight={700}>{getCurrencySymbol(currency)} {stats.totalSpending.toFixed(2)}</Typography>
-                    </Box>
-                    <Typography variant="body2" color="text.secondary">on electricity</Typography>
-                    <Typography variant="caption" color="text.secondary">Avg: {getCurrencySymbol(currency)} {stats.averageMonthlySpending.toFixed(2)}/month</Typography>
-                </Paper>
-            </Grid>
-            <Grid sx={{width: {xs: '100%', md: '25%'}}}>
-                <Paper elevation={1} sx={{p: 2, height: '100%'}}>
-                    <Box display="flex" alignItems="center" gap={0.5} mb={1}>
-                        <Typography variant="subtitle2" color="text.secondary">Usage Trend</Typography>
-                        <Tooltip title="Compares this month's consumption to the average of the last 3 months (based on meter deltas).">
-                            <InfoOutlined sx={{ fontSize: 16, color: 'text.secondary' }} />
-                        </Tooltip>
-                    </Box>
-                    <Box display="flex" alignItems="center" gap={1} mb={1}>
-                        {usageTrend.icon}
-                        <Typography variant="h4" color="primary.main" fontWeight={700}>
-                            {usageTrend.trend === 'up' ? '+' : usageTrend.trend === 'down' ? '-' : ''}{usageTrend.percentage}%
-                        </Typography>
-                    </Box>
-                    <Typography variant="body2" color="text.secondary">
-                        vs. 3-month average
+                </Box>
+                <Typography variant="body2" color="text.secondary" sx={{mb: 1}}>energy consumption records</Typography>
+                <Typography variant="caption" color="text.secondary" sx={{mt: 'auto'}}>
+                    Last reading: {stats.lastReadingDate ? (isMobile ? formatShortTimestamp(stats.lastReadingDate) : formatTimestamp(stats.lastReadingDate)) : 'N/A'}
+                </Typography>
+            </Paper>
+            
+            <Paper elevation={1} sx={{p: 2, height: '100%', display: 'flex', flexDirection: 'column'}}>
+                <Typography variant="subtitle2" color="text.secondary" gutterBottom>Avg. Consumption</Typography>
+                <Box display="flex" alignItems="center" gap={1} mb={1}>
+                    <ElectricBolt color="primary"/>
+                    <Typography 
+                        variant="h4" 
+                        color="primary.main" 
+                        fontWeight={700}
+                        sx={{ 
+                            fontSize: needsSmallerFonts ? '1.2rem' : { xs: '1.5rem', sm: '2rem' }
+                        }}
+                    >
+                        {stats.averageConsumption.toFixed(1)}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                        {usageTrend.trend === 'up' ? 'Usage increasing' : usageTrend.trend === 'down' ? 'Usage decreasing' : 'Usage stable'}
+                </Box>
+                <Typography variant="body2" color="text.secondary" sx={{mb: 1}}>kWh per reading</Typography>
+                <Typography variant="caption" color="text.secondary" sx={{mt: 'auto'}}>Based on {stats.totalReadings} readings</Typography>
+            </Paper>
+            
+            <Paper elevation={1} sx={{p: 2, height: '100%', display: 'flex', flexDirection: 'column'}}>
+                <Typography variant="subtitle2" color="text.secondary" gutterBottom>Total Spending</Typography>
+                <Box display="flex" alignItems="center" gap={1} mb={1} sx={{flexWrap: 'wrap'}}>
+                    <TrendingUp color="primary"/>
+                    <Typography 
+                        variant="h4" 
+                        color="primary.main" 
+                        fontWeight={700}
+                        sx={{ 
+                            fontSize: needsSmallerFonts ? '1.2rem' : { xs: '1.5rem', sm: '2rem' },
+                            wordBreak: 'break-all',
+                            lineHeight: 1.2
+                        }}
+                    >
+                        {getCurrencySymbol(currency)}{stats.totalSpending.toFixed(2)}
                     </Typography>
-                </Paper>
-            </Grid>
-        </Grid>
+                </Box>
+                <Typography variant="body2" color="text.secondary" sx={{mb: 1}}>on electricity</Typography>
+                <Typography 
+                    variant="caption" 
+                    color="text.secondary" 
+                    sx={{
+                        mt: 'auto',
+                        fontSize: needsSmallerFonts ? '0.65rem' : { xs: '0.7rem', sm: '0.75rem' },
+                        wordBreak: 'break-all'
+                    }}
+                >
+                    Avg: {getCurrencySymbol(currency)}{stats.averageMonthlySpending.toFixed(2)}/month
+                </Typography>
+            </Paper>
+            
+            <Paper elevation={1} sx={{p: 2, height: '100%', display: 'flex', flexDirection: 'column'}}>
+                <Box display="flex" alignItems="center" gap={0.5} mb={1}>
+                    <Typography variant="subtitle2" color="text.secondary">Usage Trend</Typography>
+                    <Tooltip title="Compares this month's consumption to the average of the last 3 months (based on meter deltas).">
+                        <InfoOutlined sx={{ fontSize: 16, color: 'text.secondary' }} />
+                    </Tooltip>
+                </Box>
+                <Box display="flex" alignItems="center" gap={1} mb={1}>
+                    {usageTrend.icon}
+                    <Typography 
+                        variant="h4" 
+                        color="primary.main" 
+                        fontWeight={700}
+                        sx={{ 
+                            fontSize: needsSmallerFonts ? '1.2rem' : { xs: '1.5rem', sm: '2rem' }
+                        }}
+                    >
+                        {usageTrend.trend === 'up' ? '+' : usageTrend.trend === 'down' ? '-' : ''}{usageTrend.percentage}%
+                    </Typography>
+                </Box>
+                <Typography variant="body2" color="text.secondary" sx={{mb: 1}}>
+                    vs. 3-month average
+                </Typography>
+                <Typography variant="caption" color="text.secondary" sx={{mt: 'auto'}}>
+                    {usageTrend.trend === 'up' ? 'Usage increasing' : usageTrend.trend === 'down' ? 'Usage decreasing' : 'Usage stable'}
+                </Typography>
+            </Paper>
+        </Box>
     );
 } 

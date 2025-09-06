@@ -7,7 +7,7 @@
 - Implemented 409 conflict error handling for duplicate meter readings with user-friendly alerts.
 - Enhanced Reading Details UI with larger photos (500px on desktop) and improved side-by-side layout
 - Added Usage Trend metric to consumption dashboard with tooltip explanation
-- Improved dashboard layout with all stats cards in single row on desktop
+- Improved dashboard layout with all stats cards
 - Enhanced mobile responsiveness and visual spacing throughout the interface 
 - Fix average calculation in history consumption 
 
@@ -34,6 +34,7 @@
 - build(deps): Bump form-data from 4.0.2 to 4.0.4 in /frontend
 - build(deps): Bump react-easy-crop from 5.4.2 to 5.5.0 in /frontend
 - build(deps): Bump typescript-eslint from 8.33.0 to 8.42.0 in /frontend
+- build(deps): Bump pytest from 8.4.1 to 8.4.2
 
 
 ## [1.2.0] - 07-07-2025
