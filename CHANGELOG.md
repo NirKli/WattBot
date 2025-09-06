@@ -2,6 +2,8 @@
 
 ## unreleased
 
+## [1.2.1] - 06-09-2025
+
 ### Improvements and bug fixes
 
 - Implemented 409 conflict error handling for duplicate meter readings with user-friendly alerts.
@@ -69,6 +71,7 @@
 
 ## [1.0.0] - 02-06-2025
 
+[1.2.1]: https://github.com/NirKli/WattBot/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/NirKli/WattBot/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/NirKli/WattBot/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/NirKli/WattBot/compare/v1.0.0...v1.1.0
