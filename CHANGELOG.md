@@ -2,6 +2,12 @@
 
 ## unreleased
 
+### Improvements and bug fixes
+
+#### Build, Dependencies, GitHub Actions
+
+- build(deps): Bump vite from 7.1.4 to 7.1.5 in /frontend
+
 ## [1.2.1] - 06-09-2025
 
 ### Improvements and bug fixes
