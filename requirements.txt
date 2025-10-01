@@ -10,7 +10,7 @@ albumentations==2.0.8
 fastapi==0.116.1
 pydantic==2.11.5
 pydantic_core==2.33.2
-pymongo==4.14.1
+pymongo==4.15.1
 starlette==0.47.3
 ultralytics==8.3.194
 uvicorn==0.35.0
