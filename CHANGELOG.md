@@ -4,9 +4,39 @@
 
 ### Improvements and bug fixes
 
+ - frontend: Add route-level lazy-loading with Suspense for heavy pages to reduce initial bundle size
+ - frontend: Split vendor chunks (react/react-dom, MUI) via Vite manualChunks for better caching
+ - frontend: Fix React list key warning in `ConsumptionHistory`
+ - frontend: Replace `any` types and remove unused vars to satisfy ESLint rules
+
 #### Build, Dependencies, GitHub Actions
 
-- build(deps): Bump vite from 7.1.4 to 7.1.5 in /frontend
+- build(deps): Bump pytest-asyncio from 1.1.0 to 1.2.0
+- build(deps): Bump pytest-cov from 6.2.1 to 7.0.0
+- build(deps): Bump uvicorn from 0.35.0 to 0.37.0
+- build(deps): Bump starlette from 0.47.3 to 0.48.0
+- build(deps): Bump fastapi from 0.116.1 to 0.118.0
+- build(deps): Bump pymongo from 4.14.1 to 4.15.2
+- build(deps): Bump ultralytics from 8.3.194 to 8.3.205
+- build(deps): Bump @mui/material from 7.3.1 to 7.3.3 in /frontend
+- build(deps): Bump @mui/icons-material from 7.3.2 to 7.3.4 in /frontend
+- build(deps): Bump typescript-eslint from 8.42.0 to 8.45.0 in /frontend
+- build(deps): Bump @vitejs/plugin-react from 4.7.0 to 5.0.4 in /frontend
+- build(deps): Bump @types/react from 19.1.6 to 19.2.0 in /frontend
+- build(deps): Bump @types/react-dom from 19.1.7 to 19.2.0 in /frontend
+- build(deps): Bump react from 19.1.0 to 19.2.0 in /frontend
+- build(deps): Bump react-dom from 19.1.0 to 19.2.0 in /frontend
+- build(deps): Bump react-easy-crop from 5.5.0 to 5.5.3 in /frontend
+- build(deps): Bump eslint from 9.32.0 to 9.37.0 in /frontend
+- build(deps): Bump @eslint/js from 9.32.0 to 9.37.0 in /frontend
+- build(deps): Bump axios from 1.9.0 to 1.12.2 in /frontend
+- build(deps): Bump globals from 16.3.0 to 16.4.0 in /frontend
+- build(deps): Bump typescript from 5.8.3 to 5.9.3 in /frontend
+- build(deps): Bump eslint-plugin-react-refresh from 0.4.20 to 0.4.23 in /frontend
+- build(deps): Bump eslint-plugin-react-hooks from 5.2.0 to 6.1.1 in /frontend
+- build(deps): Bump actions/setup-node from 4 to 5
+- build(deps): Bump actions/setup-python from 5 to 6
+- build(deps): Bump vite from 7.1.4 to 7.1.9 in /frontend
 
 ## [1.2.1] - 06-09-2025
 

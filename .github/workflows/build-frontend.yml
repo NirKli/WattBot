@@ -41,6 +41,7 @@ jobs:
           cd frontend
           npm install
           npm run build
+          npm run lint
           cd ..
 
       - name: Copy VERSION into frontend
