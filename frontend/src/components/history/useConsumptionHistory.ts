@@ -102,13 +102,13 @@ export function useConsumptionHistory() {
         }
     };
 
-    const handleEditFormChange = (field: keyof MonthlyConsumption, value: any) => {
+    const handleEditFormChange = (field: keyof MonthlyConsumption, value: string | number) => {
         setEditedReading(prev => {
             if (!prev) return prev;
             return {
                 ...prev,
                 [field]: field === 'total_kwh_consumed' || field === 'price'
-                    ? parseFloat(value) || 0
+                    ? parseFloat(String(value)) || 0
                     : value
             };
         });

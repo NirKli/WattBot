@@ -5,6 +5,7 @@ import AutoCalculateSettings from './settings/AutoCalculateSettings';
 import DebugModeSettings from './settings/DebugModeSettings';
 import VersionDisplay from './settings/VersionDisplay';
 import {useSettings} from './settings/useSettings';
+import type {SettingsData} from './settings/useSettings';
 import {useState} from "react";
 
 export default function Settings() {
@@ -15,11 +16,11 @@ export default function Settings() {
     if (error) return <div>{error}</div>;
     if (!settings) return null;
 
-    const handleSettingChange = async (key: keyof typeof settings, value: any) => {
+    const handleSettingChange = async <K extends keyof SettingsData>(key: K, value: SettingsData[K]) => {
         try {
             await updateSettings({[key]: value});
             setSnackbar('✅ Setting updated!');
-        } catch (err) {
+        } catch {
             setSnackbar('❌ Failed to update setting');
         }
     };

@@ -3,10 +3,10 @@ export interface MonthlyConsumption {
     date: string;
     total_kwh_consumed: number;
     price: number;
-    original_file: any;
+    original_file: string | null; // backend file id
     file_name: string;
-    label_file: any;
-    file_label_name: any;
+    label_file: string | null; // backend file id
+    file_label_name: string | null;
     created_at: string;
     updated_at: string;
 }
@@ -64,7 +64,7 @@ export interface ReadingDetailsProps {
 
 export interface EditReadingFormProps {
     reading: MonthlyConsumption;
-    onEditFormChange: (field: keyof MonthlyConsumption, value: any) => void;
+    onEditFormChange: (field: keyof MonthlyConsumption, value: string | number) => void;
     onSubmit: (e: React.FormEvent) => void;
     onCancel: () => void;
     currency: string;

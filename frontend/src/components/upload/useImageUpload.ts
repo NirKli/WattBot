@@ -20,13 +20,16 @@ export function useImageUpload() {
     }, []);
 
     useEffect(() => {
-        const handleCurrencyChange = (e: CustomEvent) => {
-            setCurrency(e.detail);
+        const handleCurrencyChange = (e: Event) => {
+            const customEvent = e as CustomEvent<{ currency: string }>;
+            if (customEvent.detail && typeof customEvent.detail.currency === 'string') {
+                setCurrency(customEvent.detail.currency);
+            }
         };
 
-        window.addEventListener('currencyChange' as any, handleCurrencyChange);
+        window.addEventListener('currencyChange', handleCurrencyChange as EventListener);
         return () => {
-            window.removeEventListener('currencyChange' as any, handleCurrencyChange);
+            window.removeEventListener('currencyChange', handleCurrencyChange as EventListener);
         };
     }, []);
 
@@ -236,7 +239,7 @@ export function useImageUpload() {
                 month: '2-digit',
                 day: '2-digit',
             }).format(date);
-        } catch (e) {
+        } catch {
             return 'Invalid date';
         }
     };

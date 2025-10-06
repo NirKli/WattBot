@@ -4,7 +4,7 @@ import React from "react";
 
 interface AddPriceFormProps {
     newPrice: Partial<ElectricityPrice>;
-    onNewPriceChange: (field: keyof ElectricityPrice, value: any) => void;
+    onNewPriceChange: (field: keyof ElectricityPrice, value: string | number | boolean) => void;
     onSubmit: (e: React.FormEvent) => void;
     onCancel: () => void;
     isEditing: boolean;

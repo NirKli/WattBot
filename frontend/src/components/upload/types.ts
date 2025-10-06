@@ -3,10 +3,10 @@ export interface MonthlyConsumption {
     date: string;
     total_kwh_consumed: number;
     price: number;
-    original_file: any;
+    original_file: string | null;
     file_name: string;
-    label_file: any;
-    file_label_name: any;
+    label_file: string | null;
+    file_label_name: string | null;
 }
 
 export interface UploadPreviewProps {

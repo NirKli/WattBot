@@ -72,10 +72,10 @@ export function usePriceManagement() {
         setNewPrice(price);
     };
 
-    const handleNewPriceChange = (field: keyof ElectricityPrice, value: any) => {
+    const handleNewPriceChange = (field: keyof ElectricityPrice, value: string | number | boolean) => {
         setNewPrice(prev => ({
             ...prev,
-            [field]: field === 'price' ? parseFloat(value) || 0 : value
+            [field]: field === 'price' ? parseFloat(String(value)) || 0 : value
         }));
     };
 

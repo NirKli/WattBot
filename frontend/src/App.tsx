@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState, Suspense} from 'react';
 import {
     AppBar,
     Box,
@@ -10,9 +10,10 @@ import {
     useMediaQuery
 } from '@mui/material';
 import {darkTheme, lightTheme} from './theme';
-import ImageUpload from './components/ImageUpload';
-import ConsumptionHistory from './components/history/ConsumptionHistory';
-import PriceManagement from './components/PriceManagement';
+import React from 'react';
+const ImageUpload = React.lazy(() => import('./components/ImageUpload'));
+const ConsumptionHistory = React.lazy(() => import('./components/history/ConsumptionHistory'));
+const PriceManagement = React.lazy(() => import('./components/PriceManagement'));
 import Settings from './components/Settings';
 import {ElectricBolt} from '@mui/icons-material';
 import Tabs from '@mui/material/Tabs';
@@ -130,10 +131,12 @@ function App() {
                 </Box>
 
                 <Container maxWidth="lg" sx={{py: 4, flex: 1}}>
-                    {currentTab === 0 && <ImageUpload/>}
-                    {currentTab === 1 && <ConsumptionHistory/>}
-                    {currentTab === 2 && <PriceManagement/>}
-                    {currentTab === 3 && <Settings/>}
+                    <Suspense fallback={<div>Loading…</div>}>
+                        {currentTab === 0 && <ImageUpload/>}
+                        {currentTab === 1 && <ConsumptionHistory/>}
+                        {currentTab === 2 && <PriceManagement/>}
+                        {currentTab === 3 && <Settings/>}
+                    </Suspense>
                 </Container>
             </Box>
         </ThemeProvider>

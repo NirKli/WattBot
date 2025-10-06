@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, Fragment} from 'react';
 import {Box, Container, useMediaQuery, useTheme} from '@mui/material';
 import {useConsumptionHistory} from './useConsumptionHistory';
 import ConsumptionStats from './ConsumptionStats';
@@ -71,7 +71,7 @@ export default function ConsumptionHistory() {
             {isMobile ? (
                 <Box>
                     {readings.map((reading) => (
-                        <>
+                        <Fragment key={reading._id}>
                             <ReadingCard
                                 key={reading._id}
                                 reading={reading}
@@ -116,7 +116,7 @@ export default function ConsumptionHistory() {
                                     onConfirm={() => handleDelete(reading._id)}
                                 />
                             )}
-                        </>
+                        </Fragment>
                     ))}
                 </Box>
             ) : (
@@ -153,7 +153,7 @@ export default function ConsumptionHistory() {
                             </TableHead>
                             <TableBody>
                                 {readings.map((reading) => (
-                                    <>
+                                    <Fragment key={reading._id}>
                                         <TableRow key={reading._id} sx={isMobile ? { p: 0, fontSize: '0.95rem' } : {}}>
                                             <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>{formatDate(reading.date)}</TableCell>
                                             <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
@@ -259,7 +259,7 @@ export default function ConsumptionHistory() {
                                                 </TableCell>
                                             </TableRow>
                                         )}
-                                    </>
+                                    </Fragment>
                                 ))}
                             </TableBody>
                         </Table>

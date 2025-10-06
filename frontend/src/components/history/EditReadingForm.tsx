@@ -5,7 +5,7 @@ import React from "react";
 
 interface EditReadingFormProps {
     reading: Partial<MonthlyConsumption>;
-    onEditFormChange: (field: keyof MonthlyConsumption, value: any) => void;
+    onEditFormChange: (field: keyof MonthlyConsumption, value: string | number) => void;
     onSubmit: (e: React.FormEvent) => void;
     onCancel: () => void;
     currency: string;
