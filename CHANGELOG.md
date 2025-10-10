@@ -4,6 +4,7 @@
 
 ### Improvements and bug fixes
 
+ - frontend: Update favicon to new wattbot icon
  - frontend: Add route-level lazy-loading with Suspense for heavy pages to reduce initial bundle size
  - frontend: Split vendor chunks (react/react-dom, MUI) via Vite manualChunks for better caching
  - frontend: Fix React list key warning in `ConsumptionHistory`
