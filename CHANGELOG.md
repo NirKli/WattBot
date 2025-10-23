@@ -37,7 +37,7 @@
 - build(deps): Bump eslint-plugin-react-hooks from 5.2.0 to 6.1.1 in /frontend
 - build(deps): Bump actions/setup-node from 4 to 5
 - build(deps): Bump actions/setup-python from 5 to 6
-- build(deps): Bump vite from 7.1.4 to 7.1.9 in /frontend
+- build(deps): Bump vite from 7.1.4 to 7.1.12 in /frontend
 
 ## [1.2.1] - 06-09-2025
 
