@@ -15,8 +15,8 @@
 - build(deps): Bump pytest-asyncio from 1.1.0 to 1.2.0
 - build(deps): Bump pytest-cov from 6.2.1 to 7.0.0
 - build(deps): Bump uvicorn from 0.35.0 to 0.37.0
-- build(deps): Bump starlette from 0.47.3 to 0.48.0
-- build(deps): Bump fastapi from 0.116.1 to 0.118.0
+- build(deps): Bump starlette from 0.47.3 to 0.49.1
+- build(deps): Bump fastapi from 0.116.1 to 0.120.3
 - build(deps): Bump pymongo from 4.14.1 to 4.15.2
 - build(deps): Bump ultralytics from 8.3.194 to 8.3.205
 - build(deps): Bump @mui/material from 7.3.1 to 7.3.3 in /frontend
