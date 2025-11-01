@@ -1,5 +1,11 @@
 # Changelog
 
+## unreleased
+
+### Improvements and bug fixes
+
+#### Build, Dependencies, GitHub Actions
+
 ## [1.2.2] - 01-11-2025
 
 ### Improvements and bug fixes
