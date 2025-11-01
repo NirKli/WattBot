@@ -1,9 +1,10 @@
 # Changelog
 
-## unreleased
+## [1.2.2] - 01-11-2025
 
 ### Improvements and bug fixes
 
+ - frontend: Add yearly totals view to consumption history with toggle between monthly and yearly views
  - frontend: Update favicon to new wattbot icon
  - frontend: Add route-level lazy-loading with Suspense for heavy pages to reduce initial bundle size
  - frontend: Split vendor chunks (react/react-dom, MUI) via Vite manualChunks for better caching
@@ -12,13 +13,16 @@
 
 #### Build, Dependencies, GitHub Actions
 
+- build(deps): Bump torch-stack group from 2.8.0+cpu to 2.9.0+cpu
+- build(deps): Bump pydantic from 2.11.10 to 2.12.3
+- build(deps): Bump pydantic_core from 2.33.2 to 2.41.4
 - build(deps): Bump pytest-asyncio from 1.1.0 to 1.2.0
 - build(deps): Bump pytest-cov from 6.2.1 to 7.0.0
-- build(deps): Bump uvicorn from 0.35.0 to 0.37.0
+- build(deps): Bump uvicorn from 0.35.0 to 0.38.0
 - build(deps): Bump starlette from 0.47.3 to 0.49.1
-- build(deps): Bump fastapi from 0.116.1 to 0.120.3
-- build(deps): Bump pymongo from 4.14.1 to 4.15.2
-- build(deps): Bump ultralytics from 8.3.194 to 8.3.205
+- build(deps): Bump fastapi from 0.116.1 to 0.120.4
+- build(deps): Bump pymongo from 4.14.1 to 4.15.3
+- build(deps): Bump ultralytics from 8.3.194 to 8.3.223
 - build(deps): Bump @mui/material from 7.3.1 to 7.3.3 in /frontend
 - build(deps): Bump @mui/icons-material from 7.3.2 to 7.3.4 in /frontend
 - build(deps): Bump typescript-eslint from 8.42.0 to 8.45.0 in /frontend
@@ -108,6 +112,7 @@
 
 ## [1.0.0] - 02-06-2025
 
+[1.2.2]: https://github.com/NirKli/WattBot/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/NirKli/WattBot/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/NirKli/WattBot/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/NirKli/WattBot/compare/v1.1.0...v1.1.1
