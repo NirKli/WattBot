@@ -75,4 +75,13 @@ export interface DeleteReadingDialogProps {
     readingDate: string;
     onCancel: () => void;
     onConfirm: () => void;
-} 
+}
+
+export interface YearlyTotal {
+    year: number;
+    totalConsumption: number;
+    totalSpending: number;
+    readingCount: number;
+}
+
+export type ViewMode = 'monthly' | 'yearly'; 

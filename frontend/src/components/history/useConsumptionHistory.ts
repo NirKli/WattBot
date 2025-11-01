@@ -1,7 +1,7 @@
-import {useState, useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import axios from 'axios';
 import {API_URL} from '../../config';
-import type {MonthlyConsumption, ConsumptionStats, ImageTab} from './types';
+import type {ConsumptionStats, ImageTab, MonthlyConsumption, YearlyTotal} from './types';
 
 export function useConsumptionHistory() {
     const [readings, setReadings] = useState<MonthlyConsumption[]>([]);
@@ -278,6 +278,97 @@ export function useConsumptionHistory() {
 
     const stats = calculateStats();
 
+    const calculateYearlyTotals = (): YearlyTotal[] => {
+        if (readings.length === 0) return [];
+
+        const yearlyMap = new Map<number, { readings: MonthlyConsumption[] }>();
+
+        // Group readings by year
+        readings.forEach((reading) => {
+            if (!reading.date) return;
+            
+            const date = safeParseDate(reading.date);
+            if (!date) return;
+            
+            const year = date.getFullYear();
+            const existing = yearlyMap.get(year) || { readings: [] };
+            existing.readings.push(reading);
+            yearlyMap.set(year, existing);
+        });
+
+        // Calculate totals for each year
+         // Sort by year descending
+        return Array.from(yearlyMap.entries())
+            .map(([year, data]) => {
+                // Sort readings for this year by date (oldest first)
+                const yearReadings = data.readings.sort((a, b) => {
+                    const dateA = safeParseDate(a.date);
+                    const dateB = safeParseDate(b.date);
+                    if (!dateA && !dateB) return 0;
+                    if (!dateA) return 1;
+                    if (!dateB) return -1;
+                    return dateA.getTime() - dateB.getTime();
+                });
+
+                // Calculate total consumption for the year
+                // Since readings are cumulative meter readings, we can simply do:
+                // Last reading of year - Baseline (which is 0 if this is the first year, or last reading from previous year)
+                let totalConsumption = 0;
+
+                if (yearReadings.length > 0) {
+                    const lastReadingOfYear = yearReadings[yearReadings.length - 1];
+
+                    // Find baseline: check if there's a reading from previous year
+                    const previousYearReadings = readings
+                        .filter(r => {
+                            const rDate = safeParseDate(r.date);
+                            return rDate && rDate.getFullYear() < year;
+                        })
+                        .sort((a, b) => {
+                            const dateA = safeParseDate(a.date);
+                            const dateB = safeParseDate(b.date);
+                            if (!dateA && !dateB) return 0;
+                            if (!dateA) return 1;
+                            if (!dateB) return -1;
+                            return dateA.getTime() - dateB.getTime();
+                        });
+
+                    let baselineValue: number;
+
+                    if (previousYearReadings.length > 0) {
+                        // Use last reading from previous year as baseline
+                        const baselineReading = previousYearReadings[previousYearReadings.length - 1];
+                        baselineValue = baselineReading.total_kwh_consumed;
+                    } else {
+                        // No previous year readings, baseline is 0 (this is the first year of tracking)
+                        // Total consumption = last reading of year - 0
+                        baselineValue = 0;
+                    }
+
+                    const delta = lastReadingOfYear.total_kwh_consumed - baselineValue;
+
+                    if (delta >= 0) {
+                        totalConsumption = delta;
+                    } else {
+                        totalConsumption = 0;
+                    }
+                }
+
+                // Sum all spending for the year
+                const totalSpending = data.readings.reduce((sum, reading) => sum + reading.price, 0);
+
+                return {
+                    year,
+                    totalConsumption,
+                    totalSpending,
+                    readingCount: data.readings.length
+                };
+            })
+            .sort((a, b) => b.year - a.year);
+    };
+
+    const yearlyTotals = calculateYearlyTotals();
+
     return {
         readings,
         loading,
@@ -308,6 +399,7 @@ export function useConsumptionHistory() {
         formatDate,
         formatTimestamp,
         stats,
+        yearlyTotals,
         isDeleteDialogOpen: !!deleteConfirmId,
         deleteReadingId: deleteConfirmId
     };

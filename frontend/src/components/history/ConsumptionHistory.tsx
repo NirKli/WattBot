@@ -1,12 +1,13 @@
 import {useState, Fragment} from 'react';
-import {Box, Container, useMediaQuery, useTheme} from '@mui/material';
+import {Box, Container, useMediaQuery, useTheme, ToggleButton, ToggleButtonGroup} from '@mui/material';
 import {useConsumptionHistory} from './useConsumptionHistory';
 import ConsumptionStats from './ConsumptionStats';
 import ReadingCard from './ReadingCard';
 import ReadingDetails from './ReadingDetails';
 import EditReadingForm from './EditReadingForm';
 import DeleteReadingDialog from './DeleteReadingDialog';
-import type {ImageTab} from './types';
+import YearlyTotals from './YearlyTotals';
+import type {ImageTab, ViewMode} from './types';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -22,6 +23,7 @@ import Paper from '@mui/material/Paper';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import ViewListIcon from '@mui/icons-material/ViewList';
 
 export default function ConsumptionHistory() {
     const theme = useTheme();
@@ -31,10 +33,12 @@ export default function ConsumptionHistory() {
     const [activeImageTab, setActiveImageTab] = useState<ImageTab>('original');
     const [actionMenuAnchor, setActionMenuAnchor] = useState<null | HTMLElement>(null);
     const [actionMenuId, setActionMenuId] = useState<string | null>(null);
+    const [viewMode, setViewMode] = useState<ViewMode>('monthly');
 
     const {
         readings,
         stats,
+        yearlyTotals,
         currency,
         getCurrencySymbol,
         formatDate,
@@ -53,7 +57,11 @@ export default function ConsumptionHistory() {
     const deleteReading = readings.find(r => r._id === deleteConfirmId) || null;
     const expandedReading = readings.find(r => r._id === expandedId) || null;
 
-
+    const handleViewModeChange = (_event: React.MouseEvent<HTMLElement>, newViewMode: ViewMode | null) => {
+        if (newViewMode !== null) {
+            setViewMode(newViewMode);
+        }
+    };
 
     return (
         <Container maxWidth="lg">
@@ -68,8 +76,38 @@ export default function ConsumptionHistory() {
                 />
             </Box>
 
-            {isMobile ? (
+            <Box sx={{mb: 3, display: 'flex', justifyContent: 'center'}}>
+                <ToggleButtonGroup
+                    value={viewMode}
+                    exclusive
+                    onChange={handleViewModeChange}
+                    aria-label="view mode"
+                    size={isMobile ? 'small' : 'medium'}
+                >
+                    <ToggleButton value="monthly" aria-label="monthly view">
+                        Monthly
+                    </ToggleButton>
+                    <ToggleButton value="yearly" aria-label="yearly view">
+                        Yearly
+                    </ToggleButton>
+                </ToggleButtonGroup>
+            </Box>
+
+            {viewMode === 'yearly' ? (
+                <YearlyTotals
+                    yearlyTotals={yearlyTotals}
+                    currency={currency}
+                    getCurrencySymbol={getCurrencySymbol}
+                    isMobile={isMobile}
+                />
+            ) : isMobile ? (
                 <Box>
+                    <Box sx={{mb: 2, display: 'flex', alignItems: 'center', gap: 1}}>
+                        <ViewListIcon color="primary" />
+                        <Typography variant="h6" component="h2">
+                            Monthly View
+                        </Typography>
+                    </Box>
                     {readings.map((reading) => (
                         <Fragment key={reading._id}>
                             <ReadingCard
@@ -124,6 +162,12 @@ export default function ConsumptionHistory() {
                     p: { xs: 1, sm: 4 },
                     borderRadius: 3
                 }}>
+                    <Box sx={{mb: 2, display: 'flex', alignItems: 'center', gap: 1}}>
+                        <ViewListIcon color="primary" />
+                        <Typography variant="h6" component="h2">
+                            Monthly View
+                        </Typography>
+                    </Box>
                     <TableContainer component={Paper} sx={{
                         mt: 2,
                         width: '100%',
