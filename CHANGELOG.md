@@ -6,6 +6,16 @@
 
 #### Build, Dependencies, GitHub Actions
 
+- build(deps): Bump @eslint/js from 9.37.0 to 9.39.0 in /frontend
+- build(deps): Bump eslint-plugin-react-refresh from 0.4.23 to 0.4.24 in /frontend
+- build(deps): Bump @types/react from 19.2.0 to 19.2.2 in /frontend
+- build(deps): Bump @vitejs/plugin-react from 5.0.4 to 5.1.0 in /frontend
+- build(deps): Bump axios from 1.12.2 to 1.13.1 in /frontend
+- build(deps): Bump eslint from 9.37.0 to 9.39.0 in /frontend
+- build(deps): Bump globals from 16.4.0 to 16.5.0 in /frontend
+- build(deps): Bump typescript-eslint from 8.45.0 to 8.46.2 in /frontend
+- build(deps): Bump eslint-plugin-react-hooks from 6.1.1 to 7.0.1 in /frontend
+
 ## [1.2.2] - 01-11-2025
 
 ### Improvements and bug fixes
