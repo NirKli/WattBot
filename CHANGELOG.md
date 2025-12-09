@@ -6,15 +6,22 @@
 
 #### Build, Dependencies, GitHub Actions
 
+- build(deps): Bump @mui/icons-material from 7.3.4 to 7.3.6 in /frontend
+- build(deps): Bump @mui/material from 7.3.4 to 7.3.6 in /frontend
+- build(deps): Bump react from 19.2.0 to 19.2.1 in /frontend
+- build(deps): Bump react-dom from 19.2.0 to 19.2.1 in /frontend
+- build(deps): Bump react-easy-crop from 5.5.3 to 5.5.6 in /frontend
+- build(deps): Bump @types/react from 19.2.2 to 19.2.7 in /frontend
+- build(deps): Bump @types/react-dom from 19.2.2 to 19.2.3 in /frontend
+- build(deps): Bump @vitejs/plugin-react from 5.1.0 to 5.1.2 in /frontend
+- build(deps): Bump axios from 1.13.1 to 1.13.2 in /frontend
+- build(deps): Bump eslint from 9.39.0 to 9.39.1 in /frontend
+- build(deps): Bump typescript-eslint from 8.46.2 to 8.49.0 in /frontend
+- build(deps): Bump vite from 7.1.12 to 7.2.7 in /frontend
 - build(deps): Bump @eslint/js from 9.37.0 to 9.39.0 in /frontend
 - build(deps): Bump eslint-plugin-react-refresh from 0.4.23 to 0.4.24 in /frontend
-- build(deps): Bump @types/react from 19.2.0 to 19.2.2 in /frontend
-- build(deps): Bump @vitejs/plugin-react from 5.0.4 to 5.1.0 in /frontend
-- build(deps): Bump axios from 1.12.2 to 1.13.1 in /frontend
-- build(deps): Bump eslint from 9.37.0 to 9.39.0 in /frontend
-- build(deps): Bump globals from 16.4.0 to 16.5.0 in /frontend
-- build(deps): Bump typescript-eslint from 8.45.0 to 8.46.2 in /frontend
 - build(deps): Bump eslint-plugin-react-hooks from 6.1.1 to 7.0.1 in /frontend
+- build(deps): Bump globals from 16.4.0 to 16.5.0 in /frontend
 - build(deps): Bump torch from 2.9.0+cpu to 2.9.1+cpu
 - build(deps): Bump torchvision from 0.24.0 to 0.24.1
 - build(deps): Bump torchaudio from 2.9.0 to 2.9.1
