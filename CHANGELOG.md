@@ -6,6 +6,7 @@
 
 #### Build, Dependencies, GitHub Actions
 
+- Update Python base image to version 3.14 in Dockerfile
 - build(deps): Bump @eslint/js from 9.37.0 to 9.39.0 in /frontend
 - build(deps): Bump eslint-plugin-react-refresh from 0.4.23 to 0.4.24 in /frontend
 - build(deps): Bump @types/react from 19.2.0 to 19.2.2 in /frontend
@@ -15,6 +16,23 @@
 - build(deps): Bump globals from 16.4.0 to 16.5.0 in /frontend
 - build(deps): Bump typescript-eslint from 8.45.0 to 8.46.2 in /frontend
 - build(deps): Bump eslint-plugin-react-hooks from 6.1.1 to 7.0.1 in /frontend
+- build(deps): Bump torch from 2.9.0+cpu to 2.9.1+cpu
+- build(deps): Bump torchvision from 0.24.0 to 0.24.1
+- build(deps): Bump torchaudio from 2.9.0 to 2.9.1
+- build(deps): Bump albumentations from 2.0.7 to 2.0.8
+- build(deps): Bump fastapi from 0.120.4 to 0.124.0
+- build(deps): Bump pydantic from 2.12.3 to 2.12.5
+- build(deps): Bump pydantic_core from 2.41.4 to 2.41.5
+- build(deps): Bump pymongo from 4.15.3 to 4.15.5
+- build(deps): Bump starlette from 0.49.1 to 0.50.0
+- build(deps): Bump ultralytics from 8.3.223 to 8.3.235
+- build(deps): Bump uvicorn from 0.38.0 to 0.38.0
+- build(deps): Bump python-multipart from 0.0.19 to 0.0.20
+- build(deps): Bump opencv-python from 4.12.0.88 to 4.12.0.88
+- build(deps): Bump pytest from 8.4.2 to 9.0.2
+- build(deps): Bump pytest-asyncio from 1.2.0 to 1.3.0
+- build(deps): Bump httpx from 0.28.0 to 0.28.1
+- build(deps): Bump pytest-cov from 7.0.0 to 7.0.0
 
 ## [1.2.2] - 01-11-2025
 
