@@ -6,7 +6,6 @@
 
 #### Build, Dependencies, GitHub Actions
 
-- Update Python base image to version 3.14 in Dockerfile
 - build(deps): Bump @eslint/js from 9.37.0 to 9.39.0 in /frontend
 - build(deps): Bump eslint-plugin-react-refresh from 0.4.23 to 0.4.24 in /frontend
 - build(deps): Bump @types/react from 19.2.0 to 19.2.2 in /frontend
