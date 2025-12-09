@@ -6,6 +6,7 @@
 
 #### Build, Dependencies, GitHub Actions
 
+- build(deps): bump actions/checkout from 5 to 6
 - build(deps): Bump @mui/icons-material from 7.3.4 to 7.3.6 in /frontend
 - build(deps): Bump @mui/material from 7.3.4 to 7.3.6 in /frontend
 - build(deps): Bump react from 19.2.0 to 19.2.1 in /frontend
