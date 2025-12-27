@@ -24,6 +24,9 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ViewListIcon from '@mui/icons-material/ViewList';
+import DownloadIcon from '@mui/icons-material/Download';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
 
 export default function ConsumptionHistory() {
     const theme = useTheme();
@@ -34,6 +37,7 @@ export default function ConsumptionHistory() {
     const [actionMenuAnchor, setActionMenuAnchor] = useState<null | HTMLElement>(null);
     const [actionMenuId, setActionMenuId] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<ViewMode>('monthly');
+    const [exportMenuAnchor, setExportMenuAnchor] = useState<null | HTMLElement>(null);
 
     const {
         readings,
@@ -51,6 +55,7 @@ export default function ConsumptionHistory() {
         handleEdit,
         handleEditCancel,
         editingId,
+        handleExport,
     } = useConsumptionHistory();
 
     // Find the reading being edited or deleted
@@ -61,6 +66,19 @@ export default function ConsumptionHistory() {
         if (newViewMode !== null) {
             setViewMode(newViewMode);
         }
+    };
+
+    const handleExportMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setExportMenuAnchor(event.currentTarget);
+    };
+
+    const handleExportMenuClose = () => {
+        setExportMenuAnchor(null);
+    };
+
+    const handleExportClick = async (format: 'csv' | 'xlsx' | 'pdf') => {
+        handleExportMenuClose();
+        await handleExport(format);
     };
 
     return (
@@ -76,7 +94,7 @@ export default function ConsumptionHistory() {
                 />
             </Box>
 
-            <Box sx={{mb: 3, display: 'flex', justifyContent: 'center'}}>
+            <Box sx={{mb: 3, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 2, flexWrap: 'wrap'}}>
                 <ToggleButtonGroup
                     value={viewMode}
                     exclusive
@@ -91,6 +109,34 @@ export default function ConsumptionHistory() {
                         Yearly
                     </ToggleButton>
                 </ToggleButtonGroup>
+                <Tooltip title="Export data">
+                    <Button
+                        variant="outlined"
+                        startIcon={<DownloadIcon />}
+                        onClick={handleExportMenuOpen}
+                        size={isMobile ? 'small' : 'medium'}
+                        sx={{ textTransform: 'none' }}
+                    >
+                        Export
+                    </Button>
+                </Tooltip>
+                <Menu
+                    anchorEl={exportMenuAnchor}
+                    open={Boolean(exportMenuAnchor)}
+                    onClose={handleExportMenuClose}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                    transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                >
+                    <MenuItem onClick={() => handleExportClick('csv')}>
+                        Export as CSV
+                    </MenuItem>
+                    <MenuItem onClick={() => handleExportClick('xlsx')}>
+                        Export as Excel (XLSX)
+                    </MenuItem>
+                    <MenuItem onClick={() => handleExportClick('pdf')}>
+                        Export as PDF
+                    </MenuItem>
+                </Menu>
             </Box>
 
             {viewMode === 'yearly' ? (

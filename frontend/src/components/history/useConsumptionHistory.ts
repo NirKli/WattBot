@@ -369,6 +369,34 @@ export function useConsumptionHistory() {
 
     const yearlyTotals = calculateYearlyTotals();
 
+    const handleExport = async (format: 'csv' | 'xlsx' | 'pdf') => {
+        try {
+            const response = await axios.get(`${API_URL}/monthly-consumptions/export`, {
+                params: { file_format: format },
+                responseType: 'blob'
+            });
+
+            // Create a blob URL and trigger download
+            const blob = new Blob([response.data]);
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            
+            // Set filename based on format
+            const filename = `monthly_consumption.${format}`;
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            
+            // Cleanup
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to export data');
+            console.error('Export error:', err);
+        }
+    };
+
     return {
         readings,
         loading,
@@ -401,6 +429,7 @@ export function useConsumptionHistory() {
         stats,
         yearlyTotals,
         isDeleteDialogOpen: !!deleteConfirmId,
-        deleteReadingId: deleteConfirmId
+        deleteReadingId: deleteConfirmId,
+        handleExport
     };
 } 
