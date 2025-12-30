@@ -42,7 +42,7 @@ class MonthlyConsumption(BaseModel):
     label_file: object
     file_label_name: object
 
-    class Config:
+    class ConfigDict:
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
         validate_by_name = True

@@ -7,9 +7,9 @@ from backend.services.crud.crud_monthly_consumption import get_monthly_consumpti
 from backend.services.exception import ResultIsNotFoundException
 from backend.services.exception.NoObjectHasFoundException import NoObjectHasFoundException
 from backend.services.exception.ResultIsAlreadyExistsException import ResultIsAlreadyExistsException
+from backend.services.export_monthly_consumption import build_csv_bytes, build_xlsx_bytes, build_pdf_bytes
 from backend.services.model.MonthlyConsumption import MonthlyConsumption
 from backend.services.process_image import ProcessImage
-from backend.services.export_monthly_consumption import build_csv_bytes, build_xlsx_bytes, build_pdf_bytes
 
 router = APIRouter()
 
@@ -87,18 +87,23 @@ async def get_file(file_id: str):
 
 @router.get("/monthly-consumptions/export")
 async def export_monthly_consumptions(file_format: str = Query("csv", pattern="^(csv|xlsx|pdf)$")):
-    """Export all monthly consumptions as csv, xlsx, or PDF. """
-    try:
-        if file_format == "csv":
-            data = build_csv_bytes()
-            return Response(content=data, media_type="text/csv", headers={"Content-Disposition": "attachment; filename=monthly_consumption.csv"})
-        elif file_format == "xlsx":
-            data = build_xlsx_bytes()
-            return Response(content=data, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", headers={"Content-Disposition": "attachment; filename=monthly_consumption.xlsx"})
-        elif file_format == "pdf":
-            data = build_pdf_bytes()
-            return Response(content=data, media_type="application/pdf", headers={"Content-Disposition": "attachment; filename=monthly_consumption.pdf"})
-        else:
-            raise HTTPException(status_code=400, detail="Unsupported format")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    if file_format == "csv":
+        data = build_csv_bytes()
+        media_type = "text/csv"
+        filename = "monthly_consumption.csv"
+
+    elif file_format == "xlsx":
+        data = build_xlsx_bytes()
+        media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        filename = "monthly_consumption.xlsx"
+
+    else:
+        data = build_pdf_bytes()
+        media_type = "application/pdf"
+        filename = "monthly_consumption.pdf"
+
+    return Response(
+        content=data,
+        media_type=media_type,
+        headers={"Content-Disposition": f"attachment; filename={filename}"},
+    )

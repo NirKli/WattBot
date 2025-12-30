@@ -1,10 +1,12 @@
 from unittest.mock import patch
 from datetime import datetime
 from io import BytesIO
+from pypdf import PdfReader
 
 import pandas as pd
 import pytest
 
+from backend.services.export_monthly_consumption import build_pdf_bytes
 from backend.services.model.MonthlyConsumption import MonthlyConsumption
 
 
@@ -96,3 +98,49 @@ def test_prepare_dataframe_formats_price_with_currency_symbol(mock_get_all, mock
 
     # Assert
     assert df.loc[0, "price"] == "₪7.50"
+
+
+@pytest.mark.asyncio
+@patch("backend.services.export_monthly_consumption.get_all_monthly_consumption_from_db")
+async def test_builds_pdf_with_valid_data(mock_get_data):
+    mock_get_data.return_value = [
+        MonthlyConsumption(
+            modified_date=datetime(2025, 10, 1, 12, 0, 0),
+            date=datetime(2025, 10, 1),
+            total_kwh_consumed=75.0,
+            price=7.5,
+            original_file=None,
+            file_name="e.jpg",
+            label_file=None,
+            file_label_name="f.jpg",
+        )
+    ]
+    result = build_pdf_bytes()
+    assert b"%PDF" in result
+
+    from io import BytesIO
+
+    reader = PdfReader(BytesIO(result))
+    extracted_text = ""
+    for page in reader.pages:
+        extracted_text += page.extract_text() or ""
+
+    assert "2025-10-01" in extracted_text
+    assert "75.0" in extracted_text or "75" in extracted_text
+
+
+@pytest.mark.asyncio
+@patch("backend.services.export_monthly_consumption.get_all_monthly_consumption_from_db")
+async def test_builds_pdf_with_empty_data(mock_get_data):
+    mock_get_data.return_value = []
+    result = build_pdf_bytes()
+    assert b"%PDF" in result
+
+    from io import BytesIO
+
+    reader = PdfReader(BytesIO(result))
+    extracted_text = ""
+    for page in reader.pages:
+        extracted_text += page.extract_text() or ""
+
+    assert "No data available" in extracted_text
