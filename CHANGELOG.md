@@ -25,7 +25,7 @@
 - build(deps): Bump @eslint/js from 9.37.0 to 9.39.2 in /frontend
 - build(deps): Bump eslint-plugin-react-refresh from 0.4.23 to 0.4.26 in /frontend
 - build(deps): Bump eslint-plugin-react-hooks from 6.1.1 to 7.0.1 in /frontend
-- build(deps): Bump globals from 16.4.0 to 16.5.0 in /frontend
+- build(deps): Bump globals from 16.4.0 to 17.0.0 in /frontend
 - build(deps): Bump torch from 2.9.0+cpu to 2.9.1+cpu
 - build(deps): Bump torchvision from 0.24.0 to 0.24.1
 - build(deps): Bump torchaudio from 2.9.0 to 2.9.1
@@ -35,7 +35,7 @@
 - build(deps): Bump pydantic_core from 2.41.4 to 2.41.5
 - build(deps): Bump pymongo from 4.15.3 to 4.15.5
 - build(deps): Bump starlette from 0.49.1 to 0.50.0
-- build(deps): Bump ultralytics from 8.3.223 to 8.3.243
+- build(deps): Bump ultralytics from 8.3.223 to 8.3.248
 - build(deps): Bump uvicorn from 0.37.0 to 0.40.0
 - build(deps): Bump python-multipart from 0.0.19 to 0.0.21
 - build(deps): Bump opencv-python from 4.12.0.88 to 4.12.0.88
