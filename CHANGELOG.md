@@ -4,7 +4,8 @@
 
 ### Improvements and bug fixes
 
-Add export functionality for monthly consumption data in CSV, XLSX, and PDF formats
+- Add export functionality for monthly consumption data in CSV, XLSX, and PDF formats.
+- Fix correct endpoint route for creating electricity price.
 
 #### Build, Dependencies, GitHub Actions
 

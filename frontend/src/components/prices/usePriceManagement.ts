@@ -82,7 +82,7 @@ export function usePriceManagement() {
     const handleAddSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await axios.post(`${API_URL}/electricity-prices`, newPrice);
+            await axios.post(`${API_URL}/electricity-price`, newPrice);
             setSuccessMessage('Price added successfully');
             fetchPrices();
             setNewPrice({
