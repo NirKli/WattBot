@@ -1,6 +1,6 @@
 # Changelog
 
-## unreleased
+## [1.2.3] - 05-01-2026
 
 ### Improvements and bug fixes
 
@@ -156,6 +156,7 @@
 
 ## [1.0.0] - 02-06-2025
 
+[1.2.3]: https://github.com/NirKli/WattBot/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/NirKli/WattBot/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/NirKli/WattBot/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/NirKli/WattBot/compare/v1.1.1...v1.2.0
