@@ -1,5 +1,12 @@
 # Changelog
 
+## unreleased
+
+### Improvements and bug fixes
+
+#### Build, Dependencies, GitHub Actions
+
+
 ## [1.2.3] - 05-01-2026
 
 ### Improvements and bug fixes
