@@ -100,7 +100,7 @@ export function usePriceManagement() {
         if (!editingId) return;
 
         try {
-            await axios.put(`${API_URL}/electricity-prices/${editingId}`, newPrice);
+            await axios.put(`${API_URL}/electricity-price/${editingId}`, newPrice);
             setSuccessMessage('Price updated successfully');
             fetchPrices();
             setEditingId(null);
