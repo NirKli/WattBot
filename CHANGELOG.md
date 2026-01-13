@@ -6,6 +6,10 @@
 
 #### Build, Dependencies, GitHub Actions
 
+- build(deps): Bump pypdf from 6.5.0 to 6.6.0
+- build(deps): Bump pymongo from 4.15.5 to 4.15.5
+- build(deps): Bump ultralytics from 8.3.248 to 8.3.250
+
 
 ## [1.2.3] - 05-01-2026
 
