@@ -6,9 +6,13 @@
 
 #### Build, Dependencies, GitHub Actions
 
-- build(deps): Bump pypdf from 6.5.0 to 6.6.0
-- build(deps): Bump pymongo from 4.15.5 to 4.15.5
-- build(deps): Bump ultralytics from 8.3.248 to 8.3.250
+- build(deps): Bump pypdf from `6.5.0` to `6.6.2`
+- build(deps): Bump pymongo from `4.15.5` to `4.15.5`
+- build(deps): Bump ultralytics from `8.3.250` to `8.4.8`
+- build(deps): Bump python-multipart from `0.0.21` to `0.0.22`
+- build(deps): Bump opencv-python from `4.12.0.88` to `4.13.0.90`
+- build(deps): Bump pandas from `2.3.3` to `3.0.0`
+- build(deps): Bump reportlab from `4.4.7` to `4.4.9`
 
 
 ## [1.2.3] - 05-01-2026
