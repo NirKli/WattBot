@@ -33,7 +33,7 @@ price tracking.
 
 - **Frontend:** React, Material UI, TypeScript
 - **Backend:** FastAPI, Python 3.13, Uvicorn, Pydantic
-- **Machine Learning:** YOLOv11s-obb (custom-trained on real electricity meter data)
+- **Machine Learning:** YOLOv26s-obb (custom-trained on real electricity meter data)
 - **Database:** MongoDB
 - **Containerization:** Docker, Docker Compose
 - **CI/CD:** GitHub Actions
