@@ -4,6 +4,8 @@
 
 ### Improvements and bug fixes
 
+- feat(model): upgrade YOLO11s-obb → YOLO26s-obb (+5.4 mAP50-95, ~7.9% improvement)
+
 #### Build, Dependencies, GitHub Actions
 
 - build(deps): Bump pypdf from `6.5.0` to `6.6.2`
