@@ -25,7 +25,9 @@ def test_retrieves_monthly_consumption_data(mock_get_db):
             "original_file": ObjectId(),
             "file_name": "original_file.jpg",
             "label_file": ObjectId(),
-            "file_label_name": "label_file.jpg"
+            "file_label_name": "label_file.jpg",
+            "conf_array": [],
+            "score": 0.0
         },
     ]
     result = get_all_monthly_consumption_from_db()
@@ -61,7 +63,9 @@ def test_saves_monthly_consumption_to_db_and_returns_id(mock_mc_get_db, mock_set
         original_file=ObjectId(),
         file_name="original_file.jpg",
         label_file=ObjectId(),
-        file_label_name="label_file.jpg"
+        file_label_name="label_file.jpg",
+        conf_array=[],
+        score=0.0
     )
     result = save_monthly_consumption_to_db(monthly_consumption)
     assert result is not None
@@ -89,7 +93,9 @@ def test_updates_existing_monthly_consumption_in_db(mock_get_db, mock_settings_g
         "original_file": ObjectId(),
         "file_name": "file.jpg",
         "label_file": ObjectId(),
-        "file_label_name": "label.jpg"
+        "file_label_name": "label.jpg",
+        "conf_array": [],
+        "score": 0.0
     }
     mock_collection.update_one.return_value.modified_count = 1
 
@@ -101,7 +107,9 @@ def test_updates_existing_monthly_consumption_in_db(mock_get_db, mock_settings_g
         original_file=ObjectId(),
         file_name="updated_file.jpg",
         label_file=ObjectId(),
-        file_label_name="updated_label.jpg"
+        file_label_name="updated_label.jpg",
+        conf_array=[],
+        score=0.0
     ))
 
 
@@ -127,7 +135,9 @@ def test_raises_exception_when_updating_nonexistent_monthly_consumption(mock_get
         "original_file": ObjectId(),
         "file_name": "file.jpg",
         "label_file": ObjectId(),
-        "file_label_name": "label.jpg"
+        "file_label_name": "label.jpg",
+        "conf_array": [],
+        "score": 0.0
     }
     mock_collection.update_one.return_value.modified_count = 0
 
@@ -140,7 +150,9 @@ def test_raises_exception_when_updating_nonexistent_monthly_consumption(mock_get
             original_file=ObjectId(),
             file_name="updated_file.jpg",
             label_file=ObjectId(),
-            file_label_name="updated_label.jpg"
+            file_label_name="updated_label.jpg",
+            conf_array=[],
+            score=0.0
         ))
 
 
@@ -157,7 +169,9 @@ def test_deletes_monthly_consumption_from_db(mock_get_db):
         "original_file": ObjectId(),
         "file_name": "file.jpg",
         "label_file": ObjectId(),
-        "file_label_name": ObjectId()
+        "file_label_name": ObjectId(),
+        "conf_array": [],
+        "score": 0.0
     }
     mock_collection.delete_one.return_value.deleted_count = 1
 
@@ -178,7 +192,9 @@ def test_raises_exception_when_deleting_nonexistent_monthly_consumption(mock_get
         "original_file": ObjectId(),
         "file_name": "file.jpg",
         "label_file": ObjectId(),
-        "file_label_name": ObjectId()
+        "file_label_name": ObjectId(),
+        "conf_array": [],
+        "score": 0.0
     }
     mock_collection.delete_one.return_value.deleted_count = 0
 
@@ -199,7 +215,9 @@ def test_get_latest_monthly_consumption_from_db(mock_get_db):
         "original_file": ObjectId(),
         "file_name": "file.jpg",
         "label_file": ObjectId(),
-        "file_label_name": "label.jpg"
+        "file_label_name": "label.jpg",
+        "conf_array": [],
+        "score": 0.0
     }]
     result = get_latest_monthly_consumption_from_db()
     assert result.total_kwh_consumed == 100.0

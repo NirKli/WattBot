@@ -20,6 +20,45 @@ sample_consumption = MonthlyConsumption(
     file_name="original.jpg",
     label_file="file2",
     file_label_name="label.jpg",
+    conf_array= [
+    {
+        "char": "0",
+        "conf": 0.9783397912979126
+    },
+    {
+        "char": "0",
+        "conf": 0.8652015328407288
+    },
+    {
+        "char": "5",
+        "conf": 0.9761660695075989
+    },
+    {
+        "char": "7",
+        "conf": 0.9605460166931152
+    },
+    {
+        "char": "1",
+        "conf": 0.8946158289909363
+    },
+    {
+        "char": "8",
+        "conf": 0.9541907906532288
+    },
+    {
+        "char": ".",
+        "conf": 0.8447996377944946
+    },
+    {
+        "char": "1",
+        "conf": 0.9127216339111328
+    },
+    {
+        "char": "3",
+        "conf": 0.9876267313957214
+    }
+],
+    score= 0.9304675592316521
 )
 
 

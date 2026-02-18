@@ -25,6 +25,45 @@ def test_build_csv_uses_currency_symbol(mock_get_all, mock_get_settings):
             file_name="a.jpg",
             label_file=None,
             file_label_name="b.jpg",
+            conf_array= [
+                {
+                    "char": "0",
+                    "conf": 0.9783397912979126
+                },
+                {
+                    "char": "0",
+                    "conf": 0.8652015328407288
+                },
+                {
+                    "char": "5",
+                    "conf": 0.9761660695075989
+                },
+                {
+                    "char": "7",
+                    "conf": 0.9605460166931152
+                },
+                {
+                    "char": "1",
+                    "conf": 0.8946158289909363
+                },
+                {
+                    "char": "8",
+                    "conf": 0.9541907906532288
+                },
+                {
+                    "char": ".",
+                    "conf": 0.8447996377944946
+                },
+                {
+                    "char": "1",
+                    "conf": 0.9127216339111328
+                },
+                {
+                    "char": "3",
+                    "conf": 0.9876267313957214
+                }
+            ],
+            score= 0.9304675592316521
         )
     ]
     mock_get_all.return_value = items
@@ -55,6 +94,45 @@ def test_build_xlsx_uses_currency_symbol(mock_get_all, mock_get_settings):
             file_name="c.jpg",
             label_file=None,
             file_label_name="d.jpg",
+            conf_array= [
+                {
+                    "char": "0",
+                    "conf": 0.9783397912979126
+                },
+                {
+                    "char": "0",
+                    "conf": 0.8652015328407288
+                },
+                {
+                    "char": "5",
+                    "conf": 0.9761660695075989
+                },
+                {
+                    "char": "7",
+                    "conf": 0.9605460166931152
+                },
+                {
+                    "char": "1",
+                    "conf": 0.8946158289909363
+                },
+                {
+                    "char": "8",
+                    "conf": 0.9541907906532288
+                },
+                {
+                    "char": ".",
+                    "conf": 0.8447996377944946
+                },
+                {
+                    "char": "1",
+                    "conf": 0.9127216339111328
+                },
+                {
+                    "char": "3",
+                    "conf": 0.9876267313957214
+                }
+            ],
+            score= 0.9304675592316521
         )
     ]
     mock_get_all.return_value = items
@@ -87,6 +165,45 @@ def test_prepare_dataframe_formats_price_with_currency_symbol(mock_get_all, mock
             file_name="e.jpg",
             label_file=None,
             file_label_name="f.jpg",
+            conf_array= [
+                {
+                    "char": "0",
+                    "conf": 0.9783397912979126
+                },
+                {
+                    "char": "0",
+                    "conf": 0.8652015328407288
+                },
+                {
+                    "char": "5",
+                    "conf": 0.9761660695075989
+                },
+                {
+                    "char": "7",
+                    "conf": 0.9605460166931152
+                },
+                {
+                    "char": "1",
+                    "conf": 0.8946158289909363
+                },
+                {
+                    "char": "8",
+                    "conf": 0.9541907906532288
+                },
+                {
+                    "char": ".",
+                    "conf": 0.8447996377944946
+                },
+                {
+                    "char": "1",
+                    "conf": 0.9127216339111328
+                },
+                {
+                    "char": "3",
+                    "conf": 0.9876267313957214
+                }
+            ],
+            score= 0.9304675592316521
         )
     ]
     mock_get_all.return_value = items
@@ -113,6 +230,45 @@ async def test_builds_pdf_with_valid_data(mock_get_data):
             file_name="e.jpg",
             label_file=None,
             file_label_name="f.jpg",
+            conf_array= [
+                {
+                    "char": "0",
+                    "conf": 0.9783397912979126
+                },
+                {
+                    "char": "0",
+                    "conf": 0.8652015328407288
+                },
+                {
+                    "char": "5",
+                    "conf": 0.9761660695075989
+                },
+                {
+                    "char": "7",
+                    "conf": 0.9605460166931152
+                },
+                {
+                    "char": "1",
+                    "conf": 0.8946158289909363
+                },
+                {
+                    "char": "8",
+                    "conf": 0.9541907906532288
+                },
+                {
+                    "char": ".",
+                    "conf": 0.8447996377944946
+                },
+                {
+                    "char": "1",
+                    "conf": 0.9127216339111328
+                },
+                {
+                    "char": "3",
+                    "conf": 0.9876267313957214
+                }
+            ],
+            score= 0.9304675592316521
         )
     ]
     result = build_pdf_bytes()
