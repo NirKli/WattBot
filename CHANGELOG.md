@@ -8,15 +8,17 @@
 
 #### Build, Dependencies, GitHub Actions
 
-- build(deps): Bump pypdf from `6.5.0` to `6.6.2`
+- build(deps): Bump pypdf from `6.5.0` to `6.7.1`
 - build(deps): Bump pymongo from `4.15.5` to `4.15.5`
-- build(deps): Bump ultralytics from `8.3.250` to `8.4.12`
+- build(deps): Bump ultralytics from `8.3.250` to `8.4.14`
 - build(deps): Bump python-multipart from `0.0.21` to `0.0.22`
 - build(deps): Bump opencv-python from `4.12.0.88` to `4.13.0.92`
 - build(deps): Bump pandas from `2.3.3` to `3.0.0`
-- build(deps): Bump reportlab from `4.4.7` to `4.4.9`
-- build(deps): Bump fastapi from `0.128.0` to `0.128.4`
+- build(deps): Bump reportlab from `4.4.7` to `4.4.10`
+- build(deps): Bump fastapi from `0.128.0` to `0.129.0`
 - build(deps): Bump starlette from `0.50.0` to `0.52.1`
+- build(deps): Bump uvicorn from `0.40.0` to `0.41.0`
+- build(deps): Bump pandas from `3.0.0` to `3.0.1`
 - build(deps): Bump @mui/icons-material from `7.3.6` to `7.3.7` in `/frontend`
 - build(deps): Bump @mui/material from `7.3.6` to `7.3.7` in `/frontend`
 - build(deps): Bump @types/react from `19.2.7` to `19.2.13` in `/frontend`
@@ -26,8 +28,8 @@
 - build(deps): Bump react-dom from `19.2.3` to `19.2.4` in `/frontend`
 - build(deps): Bump typescript-eslint from `8.51.0` to `8.54.0` in `/frontend`
 - build(deps): Bump vite from `7.3.0` to `7.3.1` in `/frontend` 
-- build(deps): Bump @vitejs/plugin-react from `5.1.2` to `5.1.3` in /frontend
-- build(deps): Bump eslint-plugin-react-refresh from `0.4.26` to `0.5.0` in /frontend
+- build(deps): Bump @vitejs/plugin-react from `5.1.2` to `5.1.3` in `/frontend`
+- build(deps): Bump eslint-plugin-react-refresh from `0.4.26` to `0.5.0` in `/frontend`
 
 
 ## [1.2.3] - 05-01-2026
