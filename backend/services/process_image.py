@@ -38,6 +38,13 @@ class ProcessImage:
         output = ''.join([lbl for _, lbl, _ in detections])
         with_conf = ' '.join([f"{lbl}:{conf:.2f}" for _, lbl, conf in detections])
 
+        conf_arry = []
+        score_avg = 0
+        for _, lbl, conf in detections:
+            conf_arry.append({"char": str(lbl), "conf": float(conf)})
+            score_avg += conf
+        score_avg /= len(detections) if conf_arry else 0.0
+
         try:
             output = float(output)
         except ValueError:
@@ -58,7 +65,10 @@ class ProcessImage:
                 temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".jpg")),
             file_label_name=crud_files.save_file_to_db(
                 DETECT_FOLDER + "labels/" + temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".txt"),
-                temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".txt")))
+                temp_file_path.replace(extract_file_name_type(temp_file_path)[1], ".txt")),
+            conf_array = conf_arry,
+            score=score_avg)
+
 
         monthly_consumption_id = crud_monthly_consumption.save_monthly_consumption_to_db(monthly_consumption)
 

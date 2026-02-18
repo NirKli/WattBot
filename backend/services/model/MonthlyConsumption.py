@@ -41,6 +41,8 @@ class MonthlyConsumption(BaseModel):
     file_name: str
     label_file: object
     file_label_name: object
+    conf_array: list[dict]
+    score: float
 
     class ConfigDict:
         arbitrary_types_allowed = True

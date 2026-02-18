@@ -2,6 +2,7 @@ from datetime import datetime
 
 import pymongo
 from bson.objectid import ObjectId
+from torch.fft import ifft
 
 from backend.services.crud.crud_settings import get_setting_from_db
 from backend.services.db_client import get_db, get_fs_bucket
@@ -20,7 +21,10 @@ def save_monthly_consumption_to_db(monthly_consumption):
         "original_file": monthly_consumption.original_file,
         "file_name": monthly_consumption.file_name,
         "label_file": monthly_consumption.label_file,
-        "file_label_name": monthly_consumption.file_label_name
+        "file_label_name": monthly_consumption.file_label_name,
+        "conf_array": monthly_consumption.conf_array,
+        "score": monthly_consumption.score
+
     }
     result = collection.insert_one(monthly_consumption_dict)
     return result.inserted_id
@@ -42,7 +46,9 @@ def get_monthly_consumption_from_db(monthly_consumption_id):
             label_file=str(result["label_file"]) if isinstance(result["label_file"], ObjectId) else result[
                 "label_file"],
             file_label_name=str(result["file_label_name"]) if isinstance(result["file_label_name"], ObjectId) else
-            result["file_label_name"]
+            result["file_label_name"],
+            conf_array=result["conf_array"],
+            score=result["score"]
         )
     else:
         raise NoObjectHasFoundException()
@@ -65,7 +71,9 @@ def get_latest_monthly_consumption_from_db():
             file_name=doc["file_name"],
             label_file=str(doc["label_file"]) if isinstance(doc["label_file"], ObjectId) else doc["label_file"],
             file_label_name=str(doc["file_label_name"]) if isinstance(doc["file_label_name"], ObjectId) else doc[
-                "file_label_name"]
+                "file_label_name"],
+            conf_array=doc["conf_array"],
+            score=doc["score"]
         )
     else:
         raise NoObjectHasFoundException()
@@ -87,7 +95,9 @@ def get_all_monthly_consumption_from_db():
             file_name=doc["file_name"],
             label_file=str(doc["label_file"]) if isinstance(doc["label_file"], ObjectId) else doc["label_file"],
             file_label_name=str(doc["file_label_name"]) if isinstance(doc["file_label_name"], ObjectId) else doc[
-                "file_label_name"]
+                "file_label_name"],
+            conf_array=doc.get("conf_array", []),
+            score=doc.get("score",0.0)
         ))
     return monthly_consumptions
 
@@ -147,7 +157,8 @@ def calculate_price_from_current_consumption_from_last_month(current_total_kwh_c
 
     if last_month_doc is not None:
         if last_month_doc["total_kwh_consumed"] >= current_total_kwh_consumed:
-            raise ResultIsAlreadyExistsException("Monthly consumption for this month already exists. Please check the history.")
+            raise ResultIsAlreadyExistsException(
+                "Monthly consumption for this month already exists. Please check the history.")
         kwh_diff = current_total_kwh_consumed - last_month_doc["total_kwh_consumed"]
     else:
         kwh_diff = current_total_kwh_consumed
