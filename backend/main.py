@@ -1,10 +1,34 @@
+import threading
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api import monthly_consumption_routes
 from backend.api import price_routes
 from backend.api import settings_routes
+from backend.migrations.runner import run_data_migrations
+from backend.services.db_client import get_db
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+
+    db = get_db()
+
+    # Run migrations in background (non-blocking)
+    def _run_migrations():
+        run_data_migrations(db)
+
+    thread = threading.Thread(
+        target=_run_migrations,
+        daemon=True
+    )
+    thread.start()
+
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 # Configure CORS
 origins = [
