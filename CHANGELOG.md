@@ -9,7 +9,7 @@
 #### Build, Dependencies, GitHub Actions
 
 - build(deps): Bump pypdf from `6.5.0` to `6.7.1`
-- build(deps): Bump pymongo from `4.15.5` to `4.15.5`
+- build(deps): Bump pymongo from `4.15.5` to `4.16.0`
 - build(deps): Bump ultralytics from `8.3.250` to `8.4.14`
 - build(deps): Bump python-multipart from `0.0.21` to `0.0.22`
 - build(deps): Bump opencv-python from `4.12.0.88` to `4.13.0.92`
