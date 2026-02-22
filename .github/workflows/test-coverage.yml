@@ -38,6 +38,7 @@ jobs:
           pytest tests/backend \
             --cov=backend \
             --cov-report=lcov:backend/coverage/lcov.info
+            --cov-config=.coveragerc
       
 
       - name: Upload backend coverage
