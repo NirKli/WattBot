@@ -81,6 +81,24 @@ export default function ConsumptionHistory() {
         await handleExport(format);
     };
 
+    const onEditClick = (id: string) => {
+        setDeleteConfirmId(null);
+        setExpandedId(null);
+        handleEdit(id);
+    };
+
+    const onDetailClick = (id: string) => {
+        setDeleteConfirmId(null);
+        handleEditCancel();
+        setExpandedId(expandedId === id ? null : id);
+    };
+
+    const onDeleteClick = (id: string) => {
+        setExpandedId(null);
+        handleEditCancel();
+        setDeleteConfirmId(id);
+    };
+
     return (
         <Container maxWidth="lg">
             <Box sx={{mb: 4}}>
@@ -159,9 +177,9 @@ export default function ConsumptionHistory() {
                             <ReadingCard
                                 key={reading._id}
                                 reading={reading}
-                                onEditClick={handleEdit}
-                                onDetailClick={id => setExpandedId(expandedId === id ? null : id)}
-                                onDeleteClick={setDeleteConfirmId}
+                                onEditClick={onEditClick}
+                                onDetailClick={onDetailClick}
+                                onDeleteClick={onDeleteClick}
                                 actionMenuAnchor={actionMenuAnchor}
                                 actionMenuId={actionMenuId}
                                 onActionMenuOpen={(e, id) => { setActionMenuAnchor(e.currentTarget); setActionMenuId(id); }}
@@ -276,21 +294,21 @@ export default function ConsumptionHistory() {
                                                             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                                                         >
                                                             <MenuItem onClick={() => {
-                                                                handleEdit(reading._id);
+                                                                onEditClick(reading._id);
                                                                 setActionMenuAnchor(null);
                                                                 setActionMenuId(null);
                                                             }}>
                                                                 <EditIcon fontSize="small" sx={{mr: 1}}/> Edit
                                                             </MenuItem>
                                                             <MenuItem onClick={() => {
-                                                                setExpandedId(expandedId === reading._id ? null : reading._id);
+                                                                onDetailClick(reading._id);
                                                                 setActionMenuAnchor(null);
                                                                 setActionMenuId(null);
                                                             }}>
                                                                 <InfoIcon fontSize="small" sx={{mr: 1}}/> Details
                                                             </MenuItem>
                                                             <MenuItem onClick={() => {
-                                                                setDeleteConfirmId(reading._id);
+                                                                onDeleteClick(reading._id);
                                                                 setActionMenuAnchor(null);
                                                                 setActionMenuId(null);
                                                             }}>
@@ -300,9 +318,9 @@ export default function ConsumptionHistory() {
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <IconButton onClick={() => handleEdit(reading._id)} color="primary" size="small"><EditIcon fontSize="small"/></IconButton>
-                                                        <IconButton onClick={() => setExpandedId(expandedId === reading._id ? null : reading._id)} color="info" size="small"><InfoIcon fontSize="small"/></IconButton>
-                                                        <IconButton onClick={() => setDeleteConfirmId(reading._id)} color="error" size="small"><DeleteIcon fontSize="small"/></IconButton>
+                                                        <IconButton onClick={() => onEditClick(reading._id)} color="primary" size="small"><EditIcon fontSize="small"/></IconButton>
+                                                        <IconButton onClick={() => onDetailClick(reading._id)} color="info" size="small"><InfoIcon fontSize="small"/></IconButton>
+                                                        <IconButton onClick={() => onDeleteClick(reading._id)} color="error" size="small"><DeleteIcon fontSize="small"/></IconButton>
                                                     </>
                                                 )}
                                             </TableCell>

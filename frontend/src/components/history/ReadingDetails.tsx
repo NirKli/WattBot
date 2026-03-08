@@ -1,4 +1,4 @@
-import {Paper, Typography, Grid, Tabs, Tab, Box} from '@mui/material';
+import {Paper, Typography, Grid, Tabs, Tab, Box, Tooltip} from '@mui/material';
 import {Image, Label, Info} from '@mui/icons-material';
 import type {MonthlyConsumption, ImageTab} from './types';
 
@@ -42,6 +42,42 @@ export default function ReadingDetails({
                     <Typography>{formatTimestamp(reading.updated_at)}</Typography>
                     <Typography variant="body2" color="text.secondary">File Name</Typography>
                     <Typography>{reading.file_name || 'Not available'}</Typography>
+                    {reading.score != null && (
+                        <>
+                            <Typography variant="body2" color="text.secondary">Score</Typography>
+                            <Typography>{(Number(reading.score) * 100).toFixed(1)}%</Typography>
+                        </>
+                    )}
+                    {reading.conf_array != null && reading.conf_array.length > 0 && (
+                        <Tooltip
+                            title={
+                                <Box component="span" sx={{display: 'block', py: 0.5}}>
+                                    {reading.conf_array.map((item, i) => {
+                                        const char = (item as { char?: string }).char ?? '?';
+                                        const conf = (item as { conf?: number }).conf;
+                                        const pct = typeof conf === 'number' ? (conf * 100).toFixed(2) + '%' : '—';
+                                        return (
+                                            <Typography key={i} component="span" sx={{display: 'block', fontSize: '0.8rem', lineHeight: 1.5}}>
+                                                {char}: {pct}
+                                            </Typography>
+                                        );
+                                    })}
+                                </Box>
+                            }
+                            placement="top"
+                            arrow
+                            slotProps={{
+                                popper: {
+                                    modifiers: [{name: 'offset', options: {offset: [0, 4]}}]
+                                }
+                            }}
+                        >
+                            <Box component="span" sx={{cursor: 'help', display: 'inline-block'}}>
+                                <Typography variant="body2" color="text.secondary">Confidence (items)</Typography>
+                                <Typography>{reading.conf_array.length} detection(s)</Typography>
+                            </Box>
+                        </Tooltip>
+                    )}
                 </Grid>
 
                 {(reading.original_file || reading.label_file) && (

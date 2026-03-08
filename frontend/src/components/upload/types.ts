@@ -7,6 +7,8 @@ export interface MonthlyConsumption {
     file_name: string;
     label_file: string | null;
     file_label_name: string | null;
+    conf_array?: Record<string, unknown>[];
+    score?: number;
 }
 
 export interface UploadPreviewProps {

@@ -9,6 +9,8 @@ export interface MonthlyConsumption {
     file_label_name: string | null;
     created_at: string;
     updated_at: string;
+    conf_array?: Record<string, unknown>[];
+    score?: number;
 }
 
 export interface ConsumptionStats {
