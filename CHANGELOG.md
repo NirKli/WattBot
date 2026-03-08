@@ -19,17 +19,17 @@
 - build(deps): Bump starlette from `0.50.0` to `0.52.1`
 - build(deps): Bump uvicorn from `0.40.0` to `0.41.0`
 - build(deps): Bump pandas from `3.0.0` to `3.0.1`
-- build(deps): Bump @mui/icons-material from `7.3.6` to `7.3.7` in `/frontend`
-- build(deps): Bump @mui/material from `7.3.6` to `7.3.7` in `/frontend`
-- build(deps): Bump @types/react from `19.2.7` to `19.2.13` in `/frontend`
+- build(deps): Bump @mui/icons-material from `7.3.6` to `7.3.8` in `/frontend`
+- build(deps): Bump @mui/material from `7.3.6` to `7.3.8` in `/frontend`
+- build(deps): Bump @types/react from `19.2.7` to `19.2.14` in `/frontend`
 - build(deps): Bump axios from `1.13.2` to `1.13.4` in `/frontend`
-- build(deps): Bump globals from `17.0.0` to `17.3.0` in `/frontend`
+- build(deps): Bump globals from `17.0.0` to `17.4.0` in `/frontend`
 - build(deps): Bump react from `19.2.3` to `19.2.4` in `/frontend`
 - build(deps): Bump react-dom from `19.2.3` to `19.2.4` in `/frontend`
-- build(deps): Bump typescript-eslint from `8.51.0` to `8.54.0` in `/frontend`
+- build(deps): Bump typescript-eslint from `8.51.0` to `8.56.1` in `/frontend`
 - build(deps): Bump vite from `7.3.0` to `7.3.1` in `/frontend` 
-- build(deps): Bump @vitejs/plugin-react from `5.1.2` to `5.1.3` in `/frontend`
-- build(deps): Bump eslint-plugin-react-refresh from `0.4.26` to `0.5.0` in `/frontend`
+- build(deps): Bump @vitejs/plugin-react from `5.1.2` to `5.1.4` in `/frontend`
+- build(deps): Bump eslint-plugin-react-refresh from `0.4.26` to `0.5.2` in `/frontend`
 - build(deps): bump docker/build-push-action from `6.18.0` to `6.19.2`
 
 
