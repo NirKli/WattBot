@@ -30,6 +30,7 @@
 - build(deps): Bump vite from `7.3.0` to `7.3.1` in `/frontend` 
 - build(deps): Bump @vitejs/plugin-react from `5.1.2` to `5.1.3` in `/frontend`
 - build(deps): Bump eslint-plugin-react-refresh from `0.4.26` to `0.5.0` in `/frontend`
+- build(deps): bump docker/build-push-action from `6.18.0` to `6.19.2`
 
 
 ## [1.2.3] - 05-01-2026
