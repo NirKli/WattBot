@@ -26,7 +26,7 @@
 - build(deps): Bump globals from `17.0.0` to `17.4.0` in `/frontend`
 - build(deps): Bump react from `19.2.3` to `19.2.4` in `/frontend`
 - build(deps): Bump react-dom from `19.2.3` to `19.2.4` in `/frontend`
-- build(deps): Bump typescript-eslint from `8.51.0` to `8.56.1` in `/frontend`
+- build(deps): Bump typescript-eslint from `8.51.0` to `8.57.0` in `/frontend`
 - build(deps): Bump vite from `7.3.0` to `7.3.1` in `/frontend` 
 - build(deps): Bump @vitejs/plugin-react from `5.1.2` to `5.1.4` in `/frontend`
 - build(deps): Bump eslint-plugin-react-refresh from `0.4.26` to `0.5.2` in `/frontend`
