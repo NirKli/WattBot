@@ -9,8 +9,8 @@ pydantic==2.12.5
 pydantic_core==2.41.5
 pymongo==4.16.0
 starlette==0.52.1
-ultralytics==8.4.21
-uvicorn==0.41.0
+ultralytics==8.4.23
+uvicorn==0.42.0
 python-multipart==0.0.22
 opencv-python==4.13.0.92
 pytest==9.0.2
@@ -20,5 +20,5 @@ pytest-cov==7.0.0
 pandas==3.0.1
 openpyxl==3.1.5
 reportlab==4.4.10
-pypdf==6.7.5
-numpy==2.4.2
+pypdf==6.9.1
+numpy==2.4.3
