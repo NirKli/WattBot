@@ -9,15 +9,15 @@
 
 #### Build, Dependencies, GitHub Actions
 
-- build(deps): Bump pypdf from `6.5.0` to `6.9.1`
+- build(deps): Bump pypdf from `6.5.0` to `6.9.2`
 - build(deps): Bump pymongo from `4.15.5` to `4.16.0`
-- build(deps): Bump ultralytics from `8.3.250` to `8.4.23`
+- build(deps): Bump ultralytics from `8.3.250` to `8.4.26`
 - build(deps): Bump python-multipart from `0.0.21` to `0.0.22`
 - build(deps): Bump opencv-python from `4.12.0.88` to `4.13.0.92`
 - build(deps): Bump pandas from `2.3.3` to `3.0.0`
 - build(deps): Bump reportlab from `4.4.7` to `4.4.10`
-- build(deps): Bump fastapi from `0.128.0` to `0.135.1`
-- build(deps): Bump starlette from `0.50.0` to `0.52.1`
+- build(deps): Bump fastapi from `0.128.0` to `0.135.2`
+- build(deps): Bump starlette from `0.50.0` to `1.0.0`
 - build(deps): Bump uvicorn from `0.40.0` to `0.42.0`
 - build(deps): Bump pandas from `3.0.0` to `3.0.1`
 - build(deps): Bump @mui/icons-material from `7.3.6` to `7.3.8` in `/frontend`
@@ -33,6 +33,7 @@
 - build(deps): Bump eslint-plugin-react-refresh from `0.4.26` to `0.5.2` in `/frontend`
 - build(deps): bump docker/build-push-action from `6.18.0` to `6.19.2`
 - build(deps): Bump numpy from `2.4.2` to `2.4.3`
+- build(deps): Bump pytest-cov from `7.0.0` to `7.1.0`
 
 
 ## [1.2.3] - 05-01-2026
