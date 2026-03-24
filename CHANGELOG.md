@@ -27,13 +27,14 @@
 - build(deps): Bump globals from `17.0.0` to `17.4.0` in `/frontend`
 - build(deps): Bump react from `19.2.3` to `19.2.4` in `/frontend`
 - build(deps): Bump react-dom from `19.2.3` to `19.2.4` in `/frontend`
-- build(deps): Bump typescript-eslint from `8.51.0` to `8.57.0` in `/frontend`
+- build(deps): Bump typescript-eslint from `8.51.0` to `8.57.2` in `/frontend`
 - build(deps): Bump vite from `7.3.0` to `7.3.1` in `/frontend` 
 - build(deps): Bump @vitejs/plugin-react from `5.1.2` to `5.1.4` in `/frontend`
 - build(deps): Bump eslint-plugin-react-refresh from `0.4.26` to `0.5.2` in `/frontend`
 - build(deps): bump docker/build-push-action from `6.18.0` to `6.19.2`
 - build(deps): Bump numpy from `2.4.2` to `2.4.3`
 - build(deps): Bump pytest-cov from `7.0.0` to `7.1.0`
+- build(deps): Bump react-easy-crop from `5.5.6` to `5.5.7` in `/frontend`
 
 
 ## [1.2.3] - 05-01-2026
