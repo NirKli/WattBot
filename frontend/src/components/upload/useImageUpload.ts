@@ -7,6 +7,7 @@ export function useImageUpload() {
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
     const [latestReading, setLatestReading] = useState<MonthlyConsumption | null>(null);
+    const [lastUpdateAt, setLastUpdateAt] = useState<string | null>(null);
     const [currency, setCurrency] = useState('USD');
     const [cropDialogOpen, setCropDialogOpen] = useState(false);
     const [imageToCrop, setImageToCrop] = useState<string | null>(null);
@@ -112,6 +113,8 @@ export function useImageUpload() {
                 throw new Error('Upload failed');
             }
 
+            // Capture the "user uploaded at" time from the client OS/browser clock.
+            setLastUpdateAt(new Date().toISOString());
             setFile(null);
             setPreviewUrl(null);
             fetchLatestReading();
@@ -185,6 +188,8 @@ export function useImageUpload() {
                 return;
             }
 
+            // Capture the "user uploaded at" time from the client OS/browser clock.
+            setLastUpdateAt(new Date().toISOString());
             setFile(null);
             setPreviewUrl(null);
             fetchLatestReading();
@@ -228,17 +233,26 @@ export function useImageUpload() {
         }
     };
 
-    // Format date for display using user's OS/browser locale
+    // Format timestamp for display using user's OS/browser locale (no milliseconds).
     const formatDate = (dateStr?: string) => {
         if (!dateStr) return 'Not available';
         try {
             const date = new Date(dateStr);
             if (isNaN(date.getTime())) return 'Invalid date';
-            return new Intl.DateTimeFormat(navigator.language, {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
+
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            const yyyy = date.getFullYear();
+            const datePart = `${yyyy}-${mm}-${dd}`;
+
+            const timePart = new Intl.DateTimeFormat(undefined, {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
             }).format(date);
+
+            return `${datePart} ${timePart}`;
         } catch {
             return 'Invalid date';
         }
@@ -259,6 +273,7 @@ export function useImageUpload() {
         previewUrl,
         isUploading,
         latestReading,
+        lastUpdateAt,
         currency,
         handleFileSelect,
         handleDragOver,

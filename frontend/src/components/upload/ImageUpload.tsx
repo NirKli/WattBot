@@ -12,6 +12,7 @@ export default function ImageUpload() {
         previewUrl,
         isUploading,
         latestReading,
+        lastUpdateAt,
         currency,
         handleFileSelect,
         handleDragOver,
@@ -208,7 +209,11 @@ export default function ImageUpload() {
                                 </Typography>
                             </Box>
                             <Typography variant="body1" gutterBottom>
-                                {latestReading ? formatDate(latestReading.date) : 'No readings yet'}
+                                {lastUpdateAt
+                                    ? formatDate(lastUpdateAt)
+                                    : latestReading
+                                        ? formatDate(latestReading.modified_date)
+                                        : 'No readings yet'}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
                                 Keep your readings up to date for accurate tracking
