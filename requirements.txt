@@ -9,7 +9,7 @@ pydantic==2.12.5
 pydantic_core==2.41.5
 pymongo==4.16.0
 starlette==1.0.0
-ultralytics==8.4.27
+ultralytics==8.4.30
 uvicorn==0.42.0
 python-multipart==0.0.22
 opencv-python==4.13.0.92
