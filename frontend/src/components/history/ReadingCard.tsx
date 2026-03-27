@@ -4,6 +4,7 @@ import type {MonthlyConsumption} from './types';
 
 interface ReadingCardProps {
     reading: MonthlyConsumption;
+    monthlyUsage: number | null;
     onEditClick: (id: string) => void;
     onDetailClick: (id: string) => void;
     onDeleteClick: (id: string) => void;
@@ -18,6 +19,7 @@ interface ReadingCardProps {
 
 export default function ReadingCard({
     reading,
+    monthlyUsage,
     onEditClick,
     onDetailClick,
     onDeleteClick,
@@ -32,9 +34,21 @@ export default function ReadingCard({
     return (
         <Paper elevation={2} sx={{p: 2, mb: 2, borderRadius: 2}}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-                <Typography variant="subtitle2" color="text.secondary">
-                    {formatDate(reading.date)}
-                </Typography>
+                <Box>
+                    <Typography variant="subtitle2" color="text.secondary">
+                        {formatDate(reading.date)}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                        Monthly Usage:{' '}
+                        {monthlyUsage == null ? (
+                            '-'
+                        ) : (
+                            <Typography component="span" variant="caption" color="success.main" fontWeight={600}>
+                                +{monthlyUsage.toFixed(2)} kWh
+                            </Typography>
+                        )}
+                    </Typography>
+                </Box>
                 <IconButton size="small" onClick={e => onActionMenuOpen(e, reading._id)}>
                     <MoreVert/>
                 </IconButton>

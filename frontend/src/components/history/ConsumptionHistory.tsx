@@ -61,6 +61,21 @@ export default function ConsumptionHistory() {
     // Find the reading being edited or deleted
     const deleteReading = readings.find(r => r._id === deleteConfirmId) || null;
     const expandedReading = readings.find(r => r._id === expandedId) || null;
+    const readingDeltaById: Record<string, number | null> = {};
+    const chronologicallySortedReadings = [...readings].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+
+    chronologicallySortedReadings.forEach((reading, index) => {
+        if (index === 0) {
+            readingDeltaById[reading._id] = null;
+            return;
+        }
+
+        const previousReading = chronologicallySortedReadings[index - 1];
+        const delta = reading.total_kwh_consumed - previousReading.total_kwh_consumed;
+        readingDeltaById[reading._id] = delta >= 0 ? delta : null;
+    });
 
     const handleViewModeChange = (_event: React.MouseEvent<HTMLElement>, newViewMode: ViewMode | null) => {
         if (newViewMode !== null) {
@@ -177,6 +192,7 @@ export default function ConsumptionHistory() {
                             <ReadingCard
                                 key={reading._id}
                                 reading={reading}
+                                monthlyUsage={readingDeltaById[reading._id]}
                                 onEditClick={onEditClick}
                                 onDetailClick={onDetailClick}
                                 onDeleteClick={onDeleteClick}
@@ -252,6 +268,9 @@ export default function ConsumptionHistory() {
                                         {isMobile ? 'Consumption' : 'Consumption (kWh)'}
                                     </TableCell>
                                     <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
+                                        {isMobile ? 'Monthly Usage' : 'Monthly Usage (kWh)'}
+                                    </TableCell>
+                                    <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
                                         {isMobile ? 'Price' : 'Price'}
                                     </TableCell>
                                     <TableCell align="right" sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
@@ -267,6 +286,23 @@ export default function ConsumptionHistory() {
                                             <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
                                                 <Typography component="span" color="primary" fontWeight={600} fontSize={isMobile ? '1rem' : undefined}>{reading.total_kwh_consumed.toFixed(2)}</Typography>
                                                 <Typography component="span" variant="caption" color="text.secondary" sx={{ml: 1, fontSize: isMobile ? '0.85rem' : undefined}}>kWh</Typography>
+                                            </TableCell>
+                                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
+                                                {readingDeltaById[reading._id] == null ? (
+                                                    <Typography component="span" color="text.secondary">-</Typography>
+                                                ) : (
+                                                    <>
+                                                        <Typography
+                                                            component="span"
+                                                            color="success.main"
+                                                            fontWeight={600}
+                                                            fontSize={isMobile ? '1rem' : undefined}
+                                                        >
+                                                            +{readingDeltaById[reading._id]!.toFixed(2)}
+                                                        </Typography>
+                                                        <Typography component="span" variant="caption" color="text.secondary" sx={{ml: 1, fontSize: isMobile ? '0.85rem' : undefined}}>kWh</Typography>
+                                                    </>
+                                                )}
                                             </TableCell>
                                             <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
                                                 <Typography component="span" color="primary" fontWeight={600} fontSize={isMobile ? '1rem' : undefined}>{getCurrencySymbol(currency)} {reading.price.toFixed(2)}</Typography>
@@ -327,7 +363,7 @@ export default function ConsumptionHistory() {
                                         </TableRow>
                                         {expandedId === reading._id && expandedReading && (
                                             <TableRow>
-                                                <TableCell colSpan={4}>
+                                                <TableCell colSpan={5}>
                                                     <ReadingDetails
                                                         reading={expandedReading}
                                                         activeImageTab={activeImageTab}
@@ -344,7 +380,7 @@ export default function ConsumptionHistory() {
                                         )}
                                         {editingId === reading._id && editedReading && (
                                             <TableRow>
-                                                <TableCell colSpan={4}>
+                                                <TableCell colSpan={5}>
                                                     <EditReadingForm
                                                         reading={editedReading}
                                                         onEditFormChange={handleEditFormChange}
@@ -358,7 +394,7 @@ export default function ConsumptionHistory() {
                                         )}
                                         {deleteConfirmId === reading._id && deleteReading && (
                                             <TableRow>
-                                                <TableCell colSpan={4}>
+                                                <TableCell colSpan={5}>
                                                     <DeleteReadingDialog
                                                         readingDate={formatDate(deleteReading.date)}
                                                         onCancel={() => setDeleteConfirmId(null)}

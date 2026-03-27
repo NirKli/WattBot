@@ -7,6 +7,7 @@
 - feat(model): upgrade YOLO11s-obb → YOLO26s-obb (+5.4 mAP50-95, ~7.9% improvement)
 - perf(backend): reduce Docker image size (~2.8GB → ~1.2GB) via multi-stage build
 - frontend: display “Last Update” as client upload time (`YYYY-MM-DD HH:mm:ss`, 24-hour)
+- frontend: add `Monthly Usage` in consumption history (desktop + mobile), calculated chronologically between readings
 
 #### Build, Dependencies, GitHub Actions
 

@@ -27,7 +27,7 @@ export default function YearlyTotals({yearlyTotals, currency, getCurrencySymbol,
         }}>
             <Box sx={{mb: 2, display: 'flex', alignItems: 'center', gap: 1}}>
                 <CalendarMonth color="primary" />
-                <Typography variant="h6" component="h2">
+                <Typography variant={isMobile ? 'subtitle1' : 'h6'} component="h2">
                     Yearly View
                 </Typography>
             </Box>
@@ -44,16 +44,16 @@ export default function YearlyTotals({yearlyTotals, currency, getCurrencySymbol,
                 <Table size={isMobile ? 'small' : 'medium'}>
                     <TableHead>
                         <TableRow>
-                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
+                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.85rem' } : {}}>
                                 Year
                             </TableCell>
-                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
+                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.85rem' } : {}}>
                                 Total Consumption
                             </TableCell>
-                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
+                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.85rem' } : {}}>
                                 Total Spending
                             </TableCell>
-                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
+                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.85rem' } : {}}>
                                 Readings
                             </TableCell>
                         </TableRow>
