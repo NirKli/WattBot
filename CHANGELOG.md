@@ -8,6 +8,7 @@
 - build(deps): bump docker/build-push-action from `6.19.2` to `7.0.0`
 - build(deps): build(deps): bump docker/setup-buildx-action from `3` to `4`
 - build(deps): bump docker/login-action from `3` to `4`
+- build(deps): bump the torch-stack group with 3 updates from `2.9.1` to `2.11.0`
 
 ## [1.3.0] - 27-03-2026
 
