@@ -9,15 +9,6 @@ updates:
         patterns:
           - "torch"
           - "torchvision"
-          - "torchaudio"
-      pydantic-stack:
-        patterns:
-          - "pydantic"
-          - "pydantic-core"
-      fastapi-stack:
-        patterns:
-          - "starlette"
-          - "fastapi"
     versioning-strategy: increase
 
   - package-ecosystem: "npm"
