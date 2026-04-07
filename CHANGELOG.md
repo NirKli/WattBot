@@ -17,6 +17,7 @@
 - build(deps): bump numpy from `2.4.3` to `2.4.4`
 - build(deps): bump axios from `1.13.6` to `1.14.0` in `/frontend`
 - build(deps): bump @vitejs/plugin-react from `5.1.4` to `5.2.0` in `/frontend`
+- build(deps): fix security vulnerabilities via `npm audit fix`
 
 ## [1.3.0] - 27-03-2026
 
