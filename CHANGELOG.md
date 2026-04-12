@@ -18,6 +18,7 @@
 - build(deps): bump axios from `1.13.6` to `1.15.0` in `/frontend`
 - build(deps): bump @vitejs/plugin-react from `5.1.4` to `5.2.0` in `/frontend`
 - build(deps): fix security vulnerabilities via `npm audit fix`
+- build(deps): bump pypdf from `6.9.2` to `6.10.0`
 
 ## [1.3.0] - 27-03-2026
 
