@@ -4,7 +4,7 @@ torchvision==0.26.0
 
 albumentations==2.0.8
 fastapi==0.135.3
-pydantic==2.12.5
+pydantic==2.13.3
 pymongo==4.16.0
 ultralytics==8.4.33
 uvicorn==0.42.0
