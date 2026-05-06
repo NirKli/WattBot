@@ -11,14 +11,20 @@
 - build(deps): bump docker/login-action from `3` to `4`
 - build(deps): bump the torch-stack group with 3 updates from `2.9.1` to `2.11.0`
 - build(docker): upgrade Python `3.11` → `3.13`
-- build(deps): bump fastapi from `0.135.2` to` 0.135.3`
-- build(deps): bump ultralytics from `8.4.30` to `8.4.33`
+- build(deps): bump fastapi from `0.135.2` to` 0.136.1`
+- build(deps): bump ultralytics from `8.4.30` to `8.4.47`
 - build(deps): bump pandas from `3.0.1` to `3.0.2`
 - build(deps): bump numpy from `2.4.3` to `2.4.4`
 - build(deps): bump axios from `1.13.6` to `1.15.0` in `/frontend`
 - build(deps): bump @vitejs/plugin-react from `5.1.4` to `5.2.0` in `/frontend`
 - build(deps): fix security vulnerabilities via `npm audit fix`
-- build(deps): bump pypdf from `6.9.2` to `6.10.0`
+- build(deps): bump pypdf from `6.9.2` to `6.10.2`
+- build(deps): bump pymongo from `4.16.0` to` 4.17.0`
+- build(deps): bump reportlab from `4.4.10` to `4.5.0`
+- build(deps): Bump python-multipart from `0.0.221` to `0.0.27`
+- build(deps): Bump pytest from `9.0.2` to `9.0.3`
+- build(deps): Bump uvicorn from `0.42.0` to `0.46.0`
+- build(deps): Bump pydantic from `2.12.5` to `2.13.4`
 
 ## [1.3.0] - 27-03-2026
 
