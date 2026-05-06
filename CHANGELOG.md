@@ -25,6 +25,7 @@
 - build(deps): Bump pytest from `9.0.2` to `9.0.3`
 - build(deps): Bump uvicorn from `0.42.0` to `0.46.0`
 - build(deps): Bump pydantic from `2.12.5` to `2.13.4`
+- build(deps): Bump Axios from `1.14.0` to `1.16.0`
 
 ## [1.3.0] - 27-03-2026
 
