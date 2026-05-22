@@ -19,19 +19,6 @@ export function useSettings() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchSettings = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/settings`);
-      setSettings(response.data);
-      setError(null);
-    } catch (err) {
-      setError('Failed to fetch settings');
-      console.error('Error fetching settings:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const updateSettings = async (newSettings: Partial<SettingsData>) => {
     try {
       // Create a complete settings object by merging current settings with new settings
@@ -76,7 +63,17 @@ export function useSettings() {
   };
 
   useEffect(() => {
-    fetchSettings();
+    axios
+      .get(`${API_URL}/settings`)
+      .then(response => {
+        setSettings(response.data);
+        setError(null);
+      })
+      .catch(err => {
+        setError('Failed to fetch settings');
+        console.error('Error fetching settings:', err);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   return {

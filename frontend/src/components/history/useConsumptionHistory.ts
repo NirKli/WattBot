@@ -17,21 +17,16 @@ export function useConsumptionHistory() {
     const [actionMenuAnchor, setActionMenuAnchor] = useState<null | HTMLElement>(null);
     const [actionMenuId, setActionMenuId] = useState<string | null>(null);
 
-    useEffect(() => {
-        fetchReadings();
-        fetchSettings();
-
-        const handleCurrencyChange = (e: CustomEvent) => {
-            if (e.detail && e.detail.currency) {
-                setCurrency(e.detail.currency);
-            }
-        };
-
-        window.addEventListener('currencyChange', handleCurrencyChange as EventListener);
-        return () => {
-            window.removeEventListener('currencyChange', handleCurrencyChange as EventListener);
-        };
-    }, []);
+    const safeParseDate = (dateString: string | undefined): Date | null => {
+        if (!dateString) return null;
+        try {
+            const date = new Date(dateString);
+            return isNaN(date.getTime()) ? null : date;
+        } catch (e) {
+            console.error('Error parsing date:', e);
+            return null;
+        }
+    };
 
     const fetchReadings = async () => {
         try {
@@ -78,16 +73,23 @@ export function useConsumptionHistory() {
         }
     };
 
-    const safeParseDate = (dateString: string | undefined): Date | null => {
-        if (!dateString) return null;
-        try {
-            const date = new Date(dateString);
-            return isNaN(date.getTime()) ? null : date;
-        } catch (e) {
-            console.error('Error parsing date:', e);
-            return null;
-        }
-    };
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchReadings();
+        fetchSettings();
+
+        const handleCurrencyChange = (e: CustomEvent) => {
+            if (e.detail && e.detail.currency) {
+                setCurrency(e.detail.currency);
+            }
+        };
+
+        window.addEventListener('currencyChange', handleCurrencyChange as EventListener);
+        return () => {
+            window.removeEventListener('currencyChange', handleCurrencyChange as EventListener);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleDetailClick = (id: string) => {
         setExpandedId(expandedId === id ? null : id);

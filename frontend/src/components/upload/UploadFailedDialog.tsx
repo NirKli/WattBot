@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Link } from '@mui/material';
-import { ErrorOutline, GitHub } from '@mui/icons-material';
+import ErrorOutlinedIcon from '@mui/icons-material/ErrorOutlined';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 interface UploadFailedDialogProps {
   open: boolean;
@@ -13,7 +14,7 @@ const UploadFailedDialog: React.FC<UploadFailedDialogProps> = ({ open, onClose }
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <ErrorOutline color="error" sx={{ fontSize: 32 }} />
+        <ErrorOutlinedIcon color="error" sx={{ fontSize: 32 }} />
         <Typography variant="h6" component="span">
           Upload Failed
         </Typography>
@@ -43,7 +44,7 @@ const UploadFailedDialog: React.FC<UploadFailedDialogProps> = ({ open, onClose }
           target="_blank"
           rel="noopener noreferrer"
           variant="contained" 
-          startIcon={<GitHub />}
+          startIcon={<GitHubIcon />}
           sx={{ order: { xs: 1, sm: 2 } }}
         >
           Open GitHub Issue

@@ -21,7 +21,7 @@ export default function VersionDisplay() {
                 const response = await axios.get('https://api.github.com/repos/NirKli/WattBot/releases/latest');
                 const latestVersion = response.data.tag_name.replace('v', '');
                 console.log('Latest version from GitHub:', latestVersion);
-                if (latestVersion !== versionInfo.current) {
+                if (latestVersion !== currentVersion) {
                     setVersionInfo(prev => ({...prev, latest: latestVersion}));
                 }
             } catch (error) {
@@ -30,7 +30,7 @@ export default function VersionDisplay() {
         };
 
         checkForUpdates();
-    }, []);
+    }, [currentVersion]);
 
     return (
         <Box sx={{mt: 4, textAlign: 'center', color: 'text.secondary'}}>

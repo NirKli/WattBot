@@ -7,10 +7,13 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          react: ['react', 'react-dom'],
-          mui: ['@mui/material', '@mui/icons-material']
-        }
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('/react-dom/') || id.includes('/react/')) return 'react'
+            if (id.includes('/@mui/')) return 'mui'
+          }
+          return undefined
+        },
       }
     }
   }

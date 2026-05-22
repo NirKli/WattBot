@@ -146,7 +146,7 @@ export default function ImageUpload() {
                                         Current Meter Reading
                                     </Typography>
                                 </Box>
-                                <Typography variant="h6" color="primary" fontWeight="bold" gutterBottom>
+                                <Typography variant="h6" color="primary" gutterBottom sx={{ fontWeight: 700, fontSize: { xs: '1.5rem', sm: '1.75rem' } }}>
                                     {latestReading?.total_kwh_consumed.toFixed(2) || '0.00'}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
@@ -174,11 +174,11 @@ export default function ImageUpload() {
                             >
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                                     <TrendingUp color="success" sx={{ fontSize: 22 }} />
-                                    <Typography variant="subtitle1" color="success.main">
+                                    <Typography variant="subtitle1" sx={{ color: 'success.main' }}>
                                         Current Bill Amount
                                     </Typography>
                                 </Box>
-                                <Typography variant="h6" color="success.main" fontWeight="bold" gutterBottom>
+                                <Typography variant="h6" gutterBottom sx={{ color: 'success.main', fontWeight: 700, fontSize: { xs: '1.5rem', sm: '1.75rem' } }}>
                                     {getCurrencySymbol(currency)} {latestReading?.price.toFixed(2) || '0.00'}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">

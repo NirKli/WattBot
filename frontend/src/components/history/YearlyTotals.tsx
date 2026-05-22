@@ -21,66 +21,53 @@ export default function YearlyTotals({yearlyTotals, currency, getCurrencySymbol,
     }
 
     return (
-        <Paper elevation={3} sx={{
-            p: { xs: 1, sm: 4 },
-            borderRadius: 3
-        }}>
-            <Box sx={{mb: 2, display: 'flex', alignItems: 'center', gap: 1}}>
+        <Paper elevation={2} sx={{ borderRadius: 3, overflow: 'hidden', borderTop: '3px solid', borderTopColor: 'primary.main' }}>
+            <Box sx={{ px: 3, py: 2, display: 'flex', alignItems: 'center', gap: 1, borderBottom: 1, borderColor: 'divider' }}>
                 <CalendarMonth color="primary" />
-                <Typography variant={isMobile ? 'subtitle1' : 'h6'} component="h2">
+                <Typography variant="h6" component="h2" sx={{ fontWeight: 600 }}>
                     Yearly View
                 </Typography>
             </Box>
-            <TableContainer component={Paper} sx={{
-                mt: 2,
-                width: '100%',
-                overflowX: 'auto',
-                '@media (max-width: 600px)': {
-                    maxWidth: '100vw',
-                    overflowX: 'auto',
-                    p: 0,
-                },
-            }}>
+            <TableContainer sx={{ overflowX: 'auto' }}>
                 <Table size={isMobile ? 'small' : 'medium'}>
                     <TableHead>
                         <TableRow>
-                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.85rem' } : {}}>
-                                Year
-                            </TableCell>
-                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.85rem' } : {}}>
-                                Total Consumption
-                            </TableCell>
-                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.85rem' } : {}}>
-                                Total Spending
-                            </TableCell>
-                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.85rem' } : {}}>
-                                Readings
-                            </TableCell>
+                            <TableCell sx={{ fontWeight: 700 }}>Year</TableCell>
+                            <TableCell sx={{ fontWeight: 700 }}>Total Consumption</TableCell>
+                            <TableCell sx={{ fontWeight: 700 }}>Total Spending</TableCell>
+                            <TableCell sx={{ fontWeight: 700 }}>Readings</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {yearlyTotals.map((yearly) => (
-                            <TableRow key={yearly.year} sx={isMobile ? { p: 0, fontSize: '0.95rem' } : {}}>
-                                <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
-                                    <Typography component="span" fontWeight={600} fontSize={isMobile ? '1rem' : undefined}>
+                            <TableRow
+                                key={yearly.year}
+                                sx={{
+                                    '&:hover': { bgcolor: 'action.hover' },
+                                    transition: 'background-color 0.15s',
+                                    '&:last-child td': { border: 0 },
+                                }}
+                            >
+                                <TableCell>
+                                    <Typography component="span" sx={{ fontWeight: 700, fontSize: '1rem' }}>
                                         {yearly.year}
                                     </Typography>
                                 </TableCell>
-                                <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
-                                    <Typography component="span" color="primary" fontWeight={600} fontSize={isMobile ? '1rem' : undefined}>
+                                <TableCell>
+                                    <Typography component="span" sx={{ color: 'primary.main', fontWeight: 600 }}>
                                         {yearly.totalConsumption.toFixed(2)}
                                     </Typography>
-                                    <Typography component="span" variant="caption" color="text.secondary" sx={{ml: 1, fontSize: isMobile ? '0.85rem' : undefined}}>
+                                    <Typography component="span" variant="caption" color="text.secondary" sx={{ ml: 0.5 }}>
                                         kWh
                                     </Typography>
                                 </TableCell>
-                                <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
-                                    <Typography component="span" color="primary" fontWeight={600} fontSize={isMobile ? '1rem' : undefined}>
+                                <TableCell>
+                                    <Typography component="span" sx={{ color: 'success.main', fontWeight: 600 }}>
                                         {getCurrencySymbol(currency)} {yearly.totalSpending.toFixed(2)}
                                     </Typography>
                                 </TableCell>
-                                <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
-                                    <Typography component="span" fontSize={isMobile ? '1rem' : undefined}>
+                                <TableCell>
+                                    <Typography component="span" color="text.secondary">
                                         {yearly.readingCount}
                                     </Typography>
                                 </TableCell>

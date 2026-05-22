@@ -62,15 +62,19 @@ export default function ConsumptionStats({stats, currency, getCurrencySymbol, fo
             gap: 2,
             mb: 3
         }}>
-            <Paper elevation={1} sx={{p: 2, height: '100%', display: 'flex', flexDirection: 'column'}}>
+            <Paper elevation={1} sx={{
+                p: 2, height: '100%', display: 'flex', flexDirection: 'column',
+                borderLeft: '4px solid', borderColor: 'primary.main',
+                '&:hover': { boxShadow: 4 }
+            }}>
                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>Total Readings</Typography>
-                <Box display="flex" alignItems="center" gap={1} mb={1}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                     <BarChart color="primary"/>
-                    <Typography 
-                        variant="h4" 
-                        color="primary.main" 
-                        fontWeight={700}
-                        sx={{ 
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            color: 'primary.main',
+                            fontWeight: 700,
                             fontSize: needsSmallerFonts ? '1.2rem' : { xs: '1.5rem', sm: '2rem' }
                         }}
                     >
@@ -82,16 +86,20 @@ export default function ConsumptionStats({stats, currency, getCurrencySymbol, fo
                     Last reading: {stats.lastReadingDate ? (isMobile ? formatShortTimestamp(stats.lastReadingDate) : formatTimestamp(stats.lastReadingDate)) : 'N/A'}
                 </Typography>
             </Paper>
-            
-            <Paper elevation={1} sx={{p: 2, height: '100%', display: 'flex', flexDirection: 'column'}}>
+
+            <Paper elevation={1} sx={{
+                p: 2, height: '100%', display: 'flex', flexDirection: 'column',
+                borderLeft: '4px solid', borderColor: 'info.main',
+                '&:hover': { boxShadow: 4 }
+            }}>
                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>Avg. Consumption</Typography>
-                <Box display="flex" alignItems="center" gap={1} mb={1}>
-                    <ElectricBolt color="primary"/>
-                    <Typography 
-                        variant="h4" 
-                        color="primary.main" 
-                        fontWeight={700}
-                        sx={{ 
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                    <ElectricBolt color="info"/>
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            color: 'info.main',
+                            fontWeight: 700,
                             fontSize: needsSmallerFonts ? '1.2rem' : { xs: '1.5rem', sm: '2rem' }
                         }}
                     >
@@ -101,18 +109,22 @@ export default function ConsumptionStats({stats, currency, getCurrencySymbol, fo
                 <Typography variant="body2" color="text.secondary" sx={{mb: 1}}>kWh per reading</Typography>
                 <Typography variant="caption" color="text.secondary" sx={{mt: 'auto'}}>Based on {stats.totalReadings} readings</Typography>
             </Paper>
-            
-            <Paper elevation={1} sx={{p: 2, height: '100%', display: 'flex', flexDirection: 'column'}}>
+
+            <Paper elevation={1} sx={{
+                p: 2, height: '100%', display: 'flex', flexDirection: 'column',
+                borderLeft: '4px solid', borderColor: 'success.main',
+                '&:hover': { boxShadow: 4 }
+            }}>
                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>Total Spending</Typography>
-                <Box display="flex" alignItems="center" gap={1} mb={1} sx={{flexWrap: 'wrap'}}>
-                    <TrendingUp color="primary"/>
-                    <Typography 
-                        variant="h4" 
-                        color="primary.main" 
-                        fontWeight={700}
-                        sx={{ 
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1, flexWrap: 'nowrap' }}>
+                    <TrendingUp color="success"/>
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            color: 'success.main',
+                            fontWeight: 700,
                             fontSize: needsSmallerFonts ? '1.2rem' : { xs: '1.5rem', sm: '2rem' },
-                            wordBreak: 'break-all',
+                            whiteSpace: 'nowrap',
                             lineHeight: 1.2
                         }}
                     >
@@ -120,33 +132,37 @@ export default function ConsumptionStats({stats, currency, getCurrencySymbol, fo
                     </Typography>
                 </Box>
                 <Typography variant="body2" color="text.secondary" sx={{mb: 1}}>on electricity</Typography>
-                <Typography 
-                    variant="caption" 
-                    color="text.secondary" 
+                <Typography
+                    variant="caption"
+                    color="text.secondary"
                     sx={{
                         mt: 'auto',
                         fontSize: needsSmallerFonts ? '0.65rem' : { xs: '0.7rem', sm: '0.75rem' },
-                        wordBreak: 'break-all'
+                        whiteSpace: 'nowrap'
                     }}
                 >
                     Avg: {getCurrencySymbol(currency)}{stats.averageMonthlySpending.toFixed(2)}/month
                 </Typography>
             </Paper>
-            
-            <Paper elevation={1} sx={{p: 2, height: '100%', display: 'flex', flexDirection: 'column'}}>
-                <Box display="flex" alignItems="center" gap={0.5} mb={1}>
+
+            <Paper elevation={1} sx={{
+                p: 2, height: '100%', display: 'flex', flexDirection: 'column',
+                borderLeft: '4px solid', borderColor: 'warning.main',
+                '&:hover': { boxShadow: 4 }
+            }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1 }}>
                     <Typography variant="subtitle2" color="text.secondary">Usage Trend</Typography>
                     <Tooltip title="Compares this month's consumption to the average of the last 3 months (based on meter deltas).">
                         <InfoOutlined sx={{ fontSize: 16, color: 'text.secondary' }} />
                     </Tooltip>
                 </Box>
-                <Box display="flex" alignItems="center" gap={1} mb={1}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                     {usageTrend.icon}
-                    <Typography 
-                        variant="h4" 
-                        color="primary.main" 
-                        fontWeight={700}
-                        sx={{ 
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            color: 'warning.dark',
+                            fontWeight: 700,
                             fontSize: needsSmallerFonts ? '1.2rem' : { xs: '1.5rem', sm: '2rem' }
                         }}
                     >

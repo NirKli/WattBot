@@ -16,11 +16,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import InfoIcon from '@mui/icons-material/Info';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {Typography} from '@mui/material';
 import Paper from '@mui/material/Paper';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ViewListIcon from '@mui/icons-material/ViewList';
@@ -238,127 +236,79 @@ export default function ConsumptionHistory() {
                     ))}
                 </Box>
             ) : (
-                <Paper elevation={3} sx={{
-                    p: { xs: 1, sm: 4 },
-                    borderRadius: 3
-                }}>
-                    <Box sx={{mb: 2, display: 'flex', alignItems: 'center', gap: 1}}>
+                <Paper elevation={2} sx={{ borderRadius: 3, overflow: 'hidden', borderTop: '3px solid', borderTopColor: 'primary.main' }}>
+                    <Box sx={{ px: 3, py: 2, display: 'flex', alignItems: 'center', gap: 1, borderBottom: 1, borderColor: 'divider' }}>
                         <ViewListIcon color="primary" />
-                        <Typography variant="h6" component="h2">
+                        <Typography variant="h6" component="h2" sx={{ fontWeight: 600 }}>
                             Monthly View
                         </Typography>
                     </Box>
-                    <TableContainer component={Paper} sx={{
-                        mt: 2,
-                        width: '100%',
-                        overflowX: 'auto',
-                        '@media (max-width: 600px)': {
-                            maxWidth: '100vw',
-                            overflowX: 'auto',
-                            p: 0,
-                        },
-                    }}>
-                        <Table size={isMobile ? 'small' : 'medium'}>
+                    <TableContainer sx={{ overflowX: 'auto' }}>
+                        <Table size="medium" sx={{
+                            '& .MuiTableCell-root': { py: 1.75, px: 2.5, fontSize: '0.875rem' },
+                            '& .MuiTableCell-head': { py: 1.25 },
+                        }}>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
-                                        {isMobile ? 'Date' : 'Date'}
-                                    </TableCell>
-                                    <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
-                                        {isMobile ? 'Consumption' : 'Consumption (kWh)'}
-                                    </TableCell>
-                                    <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
-                                        {isMobile ? 'Monthly Usage' : 'Monthly Usage (kWh)'}
-                                    </TableCell>
-                                    <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
-                                        {isMobile ? 'Price' : 'Price'}
-                                    </TableCell>
-                                    <TableCell align="right" sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
-                                        {isMobile ? '' : 'Action'}
-                                    </TableCell>
+                                    <TableCell sx={{ fontWeight: 700 }}>Date</TableCell>
+                                    <TableCell sx={{ fontWeight: 700 }}>Consumption (kWh)</TableCell>
+                                    <TableCell sx={{ fontWeight: 700 }}>Monthly Usage (kWh)</TableCell>
+                                    <TableCell sx={{ fontWeight: 700 }}>Price</TableCell>
+                                    <TableCell align="right" sx={{ fontWeight: 700 }}>Actions</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {readings.map((reading) => (
                                     <Fragment key={reading._id}>
-                                        <TableRow key={reading._id} sx={isMobile ? { p: 0, fontSize: '0.95rem' } : {}}>
-                                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>{formatDate(reading.date)}</TableCell>
-                                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
-                                                <Typography component="span" color="primary" fontWeight={600} fontSize={isMobile ? '1rem' : undefined}>{reading.total_kwh_consumed.toFixed(2)}</Typography>
-                                                <Typography component="span" variant="caption" color="text.secondary" sx={{ml: 1, fontSize: isMobile ? '0.85rem' : undefined}}>kWh</Typography>
+                                        <TableRow
+                                            onClick={() => onDetailClick(reading._id)}
+                                            sx={{
+                                                cursor: 'pointer',
+                                                bgcolor: expandedId === reading._id ? 'action.selected' : 'transparent',
+                                                '&:hover': { bgcolor: expandedId === reading._id ? 'action.selected' : 'action.hover' },
+                                                transition: 'background-color 0.15s',
+                                                '&:last-child td': { border: 0 },
+                                            }}
+                                        >
+                                            <TableCell sx={{ fontWeight: 500 }}>{formatDate(reading.date)}</TableCell>
+                                            <TableCell>
+                                                <Typography component="span" sx={{ color: 'primary.main', fontWeight: 600 }}>
+                                                    {reading.total_kwh_consumed.toFixed(2)}
+                                                </Typography>
+                                                <Typography component="span" variant="caption" color="text.secondary" sx={{ ml: 0.5 }}>kWh</Typography>
                                             </TableCell>
-                                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
+                                            <TableCell>
                                                 {readingDeltaById[reading._id] == null ? (
-                                                    <Typography component="span" color="text.secondary">-</Typography>
+                                                    <Typography component="span" color="text.disabled">—</Typography>
                                                 ) : (
                                                     <>
-                                                        <Typography
-                                                            component="span"
-                                                            color="success.main"
-                                                            fontWeight={600}
-                                                            fontSize={isMobile ? '1rem' : undefined}
-                                                        >
+                                                        <Typography component="span" sx={{ color: 'success.main', fontWeight: 600 }}>
                                                             +{readingDeltaById[reading._id]!.toFixed(2)}
                                                         </Typography>
-                                                        <Typography component="span" variant="caption" color="text.secondary" sx={{ml: 1, fontSize: isMobile ? '0.85rem' : undefined}}>kWh</Typography>
+                                                        <Typography component="span" variant="caption" color="text.secondary" sx={{ ml: 0.5 }}>kWh</Typography>
                                                     </>
                                                 )}
                                             </TableCell>
-                                            <TableCell sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
-                                                <Typography component="span" color="primary" fontWeight={600} fontSize={isMobile ? '1rem' : undefined}>{getCurrencySymbol(currency)} {reading.price.toFixed(2)}</Typography>
+                                            <TableCell>
+                                                <Typography component="span" sx={{ color: 'primary.main', fontWeight: 600 }}>
+                                                    {getCurrencySymbol(currency)} {reading.price.toFixed(2)}
+                                                </Typography>
                                             </TableCell>
-                                            <TableCell align="right" sx={isMobile ? { p: '6px 4px', fontSize: '0.95rem' } : {}}>
-                                                {isMobile ? (
-                                                    <>
-                                                        <IconButton
-                                                            size="small"
-                                                            onClick={e => {
-                                                                setActionMenuAnchor(e.currentTarget);
-                                                                setActionMenuId(reading._id);
-                                                            }}
-                                                        >
-                                                            <MoreVertIcon />
+                                            <TableCell align="right" onClick={e => e.stopPropagation()}>
+                                                <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
+                                                    <Tooltip title="Edit">
+                                                        <IconButton onClick={() => onEditClick(reading._id)} color="primary" size="small"
+                                                            sx={{ '&:hover': { bgcolor: 'primary.main', color: 'primary.contrastText' } }}>
+                                                            <EditIcon fontSize="small"/>
                                                         </IconButton>
-                                                        <Menu
-                                                            anchorEl={actionMenuAnchor}
-                                                            open={actionMenuId === reading._id}
-                                                            onClose={() => {
-                                                                setActionMenuAnchor(null);
-                                                                setActionMenuId(null);
-                                                            }}
-                                                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                                                            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                                                        >
-                                                            <MenuItem onClick={() => {
-                                                                onEditClick(reading._id);
-                                                                setActionMenuAnchor(null);
-                                                                setActionMenuId(null);
-                                                            }}>
-                                                                <EditIcon fontSize="small" sx={{mr: 1}}/> Edit
-                                                            </MenuItem>
-                                                            <MenuItem onClick={() => {
-                                                                onDetailClick(reading._id);
-                                                                setActionMenuAnchor(null);
-                                                                setActionMenuId(null);
-                                                            }}>
-                                                                <InfoIcon fontSize="small" sx={{mr: 1}}/> Details
-                                                            </MenuItem>
-                                                            <MenuItem onClick={() => {
-                                                                onDeleteClick(reading._id);
-                                                                setActionMenuAnchor(null);
-                                                                setActionMenuId(null);
-                                                            }}>
-                                                                <DeleteIcon fontSize="small" sx={{mr: 1}} color="error"/> Delete
-                                                            </MenuItem>
-                                                        </Menu>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <IconButton onClick={() => onEditClick(reading._id)} color="primary" size="small"><EditIcon fontSize="small"/></IconButton>
-                                                        <IconButton onClick={() => onDetailClick(reading._id)} color="info" size="small"><InfoIcon fontSize="small"/></IconButton>
-                                                        <IconButton onClick={() => onDeleteClick(reading._id)} color="error" size="small"><DeleteIcon fontSize="small"/></IconButton>
-                                                    </>
-                                                )}
+                                                    </Tooltip>
+                                                    <Tooltip title="Delete">
+                                                        <IconButton onClick={() => onDeleteClick(reading._id)} color="error" size="small"
+                                                            sx={{ '&:hover': { bgcolor: 'error.main', color: 'error.contrastText' } }}>
+                                                            <DeleteIcon fontSize="small"/>
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </Box>
                                             </TableCell>
                                         </TableRow>
                                         {expandedId === reading._id && expandedReading && (
