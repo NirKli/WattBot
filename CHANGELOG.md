@@ -12,19 +12,23 @@
 - frontend: apply semantic MUI colors to stat card icons (info, success, warning) instead of uniform primary
 - frontend: fix text overflow in spending and average stats (changed `wordBreak: break-all` → `whiteSpace: nowrap`)
 - frontend: add `usageTrendPct` field to `ConsumptionStats` type for % change vs. 3-month average
+- frontend: switch `API_URL` fallback from `||` to `??` (nullish coalescing) in `config.ts`
+- docs: update remote-deployment note and add dev-server proxy documentation to `README.md`
+- chore: add `.env.local` and `.env.*.local` to `.gitignore`
 
 #### Build, Dependencies, GitHub Actions
 
+- build(deps): Bump @types/react from `19.2.14` to `19.2.15` in `/frontend`
 - build(deps): bump @mui/material and @mui/icons-material from `7.3.8` to `9.0.1` in `/frontend`
-- build(deps): bump vite from `7.3.1` to `8.0.11` in `/frontend`
+- build(deps): bump vite from `7.3.1` to `8.0.14` in `/frontend`
 - build(deps): bump typescript from `~5.9.3` to `~6.0.3` in `/frontend`
-- build(deps): bump eslint from `9.39.2` to `10.3.0` in `/frontend`
+- build(deps): bump eslint from `9.39.2` to `10.4.0` in `/frontend`
 - build(deps): bump @eslint/js from `9.39.2` to `10.0.1` in `/frontend`
-- build(deps): bump @vitejs/plugin-react from `5.2.0` to `6.0.1` in `/frontend`
+- build(deps): bump @vitejs/plugin-react from `5.2.0` to `6.0.2` in `/frontend`
 - build(deps): bump eslint-plugin-react-hooks from `7.0.1` to `7.1.1` in `/frontend`
 - build(deps): bump globals from `17.4.0` to `17.6.0` in `/frontend`
 - build(deps): bump react and react-dom from `19.2.4` to `19.2.6` in `/frontend`
-- build(deps): bump typescript-eslint from `8.57.2` to `8.59.2` in `/frontend`
+- build(deps): bump typescript-eslint from `8.57.2` to `8.59.4` in `/frontend`
 - build(vite): switch manualChunks from static object to function-based approach for reliable chunk splitting
 - build(deps): bump docker/build-push-action from `6.19.2` to `7.1.0`
 - build(deps): build(deps): bump docker/setup-buildx-action from `3` to `4`
@@ -35,7 +39,7 @@
 - build(deps): bump ultralytics from `8.4.30` to `8.4.47`
 - build(deps): bump pandas from `3.0.1` to `3.0.2`
 - build(deps): bump numpy from `2.4.3` to `2.4.4`
-- build(deps): bump axios from `1.13.6` to `1.15.0` in `/frontend`
+- build(deps): bump axios from `1.13.6` to `1.16.1` in `/frontend`
 - build(deps): bump @vitejs/plugin-react from `5.1.4` to `5.2.0` in `/frontend`
 - build(deps): fix security vulnerabilities via `npm audit fix`
 - build(deps): bump pypdf from `6.9.2` to `6.10.2`
