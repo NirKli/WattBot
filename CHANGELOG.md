@@ -4,8 +4,28 @@
 
 ### Improvements and bug fixes
 
+- frontend: add mobile bottom navigation bar (Upload / History / Prices / Settings) replacing the desktop tab strip on small screens
+- frontend: make AppBar sticky with frosted-glass backdrop-blur effect
+- frontend: make desktop tab bar sticky below the AppBar
+- frontend: replace plain "Loading…" Suspense fallback with a centered `CircularProgress` spinner
+- frontend: add colored left-border accents and hover shadow to all stat cards in Consumption Stats (primary / info / success / warning)
+- frontend: apply semantic MUI colors to stat card icons (info, success, warning) instead of uniform primary
+- frontend: fix text overflow in spending and average stats (changed `wordBreak: break-all` → `whiteSpace: nowrap`)
+- frontend: add `usageTrendPct` field to `ConsumptionStats` type for % change vs. 3-month average
+
 #### Build, Dependencies, GitHub Actions
 
+- build(deps): bump @mui/material and @mui/icons-material from `7.3.8` to `9.0.1` in `/frontend`
+- build(deps): bump vite from `7.3.1` to `8.0.11` in `/frontend`
+- build(deps): bump typescript from `~5.9.3` to `~6.0.3` in `/frontend`
+- build(deps): bump eslint from `9.39.2` to `10.3.0` in `/frontend`
+- build(deps): bump @eslint/js from `9.39.2` to `10.0.1` in `/frontend`
+- build(deps): bump @vitejs/plugin-react from `5.2.0` to `6.0.1` in `/frontend`
+- build(deps): bump eslint-plugin-react-hooks from `7.0.1` to `7.1.1` in `/frontend`
+- build(deps): bump globals from `17.4.0` to `17.6.0` in `/frontend`
+- build(deps): bump react and react-dom from `19.2.4` to `19.2.6` in `/frontend`
+- build(deps): bump typescript-eslint from `8.57.2` to `8.59.2` in `/frontend`
+- build(vite): switch manualChunks from static object to function-based approach for reliable chunk splitting
 - build(deps): bump docker/build-push-action from `6.19.2` to `7.1.0`
 - build(deps): build(deps): bump docker/setup-buildx-action from `3` to `4`
 - build(deps): bump docker/login-action from `3` to `4`
