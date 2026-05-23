@@ -2,13 +2,21 @@ import {useEffect, useState, Suspense} from 'react';
 import {
     AppBar,
     Box,
+    CircularProgress,
     Container,
     CssBaseline,
+    Paper,
     ThemeProvider,
     Toolbar,
     Typography,
     useMediaQuery
 } from '@mui/material';
+import BottomNavigation from '@mui/material/BottomNavigation';
+import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import PaymentsIcon from '@mui/icons-material/Payments';
+import SettingsIcon from '@mui/icons-material/Settings';
 import {darkTheme, lightTheme} from './theme';
 import React from 'react';
 const ImageUpload = React.lazy(() => import('./components/ImageUpload'));
@@ -25,6 +33,7 @@ function App() {
     const [currentTab, setCurrentTab] = useState(0);
     const [isDarkMode, setIsDarkMode] = useState(false);
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+    const isMobile = useMediaQuery('(max-width: 899px)');
 
     useEffect(() => {
         const fetchSettings = async () => {
@@ -92,6 +101,12 @@ function App() {
         setCurrentTab(newValue);
     };
 
+    const loadingFallback = (
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
+            <CircularProgress />
+        </Box>
+    );
+
     return (
         <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
             <CssBaseline/>
@@ -102,18 +117,40 @@ function App() {
                 bgcolor: 'background.default',
                 color: 'text.primary'
             }}>
-                <AppBar position="static" elevation={0} color="default">
-                    <Toolbar>
-                        <Box sx={{display: 'flex', alignItems: 'center', flexGrow: 1}}>
-                            <ElectricBolt sx={{mr: 1}}/>
-                            <Typography variant="h6" component="div" sx={{fontWeight: 600}}>
+                {/* Sticky AppBar — position="sticky" is MUI-native and reliable */}
+                <AppBar
+                    position="sticky"
+                    elevation={0}
+                    color="default"
+                    sx={{
+                        backgroundColor: isDarkMode ? 'rgba(18,18,18,0.88)' : 'rgba(255,255,255,0.88)',
+                        backdropFilter: 'blur(10px)',
+                        WebkitBackdropFilter: 'blur(10px)',
+                        borderBottom: 1,
+                        borderColor: 'divider',
+                        zIndex: 1100,
+                    }}
+                >
+                    <Toolbar sx={{ minHeight: { xs: 52, sm: 56 } }}>
+                        <Box sx={{display: 'flex', alignItems: 'center', flexGrow: 1, gap: 1}}>
+                            <ElectricBolt color="primary"/>
+                            <Typography variant="h6" component="div" sx={{ fontWeight: 700, letterSpacing: '-0.02em' }}>
                                 WattBot
                             </Typography>
                         </Box>
                     </Toolbar>
                 </AppBar>
 
-                <Box sx={{borderBottom: 1, borderColor: 'divider', bgcolor: 'background.paper'}}>
+                {/* Desktop-only tab bar — sticky below the AppBar (56px toolbar height) */}
+                <Box sx={{
+                    position: 'sticky',
+                    top: 56,
+                    zIndex: 1099,
+                    borderBottom: 1,
+                    borderColor: 'divider',
+                    bgcolor: 'background.paper',
+                    display: { xs: 'none', md: 'block' },
+                }}>
                     <Container maxWidth="lg" sx={{px: {xs: 0, sm: 2}}}>
                         <Tabs
                             value={currentTab}
@@ -130,14 +167,29 @@ function App() {
                     </Container>
                 </Box>
 
-                <Container maxWidth="lg" sx={{py: 4, flex: 1}}>
-                    <Suspense fallback={<div>Loading…</div>}>
+                <Container maxWidth="lg" sx={{ py: 4, flex: 1, pb: { xs: '80px', md: 4 } }}>
+                    <Suspense fallback={loadingFallback}>
                         {currentTab === 0 && <ImageUpload/>}
                         {currentTab === 1 && <ConsumptionHistory/>}
                         {currentTab === 2 && <PriceManagement/>}
                         {currentTab === 3 && <Settings/>}
                     </Suspense>
                 </Container>
+
+                {/* Mobile bottom navigation */}
+                {isMobile && (
+                    <Paper
+                        sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1200 }}
+                        elevation={8}
+                    >
+                        <BottomNavigation value={currentTab} onChange={handleTabChange} showLabels>
+                            <BottomNavigationAction label="Upload" icon={<CloudUploadIcon />} />
+                            <BottomNavigationAction label="History" icon={<BarChartIcon />} />
+                            <BottomNavigationAction label="Prices" icon={<PaymentsIcon />} />
+                            <BottomNavigationAction label="Settings" icon={<SettingsIcon />} />
+                        </BottomNavigation>
+                    </Paper>
+                )}
             </Box>
         </ThemeProvider>
     );

@@ -12,23 +12,95 @@ const baseTheme: ThemeOptions = {
       'Arial',
       'sans-serif',
     ].join(','),
+    fontSize: 13,
+    fontWeightLight: 300,
+    fontWeightRegular: 400,
+    fontWeightMedium: 500,
+    fontWeightBold: 600,
+    h4: { fontSize: '1.75rem', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.02em' },
+    h6: { fontSize: '1rem', fontWeight: 600, lineHeight: 1.25, letterSpacing: '-0.01em' },
+    subtitle2: { fontSize: '0.82rem', fontWeight: 500 },
+    body2: { fontSize: '0.82rem', fontWeight: 400 },
+    caption: { fontSize: '0.74rem', fontWeight: 400 },
   },
   shape: {
-    borderRadius: 8,
+    borderRadius: 12,
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: { lineHeight: 1.35 },
+      },
+    },
     MuiButton: {
+      defaultProps: {
+        size: 'small',
+      },
       styleOverrides: {
         root: {
           textTransform: 'none',
           fontWeight: 600,
+          paddingTop: 5,
+          paddingBottom: 5,
+          borderRadius: 8,
         },
       },
     },
+    MuiIconButton: {
+      defaultProps: {
+        size: 'small',
+      },
+      styleOverrides: {
+        root: {
+          padding: 6,
+          borderRadius: 8,
+          transition: 'background-color 0.2s, transform 0.15s',
+          '&:active': { transform: 'scale(0.92)' },
+        },
+      },
+    },
+    MuiSvgIcon: {
+      defaultProps: {
+        fontSize: 'small',
+      },
+    },
     MuiPaper: {
+      defaultProps: {
+        elevation: 1,
+      },
       styleOverrides: {
         root: {
           backgroundImage: 'none',
+          transition: 'box-shadow 0.25s ease, transform 0.2s ease',
+        },
+      },
+    },
+    MuiCard: {
+      defaultProps: {
+        elevation: 1,
+      },
+      styleOverrides: {
+        root: {
+          transition: 'box-shadow 0.25s ease, transform 0.2s ease',
+        },
+      },
+    },
+    MuiTable: {
+      defaultProps: {
+        size: 'small',
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          paddingTop: 6,
+          paddingBottom: 6,
+          paddingLeft: 10,
+          paddingRight: 10,
+          fontSize: '0.82rem',
+        },
+        head: {
+          fontWeight: 600,
         },
       },
     },
@@ -36,6 +108,26 @@ const baseTheme: ThemeOptions = {
       styleOverrides: {
         root: {
           backgroundImage: 'none',
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          fontWeight: 500,
+          minHeight: 44,
+        },
+      },
+    },
+    MuiBottomNavigationAction: {
+      styleOverrides: {
+        root: {
+          minWidth: 64,
+          padding: '6px 0',
+          '&.Mui-selected': {
+            fontWeight: 600,
+          },
         },
       },
     },
@@ -47,14 +139,14 @@ export const lightTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#3f51b5',
-      light: '#757de8',
-      dark: '#002984'
+      main: '#1565c0',
+      light: '#5e92f3',
+      dark: '#003c8f',
     },
     secondary: {
-      main: '#ff4081',
-      light: '#ff79b0',
-      dark: '#c60055',
+      main: '#e91e63',
+      light: '#ff6090',
+      dark: '#b0003a',
     },
     error: {
       main: '#f44336',
@@ -72,9 +164,10 @@ export const lightTheme = createTheme({
       dark: '#1976d2',
     },
     success: {
-      main: '#4caf50',
-      light: '#81c784',
-      dark: '#388e3c',
+      // MUI v9 renders success more vividly; keep usage deltas subtle.
+      main: '#2e7d32',
+      light: '#66a06a',
+      dark: '#1b5e20',
     },
     background: {
       default: '#f8f9fa',
@@ -122,9 +215,9 @@ export const darkTheme = createTheme({
       dark: '#1976d2',
     },
     success: {
-      main: '#4caf50',
-      light: '#81c784',
-      dark: '#388e3c',
+      main: '#6fbf73',
+      light: '#8fd394',
+      dark: '#4d9a53',
     },
     background: {
       default: '#121212',

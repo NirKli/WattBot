@@ -4,6 +4,12 @@ svg {
   height: 16px !important;
 }
 
+/* Exempt bottom navigation icons from the 16px cap */
+.MuiBottomNavigation-root svg {
+  width: 22px !important;
+  height: 22px !important;
+}
+
 /* Target HeroIcons specifically */
 .h-3, .h-3\.5, .h-4, .h-5, .h-6, .h-7, .w-3, .w-3\.5, .w-4, .w-5, .w-6, .w-7 {
   width: 16px !important;

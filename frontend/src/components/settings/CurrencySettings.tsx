@@ -35,7 +35,7 @@ export default function CurrencySettings({ value, onChange }: Props) {
         borderColor: 'primary.main'
       }
     }}>
-      <Typography variant="subtitle1" fontWeight={600} mb={1} color="text.primary">
+      <Typography variant="subtitle1" color="text.primary" sx={{ fontWeight: 600, mb: 1 }}>
         <span style={{ marginRight: 8, fontSize: '1.3em' }}>💱</span> Currency
       </Typography>
       <Select
