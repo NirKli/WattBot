@@ -25,6 +25,8 @@ export interface ConsumptionStats {
     lowestConsumption: number;
     highestCost: number;
     lowestCost: number;
+    /** % change of current month vs previous 3-month average. null = not enough data. */
+    usageTrendPct: number | null;
 }
 
 export type ImageTab = 'original' | 'labeled';

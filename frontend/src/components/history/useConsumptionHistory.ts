@@ -235,7 +235,8 @@ export function useConsumptionHistory() {
                 highestConsumption: 0,
                 lowestConsumption: 0,
                 highestCost: 0,
-                lowestCost: 0
+                lowestCost: 0,
+                usageTrendPct: null
             };
         }
 
@@ -259,9 +260,19 @@ export function useConsumptionHistory() {
         const lowestCost = Math.min(...readings.map(r => r.price));
 
         // Calculate average consumption from deltas
-        const averageConsumption = consumptionDeltas.length > 0 
+        const averageConsumption = consumptionDeltas.length > 0
             ? consumptionDeltas.reduce((sum, delta) => sum + delta, 0) / consumptionDeltas.length
             : 0;
+
+        // Usage trend: current month delta vs average of previous 3 months
+        let usageTrendPct: number | null = null;
+        if (consumptionDeltas.length >= 4) {
+            const current = consumptionDeltas[0];
+            const prevAvg = (consumptionDeltas[1] + consumptionDeltas[2] + consumptionDeltas[3]) / 3;
+            if (prevAvg > 0) {
+                usageTrendPct = Math.round((current - prevAvg) / prevAvg * 100);
+            }
+        }
 
         return {
             totalReadings: readings.length,
@@ -274,7 +285,8 @@ export function useConsumptionHistory() {
             highestConsumption,
             lowestConsumption,
             highestCost,
-            lowestCost
+            lowestCost,
+            usageTrendPct
         };
     };
 

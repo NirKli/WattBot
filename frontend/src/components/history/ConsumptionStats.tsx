@@ -20,19 +20,18 @@ function formatShortTimestamp(dateString: string | undefined): string {
 }
 
 export default function ConsumptionStats({stats, currency, getCurrencySymbol, formatTimestamp, isMobile}: ConsumptionStatsProps) {
-    // Calculate usage trend (comparing recent months to 3-month average)
     const getUsageTrend = () => {
-        if (stats.totalReadings < 4) return { trend: 'flat', percentage: 0, icon: <TrendingFlat /> };
-        
-        // This is a simplified calculation - you might want to enhance this logic
-        const recentTrend = stats.averageConsumption > 200 ? 'up' : 'down';
-        const percentage = Math.abs((stats.averageConsumption - 200) / 200 * 100);
-        
-        if (recentTrend === 'up') {
-            return { trend: 'up', percentage: Math.round(percentage), icon: <TrendingUp color="info" /> };
-        } else {
-            return { trend: 'down', percentage: Math.round(percentage), icon: <TrendingDown color="info" /> };
+        const pct = stats.usageTrendPct;
+        if (pct === null) {
+            return { label: 'Not enough data', sublabel: 'Need at least 4 readings', display: '—', color: 'text.secondary' as const, icon: <TrendingFlat sx={{ color: 'text.disabled' }} /> };
         }
+        if (pct < 0) {
+            return { label: 'Below 3-month average', sublabel: 'Using less than usual', display: `−${Math.abs(pct)}%`, color: 'success.main' as const, icon: <TrendingDown color="success" /> };
+        }
+        if (pct > 0) {
+            return { label: 'Above 3-month average', sublabel: 'Using more than usual', display: `+${pct}%`, color: 'warning.main' as const, icon: <TrendingUp color="warning" /> };
+        }
+        return { label: 'On par with average', sublabel: 'vs. previous 3 months', display: '0%', color: 'text.secondary' as const, icon: <TrendingFlat sx={{ color: 'text.secondary' }} /> };
     };
 
     const usageTrend = getUsageTrend();
@@ -64,7 +63,6 @@ export default function ConsumptionStats({stats, currency, getCurrencySymbol, fo
         }}>
             <Paper elevation={1} sx={{
                 p: 2, height: '100%', display: 'flex', flexDirection: 'column',
-                borderLeft: '4px solid', borderColor: 'primary.main',
                 '&:hover': { boxShadow: 4 }
             }}>
                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>Total Readings</Typography>
@@ -89,7 +87,6 @@ export default function ConsumptionStats({stats, currency, getCurrencySymbol, fo
 
             <Paper elevation={1} sx={{
                 p: 2, height: '100%', display: 'flex', flexDirection: 'column',
-                borderLeft: '4px solid', borderColor: 'info.main',
                 '&:hover': { boxShadow: 4 }
             }}>
                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>Avg. Consumption</Typography>
@@ -112,7 +109,6 @@ export default function ConsumptionStats({stats, currency, getCurrencySymbol, fo
 
             <Paper elevation={1} sx={{
                 p: 2, height: '100%', display: 'flex', flexDirection: 'column',
-                borderLeft: '4px solid', borderColor: 'success.main',
                 '&:hover': { boxShadow: 4 }
             }}>
                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>Total Spending</Typography>
@@ -147,7 +143,6 @@ export default function ConsumptionStats({stats, currency, getCurrencySymbol, fo
 
             <Paper elevation={1} sx={{
                 p: 2, height: '100%', display: 'flex', flexDirection: 'column',
-                borderLeft: '4px solid', borderColor: 'warning.main',
                 '&:hover': { boxShadow: 4 }
             }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1 }}>
@@ -161,19 +156,19 @@ export default function ConsumptionStats({stats, currency, getCurrencySymbol, fo
                     <Typography
                         variant="h4"
                         sx={{
-                            color: 'warning.dark',
+                            color: usageTrend.color,
                             fontWeight: 700,
                             fontSize: needsSmallerFonts ? '1.2rem' : { xs: '1.5rem', sm: '2rem' }
                         }}
                     >
-                        {usageTrend.trend === 'up' ? '+' : usageTrend.trend === 'down' ? '-' : ''}{usageTrend.percentage}%
+                        {usageTrend.display}
                     </Typography>
                 </Box>
                 <Typography variant="body2" color="text.secondary" sx={{mb: 1}}>
-                    vs. 3-month average
+                    {usageTrend.label}
                 </Typography>
                 <Typography variant="caption" color="text.secondary" sx={{mt: 'auto'}}>
-                    {usageTrend.trend === 'up' ? 'Usage increasing' : usageTrend.trend === 'down' ? 'Usage decreasing' : 'Usage stable'}
+                    {usageTrend.sublabel}
                 </Typography>
             </Paper>
         </Box>
