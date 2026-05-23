@@ -21,11 +21,6 @@ export function usePriceManagement() {
     const [currency, setCurrency] = useState('USD');
 
     useEffect(() => {
-        fetchPrices();
-        fetchSettings();
-    }, []);
-
-    useEffect(() => {
         const handleCurrencyChange = (e: CustomEvent) => {
             if (e.detail && e.detail.currency) {
                 setCurrency(e.detail.currency);
@@ -59,6 +54,12 @@ export function usePriceManagement() {
             console.error('Error fetching settings:', err);
         }
     };
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchPrices();
+        fetchSettings();
+    }, []);
 
     const handleSort = (key: 'date' | 'price') => {
         setSortConfig(prev => ({

@@ -86,7 +86,7 @@ export default function EditReadingForm({
                         />
                     </Tooltip>
                 </Box>
-                <Box display="flex" gap={1} ml="auto">
+                <Box sx={{ display: 'flex', gap: 1, ml: 'auto' }}>
                     <Button onClick={onCancel} variant="outlined">Cancel</Button>
                     <Button type="submit" variant="contained" color="primary" startIcon={<Save/>}>
                         Save

@@ -17,21 +17,16 @@ export function useConsumptionHistory() {
     const [actionMenuAnchor, setActionMenuAnchor] = useState<null | HTMLElement>(null);
     const [actionMenuId, setActionMenuId] = useState<string | null>(null);
 
-    useEffect(() => {
-        fetchReadings();
-        fetchSettings();
-
-        const handleCurrencyChange = (e: CustomEvent) => {
-            if (e.detail && e.detail.currency) {
-                setCurrency(e.detail.currency);
-            }
-        };
-
-        window.addEventListener('currencyChange', handleCurrencyChange as EventListener);
-        return () => {
-            window.removeEventListener('currencyChange', handleCurrencyChange as EventListener);
-        };
-    }, []);
+    const safeParseDate = (dateString: string | undefined): Date | null => {
+        if (!dateString) return null;
+        try {
+            const date = new Date(dateString);
+            return isNaN(date.getTime()) ? null : date;
+        } catch (e) {
+            console.error('Error parsing date:', e);
+            return null;
+        }
+    };
 
     const fetchReadings = async () => {
         try {
@@ -78,16 +73,23 @@ export function useConsumptionHistory() {
         }
     };
 
-    const safeParseDate = (dateString: string | undefined): Date | null => {
-        if (!dateString) return null;
-        try {
-            const date = new Date(dateString);
-            return isNaN(date.getTime()) ? null : date;
-        } catch (e) {
-            console.error('Error parsing date:', e);
-            return null;
-        }
-    };
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchReadings();
+        fetchSettings();
+
+        const handleCurrencyChange = (e: CustomEvent) => {
+            if (e.detail && e.detail.currency) {
+                setCurrency(e.detail.currency);
+            }
+        };
+
+        window.addEventListener('currencyChange', handleCurrencyChange as EventListener);
+        return () => {
+            window.removeEventListener('currencyChange', handleCurrencyChange as EventListener);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleDetailClick = (id: string) => {
         setExpandedId(expandedId === id ? null : id);
@@ -233,7 +235,8 @@ export function useConsumptionHistory() {
                 highestConsumption: 0,
                 lowestConsumption: 0,
                 highestCost: 0,
-                lowestCost: 0
+                lowestCost: 0,
+                usageTrendPct: null
             };
         }
 
@@ -257,9 +260,19 @@ export function useConsumptionHistory() {
         const lowestCost = Math.min(...readings.map(r => r.price));
 
         // Calculate average consumption from deltas
-        const averageConsumption = consumptionDeltas.length > 0 
+        const averageConsumption = consumptionDeltas.length > 0
             ? consumptionDeltas.reduce((sum, delta) => sum + delta, 0) / consumptionDeltas.length
             : 0;
+
+        // Usage trend: current month delta vs average of previous 3 months
+        let usageTrendPct: number | null = null;
+        if (consumptionDeltas.length >= 4) {
+            const current = consumptionDeltas[0];
+            const prevAvg = (consumptionDeltas[1] + consumptionDeltas[2] + consumptionDeltas[3]) / 3;
+            if (prevAvg > 0) {
+                usageTrendPct = Math.round((current - prevAvg) / prevAvg * 100);
+            }
+        }
 
         return {
             totalReadings: readings.length,
@@ -272,7 +285,8 @@ export function useConsumptionHistory() {
             highestConsumption,
             lowestConsumption,
             highestCost,
-            lowestCost
+            lowestCost,
+            usageTrendPct
         };
     };
 

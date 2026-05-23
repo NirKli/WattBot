@@ -16,11 +16,6 @@ export function useImageUpload() {
     const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     useEffect(() => {
-        fetchSettings();
-        fetchLatestReading();
-    }, []);
-
-    useEffect(() => {
         const handleCurrencyChange = (e: Event) => {
             const customEvent = e as CustomEvent<{ currency: string }>;
             if (customEvent.detail && typeof customEvent.detail.currency === 'string') {
@@ -232,6 +227,12 @@ export function useImageUpload() {
             setLatestReading(null);
         }
     };
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchSettings();
+        fetchLatestReading();
+    }, []);
 
     // Format timestamp for display using user's OS/browser locale (no milliseconds).
     const formatDate = (dateStr?: string) => {

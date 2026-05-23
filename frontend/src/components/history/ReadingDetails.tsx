@@ -1,5 +1,6 @@
-import {Paper, Typography, Grid, Tabs, Tab, Box, Tooltip} from '@mui/material';
-import {Image, Label, Info} from '@mui/icons-material';
+import {useState} from 'react';
+import {Paper, Typography, Grid, Tabs, Tab, Box, Tooltip, Dialog, DialogContent, IconButton} from '@mui/material';
+import {Image, Label, Info, Close, ZoomIn} from '@mui/icons-material';
 import type {MonthlyConsumption, ImageTab} from './types';
 
 interface ReadingDetailsProps {
@@ -25,9 +26,11 @@ export default function ReadingDetails({
     currency,
     isMobile
 }: ReadingDetailsProps) {
+    const [zoomSrc, setZoomSrc] = useState<string | null>(null);
+
     return (
         <Paper elevation={1} sx={{p: 2, mb: 2}}>
-            <Typography variant="subtitle1" color="primary" fontWeight={600} mb={2}>
+            <Typography variant="subtitle1" color="primary" sx={{ fontWeight: 600, mb: 2 }}>
                 <Info sx={{mr: 1}}/> Reading Details
             </Typography>
             <Grid container spacing={2} sx={{flexDirection: {xs: 'column', md: 'row'}}}>
@@ -114,37 +117,91 @@ export default function ReadingDetails({
                             )}
                         </Tabs>
 
-                        <Box sx={{textAlign: 'center'}}>
+                        <Box sx={{ textAlign: 'center' }}>
                             {activeImageTab === 'original' && reading.original_file && (
-                                <img
-                                    src={getFileUrl(reading.original_file)}
-                                    alt="Original reading"
-                                    style={{
-                                        maxWidth: '100%', 
-                                        maxHeight: isMobile ? 300 : 500,
-                                        width: 'auto',
-                                        height: 'auto',
-                                        objectFit: 'contain'
-                                    }}
-                                />
+                                <Box sx={{ position: 'relative', display: 'inline-block', cursor: 'zoom-in' }}
+                                     onClick={() => setZoomSrc(getFileUrl(reading.original_file ?? undefined))}>
+                                    <img
+                                        src={getFileUrl(reading.original_file ?? undefined)}
+                                        alt="Original reading"
+                                        style={{
+                                            maxWidth: '100%',
+                                            maxHeight: isMobile ? 300 : 500,
+                                            width: 'auto',
+                                            height: 'auto',
+                                            objectFit: 'contain',
+                                            display: 'block',
+                                            borderRadius: 8,
+                                        }}
+                                    />
+                                    <Box sx={{
+                                        position: 'absolute', bottom: 8, right: 8,
+                                        bgcolor: 'rgba(0,0,0,0.45)', borderRadius: 1, p: 0.5,
+                                        display: 'flex', alignItems: 'center',
+                                    }}>
+                                        <ZoomIn sx={{ color: '#fff', fontSize: '18px !important' }} />
+                                    </Box>
+                                </Box>
                             )}
                             {activeImageTab === 'labeled' && reading.label_file && (
-                                <img
-                                    src={getFileUrl(reading.label_file)}
-                                    alt="Labeled reading"
-                                    style={{
-                                        maxWidth: '100%', 
-                                        maxHeight: isMobile ? 300 : 500,
-                                        width: 'auto',
-                                        height: 'auto',
-                                        objectFit: 'contain'
-                                    }}
-                                />
+                                <Box sx={{ position: 'relative', display: 'inline-block', cursor: 'zoom-in' }}
+                                     onClick={() => setZoomSrc(getFileUrl(reading.label_file ?? undefined))}>
+                                    <img
+                                        src={getFileUrl(reading.label_file ?? undefined)}
+                                        alt="Labeled reading"
+                                        style={{
+                                            maxWidth: '100%',
+                                            maxHeight: isMobile ? 300 : 500,
+                                            width: 'auto',
+                                            height: 'auto',
+                                            objectFit: 'contain',
+                                            display: 'block',
+                                            borderRadius: 8,
+                                        }}
+                                    />
+                                    <Box sx={{
+                                        position: 'absolute', bottom: 8, right: 8,
+                                        bgcolor: 'rgba(0,0,0,0.45)', borderRadius: 1, p: 0.5,
+                                        display: 'flex', alignItems: 'center',
+                                    }}>
+                                        <ZoomIn sx={{ color: '#fff', fontSize: '18px !important' }} />
+                                    </Box>
+                                </Box>
                             )}
                         </Box>
                     </Grid>
                 )}
             </Grid>
+
+            {/* Photo zoom lightbox */}
+            <Dialog
+                open={Boolean(zoomSrc)}
+                onClose={() => setZoomSrc(null)}
+                maxWidth="xl"
+                fullWidth
+                slotProps={{ backdrop: { style: { backgroundColor: 'rgba(0,0,0,0.85)' } } }}
+            >
+                <DialogContent sx={{ p: 1, position: 'relative', textAlign: 'center', bgcolor: 'transparent' }}>
+                    <IconButton
+                        onClick={() => setZoomSrc(null)}
+                        size="small"
+                        sx={{
+                            position: 'absolute', top: 8, right: 8, zIndex: 1,
+                            bgcolor: 'rgba(0,0,0,0.55)', color: '#fff',
+                            '&:hover': { bgcolor: 'rgba(0,0,0,0.75)' },
+                        }}
+                    >
+                        <Close />
+                    </IconButton>
+                    {zoomSrc && (
+                        <img
+                            src={zoomSrc}
+                            alt="Zoomed reading"
+                            style={{ maxWidth: '100%', maxHeight: '90vh', width: 'auto', height: 'auto', borderRadius: 8 }}
+                        />
+                    )}
+                </DialogContent>
+            </Dialog>
         </Paper>
     );
 } 
