@@ -62,7 +62,7 @@ docker compose up -d
 - Frontend UI: [http://localhost:80](http://localhost:80)
 - Backend API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-If you're deploying on a remote server, replace `localhost` with your server's IP (e.g., http://123.123.123.123:5173).
+If you're deploying on a remote server, replace `localhost` with your server's IP (e.g., http://123.123.123.123).
 
 
 ## ⚠️ Model Accuracy Note
@@ -103,6 +103,10 @@ cd frontend
 npm install
 npm run dev
 ```
+
+The dev server automatically proxies API requests to the backend at `http://localhost:8000` — no extra configuration needed.
+
+> **Pointing to a different backend?** Create `frontend/.env.local` with `VITE_API_URL=http://your-backend-url:8000`. This file is gitignored.
 
 ---
 

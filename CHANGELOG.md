@@ -13,6 +13,7 @@
 - frontend: fix text overflow in spending and average stats (changed `wordBreak: break-all` → `whiteSpace: nowrap`)
 - frontend: add `usageTrendPct` field to `ConsumptionStats` type for % change vs. 3-month average
 - frontend: switch `API_URL` fallback from `||` to `??` (nullish coalescing) in `config.ts`
+- build(vite): add dev-server proxy in `vite.config.ts` for API routes (`/monthly-consumption`, `/settings`, `/electricity-prices`, `/electricity-price`) so local dev works without CORS issues
 - docs: update remote-deployment note and add dev-server proxy documentation to `README.md`
 - chore: add `.env.local` and `.env.*.local` to `.gitignore`
 
