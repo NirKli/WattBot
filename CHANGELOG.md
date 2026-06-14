@@ -19,6 +19,11 @@
 
 #### Build, Dependencies, GitHub Actions
 
+- build(deps): bump fastapi from `0.136.1` to `0.136.3`
+- build(deps): bump uvicorn from `0.47.0` to `0.48.0`
+- build(deps): bump python-multipart from `0.0.29` to `0.0.30`
+- build(deps): bump ultralytics from `8.4.53` to `8.4.60`
+- build(deps): bump torchvision from `0.27.0` to `0.27.0+cpu` in the torch-stack group
 - build(deps): Bump @types/react from `19.2.14` to `19.2.15` in `/frontend`
 - build(deps): bump @mui/material and @mui/icons-material from `7.3.8` to `9.0.1` in `/frontend`
 - build(deps): bump vite from `7.3.1` to `8.0.14` in `/frontend`
