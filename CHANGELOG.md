@@ -19,11 +19,6 @@
 
 #### Build, Dependencies, GitHub Actions
 
-- build(deps): bump fastapi from `0.136.1` to `0.136.3`
-- build(deps): bump uvicorn from `0.47.0` to `0.48.0`
-- build(deps): bump python-multipart from `0.0.29` to `0.0.30`
-- build(deps): bump ultralytics from `8.4.53` to `8.4.60`
-- build(deps): bump torchvision from `0.27.0` to `0.27.0+cpu` in the torch-stack group
 - build(deps): Bump @types/react from `19.2.14` to `19.2.15` in `/frontend`
 - build(deps): bump @mui/material and @mui/icons-material from `7.3.8` to `9.0.1` in `/frontend`
 - build(deps): bump vite from `7.3.1` to `8.0.14` in `/frontend`
@@ -39,10 +34,10 @@
 - build(deps): bump docker/build-push-action from `6.19.2` to `7.1.0`
 - build(deps): build(deps): bump docker/setup-buildx-action from `3` to `4`
 - build(deps): bump docker/login-action from `3` to `4`
-- build(deps): bump the torch-stack group with 3 updates from `2.9.1` to `2.12.0+cpu`
+- build(deps): bump the torch-stack group with 3 updates from `2.9.1` to `2.12.0+cpu` (torchvision pinned to the `0.27.0+cpu` variant)
 - build(docker): upgrade Python `3.11` → `3.13`
-- build(deps): bump fastapi from `0.135.2` to` 0.136.1`
-- build(deps): bump ultralytics from `8.4.30` to `8.4.53`
+- build(deps): bump fastapi from `0.135.2` to `0.136.3`
+- build(deps): bump ultralytics from `8.4.30` to `8.4.60`
 - build(deps): bump pandas from `3.0.1` to `3.0.3`
 - build(deps): bump numpy from `2.4.3` to `2.4.6`
 - build(deps): bump axios from `1.13.6` to `1.16.1` in `/frontend`
@@ -51,9 +46,9 @@
 - build(deps): bump pypdf from `6.9.2` to `6.12.1`
 - build(deps): bump pymongo from `4.16.0` to` 4.17.0`
 - build(deps): bump reportlab from `4.4.10` to `4.5.1`
-- build(deps): Bump python-multipart from `0.0.22` to `0.0.29`
+- build(deps): Bump python-multipart from `0.0.22` to `0.0.30`
 - build(deps): Bump pytest from `9.0.2` to `9.0.3`
-- build(deps): Bump uvicorn from `0.42.0` to `0.47.0`
+- build(deps): Bump uvicorn from `0.42.0` to `0.48.0`
 - build(deps): Bump pydantic from `2.12.5` to `2.13.4`
 - build(deps): Bump Axios from `1.14.0` to `1.16.0`
 
