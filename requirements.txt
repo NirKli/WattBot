@@ -3,7 +3,7 @@ torchvision==0.27.0+cpu
 --extra-index-url https://download.pytorch.org/whl/cpu
 
 albumentations==2.0.8
-fastapi==0.136.3
+fastapi==0.137.0
 pydantic==2.13.4
 pymongo==4.17.0
 ultralytics==8.4.60
