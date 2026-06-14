@@ -33,7 +33,7 @@
 - build(vite): switch manualChunks from static object to function-based approach for reliable chunk splitting
 - build(deps): bump nginx from `1.29` to `1.31` in `/frontend`
 - build(deps): bump node from `25` to `26` in `/frontend`
-- build(deps): bump docker/build-push-action from `6.19.2` to `7.1.0`
+- build(deps): bump docker/build-push-action from `6.19.2` to `7.2.0`
 - build(deps): build(deps): bump docker/setup-buildx-action from `3` to `4`
 - build(deps): bump docker/login-action from `3` to `4`
 - build(deps): bump the torch-stack group with 3 updates from `2.9.1` to `2.12.0+cpu` (torchvision pinned to the `0.27.0+cpu` variant)
