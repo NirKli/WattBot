@@ -19,7 +19,7 @@
 
 #### Build, Dependencies, GitHub Actions
 
-- build(deps): Bump @types/react from `19.2.14` to `19.2.16` in `/frontend`
+- build(deps): bump @types/react from `19.2.14` to `19.2.16` in `/frontend`
 - build(deps): bump @mui/material and @mui/icons-material from `7.3.8` to `9.0.1` in `/frontend`
 - build(deps): bump vite from `7.3.1` to `8.0.16` in `/frontend`
 - build(deps): bump typescript from `~5.9.3` to `~6.0.3` in `/frontend`
@@ -36,23 +36,24 @@
 - build(deps): bump docker/build-push-action from `6.19.2` to `7.2.0`
 - build(deps): build(deps): bump docker/setup-buildx-action from `3` to `4`
 - build(deps): bump docker/login-action from `3` to `4`
-- build(deps): bump the torch-stack group with 3 updates from `2.9.1` to `2.12.0+cpu` (torchvision pinned to the `0.27.0+cpu` variant)
+- build(deps): bump the torch-stack group with 3 updates from `2.9.1` to `2.12.1` and torchvision to `0.27.1`;
 - build(docker): upgrade Python `3.11` → `3.13`
-- build(deps): bump fastapi from `0.135.2` to `0.137.0`
-- build(deps): bump ultralytics from `8.4.30` to `8.4.67`
+- build(deps): bump fastapi from `0.135.2` to `0.137.2`
+- build(deps): bump ultralytics from `8.4.30` to `8.4.71`
 - build(deps): bump pandas from `3.0.1` to `3.0.3`
 - build(deps): bump numpy from `2.4.3` to `2.4.6`
 - build(deps): bump axios from `1.13.6` to `1.16.1` in `/frontend`
 - build(deps): bump @vitejs/plugin-react from `5.1.4` to `5.2.0` in `/frontend`
 - build(deps): fix security vulnerabilities via `npm audit fix`
-- build(deps): bump pypdf from `6.9.2` to `6.12.1`
+- build(deps): bump pypdf from `6.9.2` to `6.13.3`
 - build(deps): bump pymongo from `4.16.0` to` 4.17.0`
-- build(deps): bump reportlab from `4.4.10` to `4.5.1`
-- build(deps): Bump python-multipart from `0.0.22` to `0.0.32`
-- build(deps): Bump pytest from `9.0.2` to `9.0.3`
-- build(deps): Bump uvicorn from `0.42.0` to `0.49.0`
-- build(deps): Bump pydantic from `2.12.5` to `2.13.4`
-- build(deps): Bump Axios from `1.14.0` to `1.16.0`
+- build(deps): bump reportlab from `4.4.10` to `5.0.0`
+- build(deps): bump python-multipart from `0.0.22` to `0.0.32`
+- build(deps): bump pytest from `9.0.2` to `9.1.0`
+- build(deps): bump pytest-asyncio from `1.3.0` to `1.4.0`
+- build(deps): bump uvicorn from `0.42.0` to `0.49.0`
+- build(deps): bump pydantic from `2.12.5` to `2.13.4`
+- build(deps): bump axios from `1.14.0` to `1.16.0`
 
 ## [1.3.0] - 27-03-2026
 
