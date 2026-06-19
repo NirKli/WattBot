@@ -20,7 +20,7 @@
 #### Build, Dependencies, GitHub Actions
 
 - build(deps): bump @types/react from `19.2.14` to `19.2.16` in `/frontend`
-- build(deps): bump @mui/material and @mui/icons-material from `7.3.8` to `9.0.1` in `/frontend`
+- build(deps): bump @mui/material and @mui/icons-material from `7.3.8` to `9.1.1` in `/frontend`
 - build(deps): bump vite from `7.3.1` to `8.0.16` in `/frontend`
 - build(deps): bump typescript from `~5.9.3` to `~6.0.3` in `/frontend`
 - build(deps): bump eslint from `9.39.2` to `10.4.1` in `/frontend`
@@ -29,7 +29,7 @@
 - build(deps): bump eslint-plugin-react-hooks from `7.0.1` to `7.1.1` in `/frontend`
 - build(deps): bump globals from `17.4.0` to `17.6.0` in `/frontend`
 - build(deps): bump react and react-dom from `19.2.4` to `19.2.7` in `/frontend`
-- build(deps): bump typescript-eslint from `8.57.2` to `8.60.1` in `/frontend`
+- build(deps): bump typescript-eslint from `8.57.2` to `8.61.1` in `/frontend`
 - build(vite): switch manualChunks from static object to function-based approach for reliable chunk splitting
 - build(deps): bump nginx from `1.29` to `1.31` in `/frontend`
 - build(deps): bump node from `25` to `26` in `/frontend`
@@ -42,7 +42,8 @@
 - build(deps): bump ultralytics from `8.4.30` to `8.4.71`
 - build(deps): bump pandas from `3.0.1` to `3.0.3`
 - build(deps): bump numpy from `2.4.3` to `2.4.6`
-- build(deps): bump axios from `1.13.6` to `1.16.1` in `/frontend`
+- build(deps): bump axios from `1.13.6` to `1.18.0` in `/frontend`
+- build(deps): bump eslint-plugin-react-refresh from `0.5.2` to `0.5.3` in `/frontend`
 - build(deps): bump @vitejs/plugin-react from `5.1.4` to `5.2.0` in `/frontend`
 - build(deps): fix security vulnerabilities via `npm audit fix`
 - build(deps): bump pypdf from `6.9.2` to `6.13.3`
@@ -53,7 +54,7 @@
 - build(deps): bump pytest-asyncio from `1.3.0` to `1.4.0`
 - build(deps): bump uvicorn from `0.42.0` to `0.49.0`
 - build(deps): bump pydantic from `2.12.5` to `2.13.4`
-- build(deps): bump axios from `1.14.0` to `1.16.0`
+- build(deps): bump axios from `1.14.0` to `1.18.0`
 
 ## [1.3.0] - 27-03-2026
 
