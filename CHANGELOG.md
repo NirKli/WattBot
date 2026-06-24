@@ -20,16 +20,17 @@
 #### Build, Dependencies, GitHub Actions
 
 - build(deps): bump @types/react from `19.2.14` to `19.2.16` in `/frontend`
-- build(deps): bump @mui/material and @mui/icons-material from `7.3.8` to `9.1.1` in `/frontend`
-- build(deps): bump vite from `7.3.1` to `8.0.16` in `/frontend`
+- build(deps): bump @mui/material from `7.3.8` to `9.1.2` in `/frontend`
+- build(deps): bump @mui/icons-material from `7.3.8` to `9.1.1` in `/frontend`
+- build(deps): bump vite from `7.3.1` to `8.1.0` in `/frontend`
 - build(deps): bump typescript from `~5.9.3` to `~6.0.3` in `/frontend`
 - build(deps): bump eslint from `9.39.2` to `10.4.1` in `/frontend`
 - build(deps): bump @eslint/js from `9.39.2` to `10.0.1` in `/frontend`
-- build(deps): bump @vitejs/plugin-react from `5.2.0` to `6.0.2` in `/frontend`
+- build(deps): bump @vitejs/plugin-react from `5.2.0` to `6.0.3` in `/frontend`
 - build(deps): bump eslint-plugin-react-hooks from `7.0.1` to `7.1.1` in `/frontend`
-- build(deps): bump globals from `17.4.0` to `17.6.0` in `/frontend`
+- build(deps): bump globals from `17.4.0` to `17.7.0` in `/frontend`
 - build(deps): bump react and react-dom from `19.2.4` to `19.2.7` in `/frontend`
-- build(deps): bump typescript-eslint from `8.57.2` to `8.61.1` in `/frontend`
+- build(deps): bump typescript-eslint from `8.57.2` to `8.62.0` in `/frontend`
 - build(vite): switch manualChunks from static object to function-based approach for reliable chunk splitting
 - build(deps): bump nginx from `1.29` to `1.31` in `/frontend`
 - build(deps): bump node from `25` to `26` in `/frontend`
@@ -38,23 +39,24 @@
 - build(deps): bump docker/login-action from `3` to `4`
 - build(deps): bump the torch-stack group with 3 updates from `2.9.1` to `2.12.1` and torchvision to `0.27.1`;
 - build(docker): upgrade Python `3.11` → `3.13`
-- build(deps): bump fastapi from `0.135.2` to `0.137.2`
-- build(deps): bump ultralytics from `8.4.30` to `8.4.71`
+- build(deps): bump fastapi from `0.135.2` to `0.138.0`
+- build(deps): bump ultralytics from `8.4.30` to `8.4.75`
 - build(deps): bump pandas from `3.0.1` to `3.0.3`
-- build(deps): bump numpy from `2.4.3` to `2.4.6`
+- build(deps): bump numpy from `2.4.3` to `2.5.0`
 - build(deps): bump axios from `1.13.6` to `1.18.0` in `/frontend`
 - build(deps): bump eslint-plugin-react-refresh from `0.5.2` to `0.5.3` in `/frontend`
 - build(deps): bump @vitejs/plugin-react from `5.1.4` to `5.2.0` in `/frontend`
 - build(deps): fix security vulnerabilities via `npm audit fix`
-- build(deps): bump pypdf from `6.9.2` to `6.13.3`
+- build(deps): bump pypdf from `6.9.2` to `6.14.2`
 - build(deps): bump pymongo from `4.16.0` to` 4.17.0`
 - build(deps): bump reportlab from `4.4.10` to `5.0.0`
 - build(deps): bump python-multipart from `0.0.22` to `0.0.32`
-- build(deps): bump pytest from `9.0.2` to `9.1.0`
+- build(deps): bump pytest from `9.0.2` to `9.1.1`
 - build(deps): bump pytest-asyncio from `1.3.0` to `1.4.0`
 - build(deps): bump uvicorn from `0.42.0` to `0.49.0`
 - build(deps): bump pydantic from `2.12.5` to `2.13.4`
-- build(deps): bump axios from `1.14.0` to `1.18.0`
+- build(deps): bump axios from `1.14.0` to `1.18.1`
+- build(deps): bump react-easy-crop from `5.5.7` to `6.0.2` in `/frontend`
 
 ## [1.3.0] - 27-03-2026
 
