@@ -196,7 +196,7 @@ async def test_raises_404_when_file_not_found(mock_get_file):
 
 @pytest.mark.asyncio
 @patch("backend.api.monthly_consumption_routes.get_monthly_consumption_from_db")
-async def test_raises_404_when_monthly_consumption_not_found(mock_get):
+async def test_raises_404_when_monthly_consumption_not_found_update(mock_get):
     mock_get.side_effect = NoObjectHasFoundException
     with pytest.raises(HTTPException) as exc:
         await get_monthly_consumption("invalid_id")
