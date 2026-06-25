@@ -13,7 +13,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir --prefix=/install -r requirements.txt
+    pip install --no-cache-dir --prefix=/install \
+        --extra-index-url https://download.pytorch.org/whl/cpu \
+        -r requirements.txt
 
 COPY backend ./backend
 COPY models ./models
@@ -24,11 +26,6 @@ WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgl1 \
-    libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /install /usr/local
 COPY --from=builder /app /app

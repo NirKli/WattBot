@@ -1,5 +1,5 @@
-torch==2.12.1
-torchvision==0.27.1
+torch==2.12.1+cpu
+torchvision==0.27.1+cpu
 
 albumentations==2.0.8
 fastapi==0.138.0
@@ -8,7 +8,7 @@ pymongo==4.17.0
 ultralytics==8.4.75
 uvicorn==0.49.0
 python-multipart==0.0.32
-opencv-python==4.13.0.92
+opencv-python-headless==4.13.0.92
 pytest==9.1.1
 pytest-asyncio==1.4.0
 httpx==0.28.1
@@ -17,4 +17,4 @@ pandas==3.0.3
 openpyxl==3.1.5
 reportlab==5.0.0
 pypdf==6.14.2
-numpy==2.5.0
+numpy==2.5.0time
