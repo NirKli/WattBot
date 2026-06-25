@@ -17,4 +17,4 @@ pandas==3.0.3
 openpyxl==3.1.5
 reportlab==5.0.0
 pypdf==6.14.2
-numpy==2.5.0time
+numpy==2.5.0
