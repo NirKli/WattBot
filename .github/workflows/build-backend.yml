@@ -31,6 +31,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: '3.13'
+          cache: 'pip'
 
       - name: Install backend dependencies
         run: |
@@ -75,3 +76,5 @@ jobs:
           platforms: linux/arm64,linux/amd64
           push: true
           tags: ${{ env.IMAGE }}:${{ steps.docker_tag.outputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
