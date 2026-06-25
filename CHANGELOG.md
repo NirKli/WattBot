@@ -19,6 +19,9 @@
 
 #### Build, Dependencies, GitHub Actions
 
+- build(docker): switch to CPU-only PyTorch (`torch==2.12.1+cpu`, `torchvision==0.27.1+cpu`) to reduce Docker image size (~3GB → ~1.7GB)
+- build(docker): replace `opencv-python` with `opencv-python-headless` to drop GUI dependencies
+- build(deps): add PyTorch CPU wheel index URL to `requirements.txt` for CI compatibility
 - build(deps): bump @types/react from `19.2.14` to `19.2.16` in `/frontend`
 - build(deps): bump @mui/material from `7.3.8` to `9.1.2` in `/frontend`
 - build(deps): bump @mui/icons-material from `7.3.8` to `9.1.1` in `/frontend`
