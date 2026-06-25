@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Improvements and bug fixes
+
+#### Build, Dependencies, GitHub Actions
+
+
 ## [1.4.0] - 25-06-2026
 
 ### Improvements and bug fixes
