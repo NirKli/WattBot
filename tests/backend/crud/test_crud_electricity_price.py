@@ -11,6 +11,13 @@ from backend.services.model.ElectricityPrice import ElectricityPrice, PyObjectId
 
 
 @patch("backend.services.crud.crud_electricity_price.get_db")
+def test_get_all_prices_returns_empty_list(mock_get_db):
+    mock_get_db.return_value["electricity-prices"].find.return_value = []
+    result = get_all_prices_from_db()
+    assert result == []
+
+
+@patch("backend.services.crud.crud_electricity_price.get_db")
 def test_retrieves_all_prices_from_db(mock_get_db):
     mock_collection = mock_get_db.return_value["electricity-prices"]
     mock_collection.find.return_value = [
@@ -35,6 +42,23 @@ def test_retrieves_all_prices_from_db(mock_get_db):
     assert len(result) == 2
     assert result[0].price == 0.15
     assert result[1].price == 0.20
+
+
+@patch("backend.services.crud.crud_electricity_price.get_db")
+def test_retrieves_existing_price_from_db(mock_get_db):
+    mock_collection = mock_get_db.return_value["electricity-prices"]
+    price_id = ObjectId()
+    mock_collection.find_one.return_value = {
+        "_id": price_id,
+        "price": 0.18,
+        "date": "2024-03-01",
+        "created_at": datetime.now(),
+        "updated_at": datetime.now(),
+        "is_default": True,
+    }
+    result = get_price_from_db(str(price_id))
+    assert result.price == 0.18
+    assert result.is_default is True
 
 
 @patch("backend.services.crud.crud_electricity_price.get_db")
