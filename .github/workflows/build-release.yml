@@ -50,6 +50,8 @@ jobs:
           tags: |
             ${{ env.BACKEND_IMAGE }}:${{ needs.strip-version.outputs.version }}
             ${{ env.BACKEND_IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   build-frontend:
     runs-on: ubuntu-latest
@@ -80,3 +82,5 @@ jobs:
           tags: |
             ${{ env.FRONTEND_IMAGE }}:${{ needs.strip-version.outputs.version }}
             ${{ env.FRONTEND_IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

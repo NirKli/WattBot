@@ -25,6 +25,8 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v4
@@ -74,3 +76,5 @@ jobs:
           platforms: linux/arm64,linux/amd64
           push: true
           tags: ${{ env.IMAGE }}:${{ steps.docker_tag.outputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
