@@ -6,6 +6,10 @@
 
 #### Build, Dependencies, GitHub Actions
 
+- build(docker): add BuildKit pip cache mount (`--mount=type=cache,target=/root/.cache/pip`) to speed up layer rebuilds
+- build(ci): add `cache: pip` to `setup-python` in `build-backend.yml` for faster dependency installs
+- build(ci): add `cache: npm` to `setup-node` in `build-frontend.yml` for faster dependency installs
+- build(ci): add `cache-from/cache-to: type=gha,mode=max` to Docker build steps in `build-backend.yml`, `build-frontend.yml` and `build-release.yml` — reduced backend CI from ~22 min to ~3.5 min
 
 ## [1.4.0] - 25-06-2026
 
