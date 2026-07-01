@@ -3,7 +3,7 @@ torch==2.12.1+cpu
 torchvision==0.27.1+cpu
 
 albumentations==2.0.8
-fastapi==0.138.0
+fastapi==0.139.0
 pydantic==2.13.4
 pymongo==4.17.0
 ultralytics==8.4.75
