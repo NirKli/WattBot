@@ -12,7 +12,7 @@
 - build(ci): add `cache-from/cache-to: type=gha,mode=max` to Docker build steps in `build-backend.yml`, `build-frontend.yml` and `build-release.yml` — reduced backend CI from ~22 min to ~3.5 min
 - build(deps): bump fastapi from `0.138.0` to `0.139.0`
 - build(deps): bump uvicorn from `0.49.0` to `0.50.0`
-- build(deps): bump ultralytics from `8.4.75` to `8.4.88`
+- build(deps): bump ultralytics from `8.4.75` to `8.4.89`
 - build(deps): bump numpy from `2.5.0` to `2.5.1`
 - build(deps): bump @mui/material from `9.1.2` to `9.2.0` in `/frontend`
 - build(deps): bump @mui/icons-material from `9.1.1` to `9.2.0` in `/frontend`
@@ -21,6 +21,8 @@
 - build(deps): bump vite from `8.1.0` to `8.1.3` in `/frontend`
 - build(deps): bump eslint from `10.4.1` to `10.6.0` in `/frontend`
 - build(deps): bump typescript-eslint from `8.62.0` to `8.62.1` in `/frontend`
+- build(deps): bump docker/build-push-action from `7.2.0` to `7.3.0`
+- build(deps): bump actions/checkout from `6` to `7`
 
 ## [1.4.0] - 25-06-2026
 
