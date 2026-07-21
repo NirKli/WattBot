@@ -1,15 +1,15 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.12.1+cpu
-torchvision==0.27.1+cpu
+torch==2.13.0+cpu
+torchvision==0.28.0+cpu
 
 albumentations==2.0.8
-fastapi==0.139.0
+fastapi==0.139.2
 pydantic==2.13.4
 pymongo==4.17.0
-ultralytics==8.4.89
-uvicorn==0.50.0
+ultralytics==8.4.103
+uvicorn==0.51.0
 python-multipart==0.0.32
-opencv-python-headless==4.13.0.92
+opencv-python-headless==5.0.0.93
 pytest==9.1.1
 pytest-asyncio==1.4.0
 httpx==0.28.1
