@@ -20,10 +20,12 @@
 - build(deps): bump @mui/material from `9.1.2` to `9.2.0` in `/frontend`
 - build(deps): bump @mui/icons-material from `9.1.1` to `9.2.0` in `/frontend`
 - build(deps): bump @types/react from `19.2.16` to `19.2.17` in `/frontend`
-- build(deps): bump react-easy-crop from `6.0.2` to `6.1.0` in `/frontend`
-- build(deps): bump vite from `8.1.0` to `8.1.3` in `/frontend`
-- build(deps): bump eslint from `10.4.1` to `10.6.0` in `/frontend`
-- build(deps): bump typescript-eslint from `8.62.0` to `8.62.1` in `/frontend`
+- build(deps): bump react from `19.2.7` to `19.2.8` in `/frontend`
+- build(deps): bump react-dom from `19.2.7` to `19.2.8` in `/frontend`
+- build(deps): bump react-easy-crop from `6.0.2` to `6.2.2` in `/frontend`
+- build(deps): bump vite from `8.1.0` to `8.1.5` in `/frontend`
+- build(deps): bump eslint from `10.4.1` to `10.7.0` in `/frontend`
+- build(deps): bump typescript-eslint from `8.62.0` to `8.65.0` in `/frontend`
 - build(deps): bump docker/build-push-action from `7.2.0` to `7.3.0`
 - build(deps): bump actions/checkout from `6` to `7`
 
