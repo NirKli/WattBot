@@ -12,11 +12,12 @@
 - build(ci): add `cache-from/cache-to: type=gha,mode=max` to Docker build steps in `build-backend.yml`, `build-frontend.yml` and `build-release.yml` — reduced backend CI from ~22 min to ~3.5 min
 - build(deps): bump torch from `2.12.1+cpu` to `2.13.0+cpu`
 - build(deps): bump torchvision from `0.27.1+cpu` to `0.28.0+cpu`
-- build(deps): bump fastapi from `0.138.0` to `0.139.2`
-- build(deps): bump uvicorn from `0.49.0` to `0.51.0`
-- build(deps): bump ultralytics from `8.4.75` to `8.4.103`
+- build(deps): bump fastapi from `0.138.0` to `0.141.1`
+- build(deps): bump uvicorn from `0.49.0` to `0.52.1`
+- build(deps): bump ultralytics from `8.4.75` to `8.4.115`
 - build(deps): bump opencv-python-headless from `4.13.0.92` to `5.0.0.93`
 - build(deps): bump numpy from `2.5.0` to `2.5.1`
+- build(deps): bump pandas from `3.0.3` to `3.0.5`
 - build(deps): bump @mui/material from `9.1.2` to `9.2.0` in `/frontend`
 - build(deps): bump @mui/icons-material from `9.1.1` to `9.2.0` in `/frontend`
 - build(deps): bump @types/react from `19.2.16` to `19.2.17` in `/frontend`
