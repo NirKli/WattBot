@@ -34,6 +34,8 @@
 - build(deps): bump transitive `brace-expansion` to patch GHSA-mh99-v99m-4gvg (high — DoS via unbounded expansion) in `/frontend`
 - build(deps): bump docker/build-push-action from `7.2.0` to `7.3.0`
 - build(deps): bump actions/checkout from `6` to `7`
+- build(deps): bump actions/setup-python from `6` to `7`
+- build(deps): bump actions/setup-node from `6` to `7`
 
 ## [1.4.0] - 25-06-2026
 
