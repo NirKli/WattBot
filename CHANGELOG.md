@@ -18,6 +18,7 @@
 - build(deps): bump opencv-python-headless from `4.13.0.92` to `5.0.0.93`
 - build(deps): bump numpy from `2.5.0` to `2.5.1`
 - build(deps): bump pandas from `3.0.3` to `3.0.5`
+- build(deps): bump pypdf from `6.14.2` to `6.16.1`
 - build(deps): bump @mui/material from `9.1.2` to `9.2.0` in `/frontend`
 - build(deps): bump @mui/icons-material from `9.1.1` to `9.2.0` in `/frontend`
 - build(deps): bump @types/react from `19.2.16` to `19.2.18` in `/frontend`
