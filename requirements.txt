@@ -7,7 +7,7 @@ fastapi==0.141.1
 pydantic==2.13.4
 pymongo==4.17.0
 ultralytics==8.4.115
-uvicorn==0.52.1
+uvicorn==0.52.4
 python-multipart==0.0.32
 opencv-python-headless==5.0.0.93
 pytest==9.1.1
