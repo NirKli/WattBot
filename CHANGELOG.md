@@ -36,7 +36,7 @@
 - build(deps): bump globals from `17.7.0` to `17.12.0` in `/frontend`
 - build(deps): bump typescript-eslint from `8.62.0` to `8.69.0` in `/frontend`
 - build(deps): bump eslint-plugin-react-refresh from `0.5.3` to `0.5.6` in `/frontend`
-- build(deps): bump transitive `brace-expansion` to patch GHSA-mh99-v99m-4gvg (high — DoS via unbounded expansion) in `/frontend`
+- build(deps): bump transitive `minimatch` to `10.2.6` in `/frontend`, which requires `brace-expansion ^5.0.8` and so structurally excludes GHSA-mh99-v99m-4gvg (high — DoS via unbounded expansion)
 - build(deps): bump transitive `browserslist` to `4.28.9` to patch GHSA-c83g-rgw3-j3cx and GHSA-73wf-gq98-2v4g (high — unbounded memory growth, crash via untrusted custom stats) in `/frontend`
 - build(deps): bump docker/build-push-action from `7.2.0` to `7.3.0`
 - build(deps): bump actions/checkout from `6` to `7`
