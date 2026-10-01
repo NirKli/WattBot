@@ -6,7 +6,7 @@ albumentations==2.0.8
 fastapi==0.141.1
 pydantic==2.13.5
 pymongo==4.18.0
-ultralytics==8.4.138
+ultralytics==8.4.164
 uvicorn==0.52.4
 python-multipart==0.0.32
 opencv-python-headless==5.0.0.93
