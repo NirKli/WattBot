@@ -1,6 +1,6 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.14.0+cpu
-torchvision==0.29.0+cpu
+torch==2.14.1+cpu
+torchvision==0.29.1+cpu
 
 albumentations==2.0.8
 fastapi==0.141.1
