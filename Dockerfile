@@ -1,4 +1,4 @@
-FROM python:3.13-slim AS builder
+FROM python:3.15-slim AS builder
 
 WORKDIR /app
 
@@ -21,7 +21,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 COPY backend ./backend
 COPY models ./models
 
-FROM python:3.13-slim AS runtime
+FROM python:3.15-slim AS runtime
 
 WORKDIR /app
 
