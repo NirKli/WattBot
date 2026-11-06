@@ -40,7 +40,7 @@
 - build(deps): bump transitive `browserslist` to `4.28.9` to patch GHSA-c83g-rgw3-j3cx and GHSA-73wf-gq98-2v4g (high — unbounded memory growth, crash via untrusted custom stats) in `/frontend`
 - build(deps): bump transitive `brace-expansion` to `5.0.12` to patch GHSA-q2hr-2g5m-vwhr, GHSA-qhr7-859c-m2p7 and GHSA-6j4f-fj2g-mc7p (high — CPU/stack-exhaustion DoS) in `/frontend`
 - build(deps): bump transitive `follow-redirects` to `1.16.2` to patch GHSA-q3jh-wrc6-jgq8, GHSA-8r9p-f939-6h3c and GHSA-mrwp-f3q8-3g9p (high — credential headers leaking across redirects) in `/frontend`
-- build(deps): bump docker/build-push-action from `7.2.0` to `7.3.0`
+- build(deps): bump docker/build-push-action from `7.2.0` to `7.4.0`
 - build(deps): bump actions/checkout from `6` to `7`
 - build(deps): bump actions/setup-python from `6` to `7`
 - build(deps): bump actions/setup-node from `6` to `7`
