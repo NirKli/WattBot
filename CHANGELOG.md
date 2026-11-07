@@ -36,10 +36,10 @@
 - build(deps): bump globals from `17.7.0` to `17.12.0` in `/frontend`
 - build(deps): bump typescript-eslint from `8.62.0` to `8.72.1` in `/frontend`
 - build(deps): bump eslint-plugin-react-refresh from `0.5.3` to `0.5.6` in `/frontend`
-- build(deps): bump transitive `minimatch` to `10.2.6` in `/frontend`, which requires `brace-expansion ^5.0.8` and so structurally excludes GHSA-mh99-v99m-4gvg (high — DoS via unbounded expansion)
-- build(deps): bump transitive `browserslist` to `4.28.9` to patch GHSA-c83g-rgw3-j3cx and GHSA-73wf-gq98-2v4g (high — unbounded memory growth, crash via untrusted custom stats) in `/frontend`
-- build(deps): bump transitive `brace-expansion` to `5.0.12` to patch GHSA-q2hr-2g5m-vwhr, GHSA-qhr7-859c-m2p7 and GHSA-6j4f-fj2g-mc7p (high — CPU/stack-exhaustion DoS) in `/frontend`
-- build(deps): bump transitive `follow-redirects` to `1.16.2` to patch GHSA-q3jh-wrc6-jgq8, GHSA-8r9p-f939-6h3c and GHSA-mrwp-f3q8-3g9p (high — credential headers leaking across redirects) in `/frontend`
+- build(deps): bump transitive `minimatch` from `10.2.5` to `11.0.5` in `/frontend`
+- build(deps): bump transitive `browserslist` from `4.28.4` to `4.28.9` in `/frontend`
+- build(deps): bump transitive `brace-expansion` from `5.0.6` to `5.0.12` in `/frontend`
+- build(deps): bump transitive `follow-redirects` from `1.16.0` to `1.16.2` in `/frontend`
 - build(deps): bump docker/build-push-action from `7.2.0` to `7.4.0`
 - build(deps): bump actions/checkout from `6` to `7`
 - build(deps): bump actions/setup-python from `6` to `7`
