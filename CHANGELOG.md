@@ -10,8 +10,8 @@
 - build(ci): add `cache: pip` to `setup-python` in `build-backend.yml` for faster dependency installs
 - build(ci): add `cache: npm` to `setup-node` in `build-frontend.yml` for faster dependency installs
 - build(ci): add `cache-from/cache-to: type=gha,mode=max` to Docker build steps in `build-backend.yml`, `build-frontend.yml` and `build-release.yml` — reduced backend CI from ~22 min to ~3.5 min
-- build(deps): bump torch from `2.12.1+cpu` to `2.14.1+cpu`
-- build(deps): bump torchvision from `0.27.1+cpu` to `0.29.1+cpu`
+- build(deps): bump torch from `2.12.1+cpu` to `2.15.0+cpu`
+- build(deps): bump torchvision from `0.27.1+cpu` to `0.29.2+cpu`
 - build(deps): bump fastapi from `0.138.0` to `0.141.1`
 - build(deps): bump uvicorn from `0.49.0` to `0.54.0`
 - build(deps): bump ultralytics from `8.4.75` to `8.4.164`
@@ -21,7 +21,7 @@
 - build(deps): bump numpy from `2.5.0` to `2.5.2`
 - build(deps): bump pandas from `3.0.3` to `3.0.6`
 - build(deps): bump reportlab from `5.0.0` to `5.0.1`
-- build(deps): bump pypdf from `6.14.2` to `6.19.0`
+- build(deps): bump pypdf from `6.14.2` to `6.21.4`
 - build(deps): bump @mui/material from `9.1.2` to `9.4.0` in `/frontend`
 - build(deps): bump @mui/icons-material from `9.1.1` to `9.4.0` in `/frontend`
 - build(deps): bump @types/react from `19.2.16` to `19.3.0` in `/frontend`

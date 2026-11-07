@@ -1,6 +1,6 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.14.1+cpu
-torchvision==0.29.1+cpu
+torch==2.15.0+cpu
+torchvision==0.29.2+cpu
 
 albumentations==2.0.8
 fastapi==0.141.1
@@ -17,5 +17,5 @@ pytest-cov==7.1.0
 pandas==3.0.6
 openpyxl==3.1.5
 reportlab==5.0.1
-pypdf==6.19.0
+pypdf==6.21.4
 numpy==2.5.2
