@@ -10,13 +10,15 @@
 - build(ci): add `cache: pip` to `setup-python` in `build-backend.yml` for faster dependency installs
 - build(ci): add `cache: npm` to `setup-node` in `build-frontend.yml` for faster dependency installs
 - build(ci): add `cache-from/cache-to: type=gha,mode=max` to Docker build steps in `build-backend.yml`, `build-frontend.yml` and `build-release.yml` — reduced backend CI from ~22 min to ~3.5 min
+- build(docker): bump python from `3.13-slim` to `3.15-slim`
+- build(ci): bump python-version from `3.13` to `3.15` in `build-backend.yml` and `test-coverage.yml`
 - build(deps): bump torch from `2.12.1+cpu` to `2.15.0+cpu`
 - build(deps): bump torchvision from `0.27.1+cpu` to `0.29.2+cpu`
 - build(deps): bump fastapi from `0.138.0` to `0.141.1`
 - build(deps): bump uvicorn from `0.49.0` to `0.54.0`
-- build(deps): bump ultralytics from `8.4.75` to `8.4.164`
-- build(deps): bump pydantic from `2.13.4` to `2.13.5`
-- build(deps): bump pymongo from `4.17.0` to `4.18.3`
+- build(deps): bump ultralytics from `8.4.75` to `8.4.212`
+- build(deps): bump pydantic from `2.13.4` to `2.14.3`
+- build(deps): bump pymongo from `4.17.0` to `4.20.0`
 - build(deps): bump opencv-python-headless from `4.13.0.92` to `5.0.0.93`
 - build(deps): bump numpy from `2.5.0` to `2.5.2`
 - build(deps): bump pandas from `3.0.3` to `3.0.6`
